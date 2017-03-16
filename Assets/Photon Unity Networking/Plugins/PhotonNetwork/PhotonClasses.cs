@@ -10,7 +10,7 @@
 
 #pragma warning disable 1587
 /// \file
-/// <summary>Wraps up smaller classes that don't need their own file. </summary>
+/// <summary>包装相对较小的不需要单独成文件的类 </summary>
 ///
 ///
 /// \defgroup publicApi Public API
@@ -33,212 +33,204 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 
 
-/// <summary>Defines the OnPhotonSerializeView method to make it easy to implement correctly for observable scripts.</summary>
+/// <summary>定义OnPhotonSerializeView 方法来更容易地正确实现可观察脚本。</summary>
 /// \ingroup publicApi
 public interface IPunObservable
 {
     /// <summary>
-    /// Called by PUN several times per second, so that your script can write and read synchronization data for the PhotonView.
+	/// 每秒被PUN调用几次，这样你的脚本可以为PhotonView读写同步数据。
     /// </summary>
     /// <remarks>
-    /// This method will be called in scripts that are assigned as Observed component of a PhotonView.<br/>
-    /// PhotonNetwork.sendRateOnSerialize affects how often this method is called.<br/>
-    /// PhotonNetwork.sendRate affects how often packages are sent by this client.<br/>
+	/// 这个方法将在那些被指派作为PhotonView的观察组件的脚本里被调用<br/>
+    /// PhotonNetwork.sendRateOnSerialize影响该方法被调用的频率.<br/>
+    /// PhotonNetwork.sendRate影响由这个客户端发包的频率.<br/>
     ///
-    /// Implementing this method, you can customize which data a PhotonView regularly synchronizes.
-    /// Your code defines what is being sent (content) and how your data is used by receiving clients.
+	/// 实现该方法，你可以自定义PhotonView定期同步哪些数据。
+    /// 你的代码定义那些内容是正在被发送的以及你的数据如何被接收的客户端使用。
     ///
-    /// Unlike other callbacks, <i>OnPhotonSerializeView only gets called when it is assigned
-    /// to a PhotonView</i> as PhotonView.observed script.
+	/// 不像其他回调函数, <i>OnPhotonSerializeView只在被指派给PhotonView作为PhotonView.observed脚本时才被调用</i>.
     ///
-    /// To make use of this method, the PhotonStream is essential. It will be in "writing" mode" on the
-    /// client that controls a PhotonView (PhotonStream.isWriting == true) and in "reading mode" on the
-    /// remote clients that just receive that the controlling client sends.
+	/// 要利用该方法，PhotonStream是必备的。它在控制PhotonView的客户端上将是“写入模式”(PhotonStream.isWriting == true)
+	/// 且在接收控制客户端发送数据的远程客户端上是“读取模式”(PhotonStream.isWriting == false)
     ///
-    /// If you skip writing any value into the stream, PUN will skip the update. Used carefully, this can
-    /// conserve bandwidth and messages (which have a limit per room/second).
+    /// 如果你跳过写入任何值到数据流，PUN将跳过该更新。谨慎使用，这可以节省宽带和消息（这在每个房间/秒是有限制的）。
     ///
-    /// Note that OnPhotonSerializeView is not called on remote clients when the sender does not send
-    /// any update. This can't be used as "x-times per second Update()".
+	/// 注意当发送者没有发送任何更新时，OnPhotonSerializeView没有在远程客户端上被调用。
+	/// 这个不能被作为"x-次/秒 Update()"使用。
     /// </remarks>
     /// \ingroup publicApi
     void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info);
 }
 
 /// <summary>
-/// This interface is used as definition of all callback methods of PUN, except OnPhotonSerializeView. Preferably, implement them individually.
+/// 这个接口是被用作PUN所有回调方法的定义，除了OnPhotonSerializeView。最好单独实现它们。
 /// </summary>
 /// <remarks>
-/// This interface is available for completeness, more than for actually implementing it in a game.
-/// You can implement each method individually in any MonoMehaviour, without implementing IPunCallbacks.
+/// 这个接口还有待完善，但对于一个游戏的实际实现已经足够了。
+/// 你可以无需实现IPunCallbacks的情况下在任何MonoMehaviour中单独实现每一个方法。
 ///
-/// PUN calls all callbacks by name. Don't use implement callbacks with fully qualified name.
-/// Example: IPunCallbacks.OnConnectedToPhoton won't get called by Unity's SendMessage().
+/// PUN通过名称来调用所有的回调函数。不要使用全名来实现回调。
+/// 例如：IPunCallbacks.OnConnectedToPhoton不会被Unity的SendMessage()方法调用。
 ///
-/// PUN will call these methods on any script that implements them, analog to Unity's events and callbacks.
-/// The situation that triggers the call is described per method.
+/// PUN将会调用那些在任何脚本上实现了回调函数的方法，类似于Unity的事件和回调。
+/// 触发调用的情况在每一个方法中都有描述。
 ///
-/// OnPhotonSerializeView is NOT called like these callbacks! It's usage frequency is much higher and it is implemented in: IPunObservable.
+/// OnPhotonSerializeView不像其他回调函数一样被调用！它的使用频率比较高并且实现了 : IPunObservable。
 /// </remarks>
 /// \ingroup publicApi
 public interface IPunCallbacks
 {
     /// <summary>
-    /// Called when the initial connection got established but before you can use the server. OnJoinedLobby() or OnConnectedToMaster() are called when PUN is ready.
+	/// 当初始连接已被建立时调用，但在您可以使用服务器之前。当PUN准备好时调用OnJoinedLobby()或OnConnectedToMaster()。
     /// </summary>
     /// <remarks>
-    /// This callback is only useful to detect if the server can be reached at all (technically).
-    /// Most often, it's enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
+	/// 这个回调函数只在检测服务器是否可以被完全连接时有用（技术上）。
+	/// 通常，实现OnFailedToConnectToPhoton()和OnDisconnectedFromPhoton()就够了。
     ///
-    /// <i>OnJoinedLobby() or OnConnectedToMaster() are called when PUN is ready.</i>
+	/// <i>当PUN准备好时调用OnJoinedLobby()或OnConnectedToMaster()。</i>
     ///
-    /// When this is called, the low level connection is established and PUN will send your AppId, the user, etc in the background.
-    /// This is not called for transitions from the masterserver to game servers.
+	/// 当被调用时，低层次的连接被建立起来并且PUN会在后台发送你的AppId，用户信息等。
+	/// 从主服务器向游戏服务器转换时不会被调用。
     /// </remarks>
     void OnConnectedToPhoton();
 
     /// <summary>
-    /// Called when the local user/client left a room.
+	/// 当本地用户/客户离开房间时调用。
     /// </summary>
     /// <remarks>
-    /// When leaving a room, PUN brings you back to the Master Server.
-    /// Before you can use lobbies and join or create rooms, OnJoinedLobby() or OnConnectedToMaster() will get called again.
+	/// 当离开一个房间时，PUN将你带回主服务器。
+	/// 在您可以使用游戏大厅和创建/加入房间之前，OnJoinedLobby()或OnConnectedToMaster()会再次被调用。
     /// </remarks>
     void OnLeftRoom();
 
     /// <summary>
-    /// Called after switching to a new MasterClient when the current one leaves.
+	/// 在当前主客户端离开时切换到一个新的主客户端后调用。
     /// </summary>
     /// <remarks>
-    /// This is not called when this client enters a room.
-    /// The former MasterClient is still in the player list when this method get called.
+	/// 当这个客户进入某个房间时，这是不被调用的。
+	/// 当这个方法被调用时之前的主客户端仍在玩家列表。
     /// </remarks>
     void OnMasterClientSwitched(PhotonPlayer newMasterClient);
 
     /// <summary>
-    /// Called when a CreateRoom() call failed. The parameter provides ErrorCode and message (as array).
+	/// 当一个CreateRoom()方法调用失败时调用。参数以数组的方式提供ErrorCode和消息。
     /// </summary>
     /// <remarks>
-    /// Most likely because the room name is already in use (some other client was faster than you).
-    /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
+	/// 最有可能是因为房间的名称已经在使用（其他客户端比你更快）。
+	/// 如果PhotonNetwork.logLevel >= PhotonLogLevel.Informational为真，PUN会记录一些信息。
     /// </remarks>
-    /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode and codeAndMsg[1] is a string debug msg.</param>
+	/// <param name="codeAndMsg">codeAndMsg[0]是short ErrorCode，codeAndMsg[1]是调试消息字符串.</param>
     void OnPhotonCreateRoomFailed(object[] codeAndMsg);
 
     /// <summary>
-    /// Called when a JoinRoom() call failed. The parameter provides ErrorCode and message (as array).
+	/// 当一个JoinRoom()调用失败时被调用。参数以数组的方式提供ErrorCode和消息。
     /// </summary>
     /// <remarks>
-    /// Most likely error is that the room does not exist or the room is full (some other client was faster than you).
-    /// PUN logs some info if the PhotonNetwork.logLevel is >= PhotonLogLevel.Informational.
+	/// 最有可能是因为房间的名称已经在使用（其他客户端比你更快）。
+	/// 如果PhotonNetwork.logLevel >= PhotonLogLevel.Informational为真，PUN会记录一些信息。
     /// </remarks>
-    /// <param name="codeAndMsg">codeAndMsg[0] is short ErrorCode and codeAndMsg[1] is string debug msg.</param>
+	/// <param name="codeAndMsg">codeAndMsg[0]是short ErrorCode，codeAndMsg[1]是调试消息字符串.</param>
     void OnPhotonJoinRoomFailed(object[] codeAndMsg);
 
     /// <summary>
-    /// Called when this client created a room and entered it. OnJoinedRoom() will be called as well.
+	/// 当这个客户端创建了一个房间并进入它时调用。OnJoinedRoom()也会被调用。
     /// </summary>
     /// <remarks>
-    /// This callback is only called on the client which created a room (see PhotonNetwork.CreateRoom).
+	/// 这个回调只在创建房间的客户端调用（详见PhotonNetwork.CreateRoom）。
     ///
-    /// As any client might close (or drop connection) anytime, there is a chance that the
-    /// creator of a room does not execute OnCreatedRoom.
+	/// 由于任何客户端在任何时候都可能会关闭（或断开连接），一个房间的创造者有一定的几率不执行OnCreatedRoom.
     ///
-    /// If you need specific room properties or a "start signal", it is safer to implement
-    /// OnMasterClientSwitched() and to make the new MasterClient check the room's state.
+	/// 如果你需要特定的房间属性或一个“开始信号”，实现OnMasterClientSwitched()并使新的主客户端检查房间的状态更加安全。
     /// </remarks>
     void OnCreatedRoom();
 
     /// <summary>
-    /// Called on entering a lobby on the Master Server. The actual room-list updates will call OnReceivedRoomListUpdate().
+	/// 在主服务器上进入一个大厅时调用。实际的房间列表的更新会调用OnReceivedRoomListUpdate()。
     /// </summary>
     /// <remarks>
-    /// Note: When PhotonNetwork.autoJoinLobby is false, OnConnectedToMaster() will be called and the room list won't become available.
+	/// 注意：当PhotonNetwork.autoJoinLobby是false时，OnConnectedToMaster()将会被调用并且房间列表将不可用。
     ///
-    /// While in the lobby, the roomlist is automatically updated in fixed intervals (which you can't modify).
-    /// The room list gets available when OnReceivedRoomListUpdate() gets called after OnJoinedLobby().
+	/// 而在大堂的房间列表是在固定的时间间隔内自动更新（这是你不能修改的）。
+	/// 当OnReceivedRoomListUpdate()在OnJoinedLobby()之后被调用后，房间列表变得可用.
     /// </remarks>
     void OnJoinedLobby();
 
     /// <summary>
-    /// Called after leaving a lobby.
+	/// 离开游戏大厅后被调用。
     /// </summary>
     /// <remarks>
-    /// When you leave a lobby, [CreateRoom](@ref PhotonNetwork.CreateRoom) and [JoinRandomRoom](@ref PhotonNetwork.JoinRandomRoom)
-    /// automatically refer to the default lobby.
+    /// 当你离开游戏大厅, [CreateRoom](@ref PhotonNetwork.CreateRoom)和[JoinRandomRoom](@ref PhotonNetwork.JoinRandomRoom)
+    /// 自动指向默认的游戏大厅.
     /// </remarks>
     void OnLeftLobby();
 
     /// <summary>
-    /// Called if a connect call to the Photon server failed before the connection was established, followed by a call to OnDisconnectedFromPhoton().
+	/// 如果到Photon服务器的连接请求失败了，在连接被建立前调用该方法，接着调用OnDisconnectedFromPhoton()。
     /// </summary>
     /// <remarks>
-    /// This is called when no connection could be established at all.
-    /// It differs from OnConnectionFail, which is called when an existing connection fails.
+    /// 当完全没有连接可以被建立时该回调被调用。
+	/// 它与OnConnectionFail不同，OnConnectionFail在一个存在的连接失败时被调用。
     /// </remarks>
     void OnFailedToConnectToPhoton(DisconnectCause cause);
 
     /// <summary>
-    /// Called when something causes the connection to fail (after it was established), followed by a call to OnDisconnectedFromPhoton().
+	/// 当未知因素导致连接失败（在建立连接之后）时调用，接着调用OnDisconnectedFromPhoton()。
     /// </summary>
     /// <remarks>
-    /// If the server could not be reached in the first place, OnFailedToConnectToPhoton is called instead.
-    /// The reason for the error is provided as DisconnectCause.
+	/// 如果服务器不能一开始就被连接，就会调用OnFailedToConnectToPhoton。错误的原因会以DisconnectCause的形式提供。
     /// </remarks>
     void OnConnectionFail(DisconnectCause cause);
 
     /// <summary>
-    /// Called after disconnecting from the Photon server.
+	/// 从Photon服务器断开连接后被调用。
     /// </summary>
     /// <remarks>
-    /// In some cases, other callbacks are called before OnDisconnectedFromPhoton is called.
-    /// Examples: OnConnectionFail() and OnFailedToConnectToPhoton().
+	/// 在某些情况下，其他回调函数在OnDisconnectedFromPhoton被调用之前被调用。
+	/// 例如：OnConnectionFail()和OnFailedToConnectToPhoton()。
     /// </remarks>
     void OnDisconnectedFromPhoton();
 
     /// <summary>
-    /// Called on all scripts on a GameObject (and children) that have been Instantiated using PhotonNetwork.Instantiate.
+	/// 在一个通过使用PhotonNetwork.Instantiate方法被实例化出来的游戏对象（及其子类）上的任何脚本里被调用。 
     /// </summary>
     /// <remarks>
-    /// PhotonMessageInfo parameter provides info about who created the object and when (based off PhotonNetworking.time).
+	/// PhotonMessageInfo参数提供关于谁创建的该对象以及什么时候创建的（基于PhotonNetworking.time）这些信息。
     /// </remarks>
     void OnPhotonInstantiate(PhotonMessageInfo info);
 
     /// <summary>
-    /// Called for any update of the room-listing while in a lobby (PhotonNetwork.insideLobby) on the Master Server.
+	/// 在主服务器上的大厅内（PhotonNetwork.insideLobby）房间列表的任何更新都会调用该函数。
     /// </summary>
     /// <remarks>
-    /// PUN provides the list of rooms by PhotonNetwork.GetRoomList().<br/>
-    /// Each item is a RoomInfo which might include custom properties (provided you defined those as lobby-listed when creating a room).
+	/// PUN通过PhotonNetwork.GetRoomList()方法提供房间列表.<br/>
+	/// 每一项都是一个RoomInfo，其中可能包括自定义属性（提供你在创建一个房间时定义的那些lobby-listed）。
     ///
-    /// Not all types of lobbies provide a listing of rooms to the client. Some are silent and specialized for server-side matchmaking.
+	/// 不是所有类型的游戏大厅都会提供一系列的房间给客户端。有些游戏大厅是沉默的并且专门做服务器端的匹配（例如英雄联盟的游戏大厅就没有房间列表，所有的房间都是通过服务器匹配的，自定义则是会提供房间列表）.
     /// </remarks>
     void OnReceivedRoomListUpdate();
 
     /// <summary>
-    /// Called when entering a room (by creating or joining it). Called on all clients (including the Master Client).
+	/// 当进入一个房间（通过创建或加入）时被调用。在所有客户端（包括主客户端）上被调用.
     /// </summary>
     /// <remarks>
-    /// This method is commonly used to instantiate player characters.
-    /// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
+	/// 这种方法通常用于实例化玩家角色。
+	/// 如果一场比赛必须“积极地”被开始，你也可以调用一个由用户的按键或定时器触发的PunRPC 。
     ///
-    /// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
-    /// Also, all custom properties should be already available as Room.customProperties. Check Room.playerCount to find out if
-    /// enough players are in the room to start playing.
+	/// 当这个被调用时，你通常可以通过PhotonNetwork.playerList访问在房间里现有的玩家。
+    /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.
     /// </remarks>
     void OnJoinedRoom();
 
     /// <summary>
-    /// Called when a remote player entered the room. This PhotonPlayer is already added to the playerlist at this time.
+	/// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
     /// </summary>
     /// <remarks>
-    /// If your game starts with a certain number of players, this callback can be useful to check the
-    /// Room.playerCount and find out if you can start.
+    /// 如果你的游戏开始时就有一定数量的玩家，这个回调在检查Room.playerCount并发现你是否可以开始游戏时会很有用.
     /// </remarks>
     void OnPhotonPlayerConnected(PhotonPlayer newPlayer);
 
     /// <summary>
-    /// Called when a remote player left the room. This PhotonPlayer is already removed from the playerlist at this time.
+	/// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.
     /// </summary>
     /// <remarks>
     /// When your client calls PhotonNetwork.leaveRoom, PUN will call this method on the remaining clients.

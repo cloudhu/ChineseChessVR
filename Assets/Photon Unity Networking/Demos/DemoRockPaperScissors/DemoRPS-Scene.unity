@@ -2732,8 +2732,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1860739895}
   - component: {fileID: 1860739896}
-  - component: {fileID: 1860739897}
   - component: {fileID: 1860739898}
+  - component: {fileID: 1860739897}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -2792,29 +2792,12 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1860739894}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: beaae63f7865d7c41b3aced4e96e790d, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a1b3bda60e9e804f87fd1e5d20a885a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GuiOffset:
-    x: 0
-    y: 0
-    width: 300
-    height: 300
-  DontDestroy: 1
-  Time: 0
-  DetailedConnection: 0
-  Server: 0
-  AppVersion: 0
-  UserId: 0
-  Room: 1
-  RoomProps: 1
-  Player: 1
-  PlayerProps: 0
-  Others: 1
-  Buttons: 1
-  ExpectedUsers: 0
+  TurnDuration: 20
 --- !u!114 &1860739898
 MonoBehaviour:
   m_ObjectHideFlags: 0

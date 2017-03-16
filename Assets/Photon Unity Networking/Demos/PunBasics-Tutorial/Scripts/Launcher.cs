@@ -222,14 +222,14 @@ namespace ExitGames.Demos.DemoAnimator
 			Debug.Log("DemoAnimator/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
 
             // #Critical | 极重要：只有第一个玩家才加载，否则我们依赖PhotonNetwork.automaticallySyncScene来同步我们的场景实例
-            if (PhotonNetwork.room.PlayerCount == 1)
-			{
+           // if (PhotonNetwork.room.PlayerCount == 1)
+			//{
 				Debug.Log("We load the 'Room for 1' ");
 
                 //  #Critical | 极重要：加载房间关卡
-                PhotonNetwork.LoadLevel("PunBasics-Room for 1");
+                PhotonNetwork.LoadLevel("ChineseChessVR");
 
-			}
+			//}
 		}
 
 		#endregion

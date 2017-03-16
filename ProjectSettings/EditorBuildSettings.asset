@@ -51,3 +51,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 4.unity
+  - enabled: 1
+    path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/ChineseChessVR.unity

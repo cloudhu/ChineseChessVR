@@ -13,3 +13,7 @@ Basics：
 0x02 多人在线VR 
 
 我们使用PUN和Photon云来做一个多人在线的VR游戏，详细的策划文案已经发布在Tower文档中。
+你也可以在GAD上查看：http://gad.qq.com/article/detail/7192025
+
+0x03 版本
+Windows7、10+Unity5.5.0f3+VS2015

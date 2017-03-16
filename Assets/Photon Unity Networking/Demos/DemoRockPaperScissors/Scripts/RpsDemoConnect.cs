@@ -15,12 +15,16 @@ public class RpsDemoConnect : PunBehaviour
 
 	void Start()
 	{
-		InputField.text = PlayerPrefs.HasKey(NickNamePlayerPrefsKey)?PlayerPrefs.GetString(NickNamePlayerPrefsKey):"";
-	}
+		InputField.text = PlayerPrefs.HasKey(NickNamePlayerPrefsKey)?PlayerPrefs.GetString(NickNamePlayerPrefsKey):"";  //三元运算，如果PlayerPrefs中有玩家的昵称则获取之，否则为空字符串
+    }
 
+    /// <summary>
+    /// 应用用户Id并连接
+    /// </summary>
     public void ApplyUserIdAndConnect()
     {
 		string nickName = "DemoNick";
+        //设置玩家的昵称
         if (this.InputField != null && !string.IsNullOrEmpty(this.InputField.text))
         {
             nickName = this.InputField.text;
