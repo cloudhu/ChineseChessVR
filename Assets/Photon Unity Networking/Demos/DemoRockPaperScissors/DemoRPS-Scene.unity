@@ -2733,7 +2733,6 @@ GameObject:
   - component: {fileID: 1860739895}
   - component: {fileID: 1860739896}
   - component: {fileID: 1860739898}
-  - component: {fileID: 1860739897}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -2786,18 +2785,6 @@ MonoBehaviour:
   SpriteDraw: {fileID: 21300000, guid: f6910fb0d222b0d4b85db3cae6028924, type: 3}
   DisconnectedPanel: {fileID: 816747999}
   randomHand: 0
---- !u!114 &1860739897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1860739894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a1b3bda60e9e804f87fd1e5d20a885a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TurnDuration: 20
 --- !u!114 &1860739898
 MonoBehaviour:
   m_ObjectHideFlags: 0
