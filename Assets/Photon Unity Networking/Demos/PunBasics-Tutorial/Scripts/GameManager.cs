@@ -52,7 +52,7 @@ namespace ExitGames.Demos.DemoAnimator
 			// in case we started this demo with the wrong scene being active, simply load the menu scene
 			if (!PhotonNetwork.connected)
 			{
-				SceneManager.LoadScene("PunBasics-Launcher");
+				SceneManager.LoadScene("PunLauncher");
 
 				return;
 			}
@@ -68,7 +68,7 @@ namespace ExitGames.Demos.DemoAnimator
 					Debug.Log("We are Instantiating LocalPlayer from "+SceneManagerHelper.ActiveSceneName);
 
 					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+					//PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
 				}else{
 
 					Debug.Log("Ignoring scene load for "+ SceneManagerHelper.ActiveSceneName);
@@ -107,7 +107,7 @@ namespace ExitGames.Demos.DemoAnimator
 			{
 				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
 
-                LoadArena();    //加载竞技场
+                //LoadArena();    //加载竞技场
             }
 		}
 
@@ -123,7 +123,7 @@ namespace ExitGames.Demos.DemoAnimator
 			{
 				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
 				
-				LoadArena();
+				//LoadArena();
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace ExitGames.Demos.DemoAnimator
         /// </summary>
         public virtual void OnLeftRoom()
 		{
-			SceneManager.LoadScene("PunBasics-Launcher");
+			SceneManager.LoadScene("PunLauncher");
 		}
 
 		#endregion

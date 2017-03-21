@@ -34,7 +34,7 @@ namespace ExitGames.Demos.DemoAnimator
 		public Text feedbackText;
 
 		[Tooltip("每间房间的最大玩家数量")]
-		public byte maxPlayersPerRoom = 4;
+		public byte maxPlayersPerRoom = 10;
 
 		[Tooltip("UI加载动画")]
 		public LoaderAnime loaderAnime;
