@@ -110,7 +110,7 @@ public class RpsDemoConnect : PunBehaviour
 	/// 
 	/// 当这个被调用时，你通常可以通过PhotonNetwork.playerList访问在房间里现有的玩家。
 	/// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
-    public override void OnJoinedRoom()
+    public override void OnJoinedRoom() 
     {
 		Debug.Log("Joined room: " + PhotonNetwork.room.Name);
         this.previousRoom = PhotonNetwork.room.Name;

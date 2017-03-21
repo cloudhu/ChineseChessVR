@@ -5,55 +5,57 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoHub/DemoHub-Scene-V2.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/Demo2DJumpAndRunWithPhysics/Demo2DJumpAndRunWithPhysics-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoBoxes/DemoBoxes-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoChangeOwner/DemoChangeOwner-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoChat/DemoChat-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoFriendsAndCustomAuth/DemoFriends-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoHub/DemoHub-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoMecanim/DemoMecanim-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoPickup/DemoPickup-Scene.unity
   - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoRockPaperScissors/DemoRPS-Connect-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoRockPaperScissors/DemoRPS-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoRPGMovement/DemoRPGMovement-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoSynchronization/DemoSynchronization-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoWorker/DemoWorker-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/DemoWorker/DemoWorkerGame-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/MarcoPolo-Tutorial/MarcoPolo-Scene.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Launcher.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 1.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 2.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 3.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/PunBasics-Room
       for 4.unity
   - enabled: 0
     path: Assets/Photon Unity Networking/Demos/PunBasics-Tutorial/Scenes/ChineseChessVR.unity
   - enabled: 0
     path: Assets/VRTK/Examples/037_CameraRig_ClimbingFalling.unity
+  - enabled: 1
+    path: Assets/Scenes/PunLauncher.unity
   - enabled: 1
     path: Assets/Scenes/ChineseChessVR.unity
