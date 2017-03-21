@@ -29,14 +29,17 @@ namespace ExitGames.Demos.DemoAnimator
 
 		static public GameManager Instance;
 
-		[Tooltip("The prefab to use for representing the player")]
+		[Tooltip("玩家预设")]
 		public GameObject playerPrefab;
 
-		#endregion
+        //[Tooltip("VRTK")]
+       // public GameObject vrtk;
 
-		#region Private Variables
+        #endregion
 
-		private GameObject instance;
+        #region Private Variables
+
+        private GameObject instance;
 
 		#endregion
 
@@ -67,9 +70,15 @@ namespace ExitGames.Demos.DemoAnimator
 				{
 					Debug.Log("We are Instantiating LocalPlayer from "+SceneManagerHelper.ActiveSceneName);
 
-					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-					//PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
-				}else{
+					// 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
+					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+                    //if (go) //CameraRig生成以后，再生成VRTK
+                   // {
+                     //   PhotonNetwork.Instantiate(this.vrtk.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+                    //}
+                    
+                }
+                else{
 
 					Debug.Log("Ignoring scene load for "+ SceneManagerHelper.ActiveSceneName);
 				}
