@@ -124,24 +124,24 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
 			//每个点上的棋子的类型  
 			ChessmanPos[] pos = {  
-				new ChessmanPos(-2.04f,2.25f,Chessman.TYPE.KING),  
-				new ChessmanPos(-1.53f,2.25f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(-1.02f,2.25f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(-0.51f,2.25f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(0,2.25f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(0.51f,2.25f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(1.02f,2.25f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(1.53f,2.25f,Chessman.TYPE.ROOK),  
-				new ChessmanPos(2.04f,2.25f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(0f,12f,Chessman.TYPE.KING),  
+				new ChessmanPos(0f,15f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(0f,9f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(0f,18f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(0f,6f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(0f,21f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(0f,3f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(0f,24f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(0f,0f,Chessman.TYPE.ROOK),  
 
-				new ChessmanPos(-1.53f,1.23f,Chessman.TYPE.CANNON),  
-				new ChessmanPos(1.53f,1.23f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(6f,21f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(6f,3f,Chessman.TYPE.CANNON),  
 
-				new ChessmanPos(-2.04f,0.72f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(-1.02f,0.72f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(0,0.72f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(1.02f,0.72f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(2.04f,0.72f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(9f,24f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(9f,18f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(9f,12f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(9f,6f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(9f,0f,Chessman.TYPE.PAWN),  
 			};  
 			if (id < 16)  
 			{  
@@ -152,7 +152,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			else  
 			{  
 				_x = -pos[id - 16].x;  
-				_y = -pos[id - 16].y - 0.1f;  
+				_y = pos[id - 16].y;  
 				_type = pos[id - 16].type;  
 			}  
 		}  
@@ -267,10 +267,11 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		//实例化32个棋子  
 		for (int i = 0; i < 32; ++i)  
 		{  
-			GameObject prefabs = GetPrefab(i, chessman[i]._type);  
-			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, chessman[i]._y, 0), Quaternion.identity,0) as GameObject; 
+			GameObject prefabs = GetPrefab(i, chessman[i]._type);
+            Debug.Log(i+"==="+chessman[i]._x+ " === "+chessman[i]._y);
+			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 0, chessman[i]._y), Quaternion.identity,0) as GameObject; 
 			ChessMan.transform.SetParent (transform);
-			ChessMan.AddComponent<BoxCollider>();  
+			//ChessMan.AddComponent<BoxCollider>();  
 		}  
 	}  
 	

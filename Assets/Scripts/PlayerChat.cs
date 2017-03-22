@@ -114,12 +114,14 @@ public class PlayerChat : MonoBehaviour,IChatClientListener {
 
 	public int TestLength = 2048;
 
-	#endregion
+    #endregion
 
 
-	#region Private Variables   //私有变量区域
+    #region Private Variables   //私有变量区域
+    // 保存PlayerPref键来避免错别字
+    static string playerNamePrefKey = "PlayerName";
 
-	private byte[] testBytes = new byte[2048];
+    private byte[] testBytes = new byte[2048];
 
 	private readonly Dictionary<string, Toggle> channelToggles = new Dictionary<string, Toggle>();
 
@@ -168,7 +170,14 @@ public class PlayerChat : MonoBehaviour,IChatClientListener {
 
 		ChatPanel.gameObject.SetActive(false);
 
-		if (string.IsNullOrEmpty(UserName))
+        if (PlayerPrefs.HasKey(playerNamePrefKey))
+        {
+            
+            UserName = PlayerPrefs.GetString(playerNamePrefKey);
+
+        }
+
+        if (string.IsNullOrEmpty(UserName))
 		{
 			UserName = "user" + Environment.TickCount%99; //随便编一个用户名,这里确保其唯一性
 		}

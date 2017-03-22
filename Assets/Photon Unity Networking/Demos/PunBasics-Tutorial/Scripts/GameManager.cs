@@ -32,8 +32,11 @@ namespace ExitGames.Demos.DemoAnimator
 		[Tooltip("玩家预设")]
 		public GameObject playerPrefab;
 
+        public Transform head;
+        public Transform leftHand;
+        public Transform rightHand;
         //[Tooltip("VRTK")]
-       // public GameObject vrtk;
+        // public GameObject vrtk;
 
         #endregion
 
@@ -71,12 +74,14 @@ namespace ExitGames.Demos.DemoAnimator
 					Debug.Log("We are Instantiating LocalPlayer from "+SceneManagerHelper.ActiveSceneName);
 
 					// 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
-					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
-                    //if (go) //CameraRig生成以后，再生成VRTK
-                   // {
-                     //   PhotonNetwork.Instantiate(this.vrtk.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-                    //}
-                    
+
+					GameObject Head= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+                    Head.transform.SetParent(head);
+                    GameObject LHand = PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+                    LHand.transform.SetParent(leftHand);
+                    GameObject RHand= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+                    RHand.transform.SetParent(rightHand);
+
                 }
                 else{
 
