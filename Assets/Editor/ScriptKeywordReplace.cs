@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file=ScriptKeywordReplace.cs company=>
+// <copyright file=ScriptKeywordReplace.cs company=League of HTC Vive Developers>
 //   
 /*
 11111111111111111111111111111111111111001111111111111111111111111
@@ -52,7 +52,7 @@
 */
 // </copyright>
 // <summary>
-//  
+//  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
 //中文注释：胡良云（CloudHu）
@@ -66,7 +66,7 @@ using UnityEngine;
 /// FileName: ScriptKeywordReplace.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
+/// Description: 这个脚本用于处理C#脚本模板
 /// DateTime: 2017年2月27日 15:39:40
 /// </summary>
 public class ScriptKeywordReplace : UnityEditor.AssetModificationProcessor

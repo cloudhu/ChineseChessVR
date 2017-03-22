@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=CameraRigManager.cs company=DefaultCompany>
+// <copyright file=CameraRigManager.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -52,7 +52,7 @@
 //   
 // </copyright>
 // <summary>
-//  PUN Basics Tutorial
+//  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
 //中文注释：胡良云（CloudHu） 3/21/2017
@@ -65,7 +65,7 @@ using UnityEngine;
 /// FileName: CameraRigManager.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
+/// Description: 这个脚本用于管理CameraRig
 /// DateTime: 3/21/2017
 /// </summary>
 public class CameraRigManager : Photon.PunBehaviour, IPunObservable
