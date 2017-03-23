@@ -157,7 +157,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ExtrapolateOption: 0
+    ExtrapolateOption: 1
     ExtrapolateSpeed: 1
     ExtrapolateIncludingRoundTripTime: 1
     ExtrapolateNumberOfStoredPositions: 1
@@ -169,6 +169,6 @@ MonoBehaviour:
     InterpolateLerpSpeed: 5
   m_ScaleModel:
     SynchronizeEnabled: 1
-    InterpolateOption: 0
+    InterpolateOption: 1
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
