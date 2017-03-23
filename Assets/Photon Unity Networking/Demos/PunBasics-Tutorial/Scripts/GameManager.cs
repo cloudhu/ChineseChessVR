@@ -75,12 +75,14 @@ namespace ExitGames.Demos.DemoAnimator
 
 					// 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
 
-					GameObject Head= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-                    Head.transform.SetParent(head);
-                    GameObject LHand = PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-                    LHand.transform.SetParent(leftHand);
+
+                    
                     GameObject RHand= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-                    RHand.transform.SetParent(rightHand);
+					RHand.transform.SetParent(rightHand,false);
+					GameObject LHand = PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					LHand.transform.SetParent(leftHand,false);
+					GameObject Head= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					Head.transform.SetParent(head,false);
 
                 }
                 else{
