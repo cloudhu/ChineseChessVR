@@ -124,24 +124,24 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
 			//每个点上的棋子的类型  
 			ChessmanPos[] pos = {  
-				new ChessmanPos(0f,12f,Chessman.TYPE.KING),  
-				new ChessmanPos(0f,15f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(0f,9f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(0f,18f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(0f,6f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(0f,21f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(0f,3f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(0f,24f,Chessman.TYPE.ROOK),  
-				new ChessmanPos(0f,0f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(15f,12f,Chessman.TYPE.KING),  
+				new ChessmanPos(15f,15f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(15f,9f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(15f,18f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(15f,6f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(15f,21f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(15f,3f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(15f,24f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(15f,0f,Chessman.TYPE.ROOK),  
 
-				new ChessmanPos(6f,21f,Chessman.TYPE.CANNON),  
-				new ChessmanPos(6f,3f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(9f,21f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(9f,3f,Chessman.TYPE.CANNON),  
 
-				new ChessmanPos(9f,24f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(9f,18f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(9f,12f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(9f,6f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(9f,0f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(6f,24f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(6f,18f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(6f,12f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(6f,6f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(6f,0f,Chessman.TYPE.PAWN),  
 			};  
 			if (id < 16)  
 			{  
@@ -269,8 +269,9 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		{  
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
             Debug.Log(i+"==="+chessman[i]._x+ " === "+chessman[i]._y);
-			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 0, chessman[i]._y), Quaternion.identity,0) as GameObject; 
-			ChessMan.transform.SetParent (transform);
+			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 1f, chessman[i]._y), Quaternion.identity,0) as GameObject; 
+			ChessMan.transform.SetParent (transform,false);
+
 			//ChessMan.AddComponent<BoxCollider>();  
 		}  
 	}  
