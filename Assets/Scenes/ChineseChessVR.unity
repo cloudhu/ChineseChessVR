@@ -2174,7 +2174,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 81186593}
-  m_LocalRotation: {x: -0.13039498, y: -0.7205761, z: -0.6680776, w: 0.13205935}
+  m_LocalRotation: {x: -0.13039497, y: -0.72057605, z: -0.6680775, w: 0.13205934}
   m_LocalPosition: {x: 16.99, y: 0.56, z: -1.15}
   m_LocalScale: {x: 0.20000015, y: 0.73330235, z: 0.20000017}
   m_Children: []
@@ -11760,6 +11760,77 @@ Prefab:
       propertyPath: activationMode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: validCollisionColor.r
+      value: 0.74509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: validCollisionColor.g
+      value: 0.9411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: validCollisionColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: invalidCollisionColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: invalidCollisionColor.g
+      value: 0.3529412
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: invalidCollisionColor.b
+      value: 0.27058825
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: maximumLength
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: tracerDensity
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: curveOffset
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: rescaleTracer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: customTracer
+      value: 
+      objectReference: {fileID: 152786, guid: 78ca952d2c8152c44a89f9b406f7e137, type: 2}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: customCursor
+      value: 
+      objectReference: {fileID: 115170, guid: dedfb5ee6b3a49745b85a120679a1bfd, type: 2}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: validLocationObject
+      value: 
+      objectReference: {fileID: 146986, guid: a7c0ca5b1925f554795cd723c81e7a44, type: 2}
+    - target: {fileID: 114573447634407098, guid: 4680fd8b0cfd0214e876a2f82fc53312,
+        type: 2}
+      propertyPath: invalidLocationObject
+      value: 
+      objectReference: {fileID: 1000013693201420, guid: f28a6b8ad0f52a749a85d21efa826c4e,
+        type: 2}
     m_RemovedComponents:
     - {fileID: 114489640321999036, guid: 4680fd8b0cfd0214e876a2f82fc53312, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4680fd8b0cfd0214e876a2f82fc53312, type: 2}
@@ -33956,7 +34027,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1525110892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fc65878c7102524bb8c2bcfbefff497, type: 3}
+  m_Script: {fileID: 11500000, guid: bd904f4ca6767424eaf8e050bc174741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playareaCursor: {fileID: 0}
@@ -33968,17 +34039,23 @@ MonoBehaviour:
     maxAllowedPerFrameDistanceDifference: 0.003
     smoothsRotation: 0
     maxAllowedPerFrameAngleDifference: 1.5
-  validCollisionColor: {r: 0, g: 0.49803922, b: 0, a: 1}
-  invalidCollisionColor: {r: 0.8, g: 0, b: 0, a: 1}
+  validCollisionColor: {r: 0.74509805, g: 0.9411765, b: 1, a: 1}
+  invalidCollisionColor: {r: 1, g: 0.3529412, b: 0.27058825, a: 1}
   tracerVisibility: 0
   cursorVisibility: 0
-  maximumLength: 100
-  scaleFactor: 0.002
-  cursorScaleMultiplier: 25
+  maximumLength: 15
+  tracerDensity: 40
+  cursorRadius: 0.5
+  heightLimitAngle: 100
+  curveOffset: 0.5
+  rescaleTracer: 1
   cursorMatchTargetRotation: 0
-  cursorDistanceRescale: 0
-  customTracer: {fileID: 0}
-  customCursor: {fileID: 0}
+  collisionCheckFrequency: 0
+  customTracer: {fileID: 152786, guid: 78ca952d2c8152c44a89f9b406f7e137, type: 2}
+  customCursor: {fileID: 115170, guid: dedfb5ee6b3a49745b85a120679a1bfd, type: 2}
+  validLocationObject: {fileID: 146986, guid: a7c0ca5b1925f554795cd723c81e7a44, type: 2}
+  invalidLocationObject: {fileID: 1000013693201420, guid: f28a6b8ad0f52a749a85d21efa826c4e,
+    type: 2}
 --- !u!224 &1525494300
 RectTransform:
   m_ObjectHideFlags: 0
