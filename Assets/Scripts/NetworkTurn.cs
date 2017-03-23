@@ -74,13 +74,57 @@ using UnityEngine.UI;
 public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	
 	#region Public Variables  //公共变量区域
-	// 追踪显示结果的时机来处理游戏逻辑.
-	private bool IsShowingResults;
-	
+
+	/// <summary>  
+	/// 被选中的棋子的ID，若没有被选中的棋子，则ID为-1  
+	/// </summary>  
+	[Tooltip("被选中的棋子的ID")]
+	public int _selectedId=-1;  
+
+	[Tooltip("是否是红子的回合,默认红子先行")]
+	public bool isRedTurn=true;
+
+	public struct step
+	{
+		public int moveId;
+		public int killId;
+
+		public float xFrom;
+		public float yFrom;
+		public float xTo;
+		public float yTo;
+
+		public step(int _moveId,int _killId,float _xFrom,float _yFrom,float _xTo,float _yTo){
+			moveId = _moveId;
+			killId = _killId;
+			xFrom =_xFrom;
+			yFrom =_yFrom;
+			xTo=_xTo;
+			yTo = _yTo;
+		}
+	}
+	[Tooltip("保存每一步走棋")]
+	public List<step> _steps = new List<step> ();
+
+	[Tooltip("选中的音效,胜利，失败的音乐")]
+	public AudioSource selectClap,winMusic,loseMusic;
+
+	[Tooltip("德邦总管")]
+	public ChessmanManager chessManManager;
+
+
 	#endregion
 
 
 	#region Private Variables   //私有变量区域
+
+	// 追踪显示结果的时机来处理游戏逻辑.
+	private bool IsShowingResults;
+
+	[Tooltip("选中的棋子")]
+	[SerializeField]
+	private GameObject selectedChess;
+
 	[Tooltip("连接UI视图")]
 	[SerializeField]
 	private RectTransform ConnectUiView;
@@ -155,7 +199,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		this.turnManager = this.gameObject.AddComponent<PunTurnManager>();	//添加组件并赋值
 		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
-		this.turnManager.TurnDuration = 5f;		//初始化回合持续时间
+		this.turnManager.TurnDuration = 120f;		//初始化回合持续时间
 
 		RefreshUIViews();	//刷新UI视图
 	}
@@ -202,16 +246,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			{
 				return;	//回合结束
 			}
-
-			/*
-			// check if we ran out of time, in which case we loose
-			if (turnEnd<0f && !IsShowingResults)
-			{
-				Debug.Log("Calling OnTurnCompleted with turnEnd ="+turnEnd);
-				OnTurnCompleted(-1);
-				return;
-			}
-			*/
 
 			if (this.TurnText != null)
 			{
@@ -365,6 +399,20 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	#region Core Gameplay Methods	//核心玩法
 
+	/// <summary>
+	/// 开始对局.
+	/// </summary>
+	public void StartGame(){
+		chessManManager.ChessmanInit ();
+	}
+
+	/// <summary>
+	/// 重新开始对局.
+	/// </summary>
+	public void RestartGame(){
+		chessManManager.DestroyAllChessman ();
+		chessManManager.ChessmanInit ();
+	}
 
 	/// <summary>调用来开始回合 (只有主客户端会发送).</summary>
 	public void StartTurn()
@@ -474,6 +522,32 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 	}
 		
+	/// <summary>
+	/// 播放选择音效.
+	/// </summary>
+	public void PlaySelectSound(){
+		if (!selectClap.isPlaying) {
+			selectClap.Play ();
+		}
+	}
+
+	/// <summary>
+	/// 播放胜利音乐.
+	/// </summary>
+	public void PlayWinMusic(){
+		if (!winMusic.isPlaying) {
+			winMusic.Play ();
+		}
+	}
+
+	/// <summary>
+	/// 播放失败音乐.
+	/// </summary>
+	public void PlayLoseMusic(){
+		if (!loseMusic.isPlaying) {
+			loseMusic.Play ();
+		}
+	}
 
 	#endregion
 

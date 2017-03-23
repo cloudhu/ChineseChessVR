@@ -184,6 +184,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	
 	#region MonoBehaviour CallBacks //回调函数区域
 
+	/*	把操作都交给NetworkTurn来做,这里只提供方法
 	void Awake()  
 	{  
 		ChessmanInit();  
@@ -196,7 +197,8 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-	}
+	}*/
+
 	#endregion
 	
 	#region Public Methods	//公共方法区域
@@ -274,7 +276,16 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
 			//ChessMan.AddComponent<BoxCollider>();  
 		}  
-	}  
+	}
+
+	/// <summary>
+	/// 摧毁所有棋子.
+	/// </summary>
+	public void DestroyAllChessman(){
+		foreach (var item in transform.GetComponentsInChildren<PhotonView>(true)) {
+			PhotonNetwork.Destroy (item);
+		}
+	}
 	
 	#endregion
 	
