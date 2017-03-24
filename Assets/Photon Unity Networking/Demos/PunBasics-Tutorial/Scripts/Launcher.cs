@@ -224,7 +224,7 @@ namespace ExitGames.Demos.DemoAnimator
             // #Critical | 极重要：只有第一个玩家才加载，否则我们依赖PhotonNetwork.automaticallySyncScene来同步我们的场景实例
            // if (PhotonNetwork.room.PlayerCount == 1)
 			//{
-				Debug.Log("We load the 'Room for 1' ");
+			Debug.Log("We load the 'ChineseChessVR' ");
 
                 //  #Critical | 极重要：加载房间关卡
                 PhotonNetwork.LoadLevel("ChineseChessVR");

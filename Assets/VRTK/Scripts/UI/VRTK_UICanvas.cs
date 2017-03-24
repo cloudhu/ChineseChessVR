@@ -203,6 +203,13 @@ namespace VRTK
                 Destroy(frontTrigger.gameObject);
             }
         }
+
+		void Update(){
+			//保持UI看向本地玩家
+			if (CameraRigManager.LocalPlayerInstance != null) {
+				transform.LookAt (CameraRigManager.LocalPlayerInstance.transform);
+			}
+		}
     }
 
     public class VRTK_UIPointerAutoActivator : MonoBehaviour
@@ -214,6 +221,7 @@ namespace VRTK
             if (pointerCheck && colliderCheck && colliderCheck.objectType == VRTK_PlayerObject.ObjectTypes.Collider)
             {
                 pointerCheck.autoActivatingCanvas = gameObject;
+
             }
         }
 

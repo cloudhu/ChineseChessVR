@@ -184,11 +184,12 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	
 	#region MonoBehaviour CallBacks //回调函数区域
 
-	/*	把操作都交给NetworkTurn来做,这里只提供方法
+
 	void Awake()  
 	{  
 		ChessmanInit();  
-	}  
+	} 
+	/*	把操作都交给NetworkTurn来做,这里只提供方法
 	// Use this for initialization
 	void Start () {
 		
@@ -270,7 +271,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		for (int i = 0; i < 32; ++i)  
 		{  
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
-            Debug.Log(i+"==="+chessman[i]._x+ " === "+chessman[i]._y);
+			Debug.Log(i+"+++"+chessman[i]._type+"==="+chessman[i]._x+ " === "+chessman[i]._y);
 			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 1f, chessman[i]._y), Quaternion.identity,0) as GameObject; 
 			ChessMan.transform.SetParent (transform,false);
 
@@ -286,6 +287,8 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			PhotonNetwork.Destroy (item);
 		}
 	}
+
+
 	
 	#endregion
 	

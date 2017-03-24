@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=CameraRigManager.cs company=League of HTC Vive Developers>
+// <copyright file=ChessmanController.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,64 +55,51 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/21/2017
+//中文注释：胡良云（CloudHu） 3/24/2017
 
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VRTK;
+
+
 /// <summary>
-/// FileName: CameraRigManager.cs
+/// FileName: ChessmanController.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 这个脚本用于管理CameraRig
-/// DateTime: 3/21/2017
+/// Description: 
+/// DateTime: 3/24/2017
 /// </summary>
-public class CameraRigManager : Photon.PunBehaviour, IPunObservable
-{
+public class ChessmanController : VRTK_InteractableObject, IPunObservable {
+	
 
-    #region Public Variables  //公共变量区域
 
-	[Tooltip("玩家UI游戏对象预设")]
-	public GameObject PlayerUiPrefab;
-
-    [Tooltip("本地玩家实例。使用这个来了解本地玩家是否在场景中")]
-    public static GameObject LocalPlayerInstance;
+	#region Public Variables  //公共变量区域
+	[Tooltip("UI游戏对象预设")]
+	public GameObject ChessmamUiPrefab;
 
 	[Tooltip("玩家当前的体力值")]
 	public float Health = 1f;
-
-    #endregion
-
-
-    #region Private Variables   //私有变量区域
+	
+	#endregion
 
 
-    #endregion
+	#region Private Variables   //私有变量区域
+	
 
-
-    #region MonoBehaviour CallBacks //回调函数区域
-
-    void Awake()
-    {
-        // 用于GameManager.cs: 我们跟踪的本地玩家实例来防止在关卡被同步时实例化
-        if (photonView.isMine)
-        {
-            CameraRigManager.LocalPlayerInstance = this.gameObject;
-        }
-        // #关键  我们标识不在加载时被摧毁，使实例在关卡同步时保留下来，从而使关卡加载时有无缝体验。
-        DontDestroyOnLoad(this.gameObject);
-    }
-
-    // Use this for initialization
-    void Start () {
-
-		//创建玩家UI
-		if (this.PlayerUiPrefab != null)
+	#endregion
+	
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
+		//创建棋子UI
+		if (this.ChessmamUiPrefab != null)
 		{
-			GameObject _uiGo = Instantiate(this.PlayerUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			//_uiGo.transform.SetParent (transform,false);
+			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
 			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
+			//_uiGo.transform.SetParent (transform,false);
 			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 		}
 		else
@@ -123,40 +110,47 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 	
 	// Update is called once per frame
 	void Update () {
+		
+	}
+	#endregion
+	
+	#region Public Methods	//公共方法区域
 
-		if (photonView.isMine)
-		{
-
-			if (this.Health <= 0f)
-			{
-				GameManager.Instance.LeaveRoom();
-			}
-		}
+	public override void StartUsing(GameObject usingObject)
+	{
+		base.StartUsing(usingObject);
 
 	}
-    #endregion
 
-    #region Public Methods	//公共方法区域
+	public override void StopUsing(GameObject usingObject)
+	{
+		base.StopUsing(usingObject);
 
+	}
 
-    #endregion
-    #region IPunObservable implementation
+	public void ShowPath(GameObject usingObject){
+		
+	}
+	#endregion
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
-        {
-            // 我们是本地玩家，则把数据发送给远程玩家
-           // stream.SendNext(this.IsFiring);
-            stream.SendNext(this.Health);
-        }
-        else
-        {
-            //网络玩家则接收数据
-          //  this.IsFiring = (bool)stream.ReceiveNext();
-            this.Health = (float)stream.ReceiveNext();
-        }
-    }
+	#region IPunObservable implementation
 
-    #endregion
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			// 我们是本地玩家，则把数据发送给远程玩家
+			// stream.SendNext(this.IsFiring);
+			stream.SendNext(this.Health);
+		}
+		else
+		{
+			//网络玩家则接收数据
+			//  this.IsFiring = (bool)stream.ReceiveNext();
+			this.Health = (float)stream.ReceiveNext();
+		}
+	}
+
+	#endregion
+	
 }

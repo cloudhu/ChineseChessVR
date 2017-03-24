@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=CameraRigManager.cs company=League of HTC Vive Developers>
+// <copyright file=ChessmanUI.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,108 +55,140 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/21/2017
+//中文注释：胡良云（CloudHu） 3/24/2017
 
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 /// <summary>
-/// FileName: CameraRigManager.cs
+/// FileName: ChessmanUI.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 这个脚本用于管理CameraRig
-/// DateTime: 3/21/2017
+/// Description: 负责处理棋子英雄的UI显示
+/// DateTime: 3/24/2017
 /// </summary>
-public class CameraRigManager : Photon.PunBehaviour, IPunObservable
-{
+public class ChessmanUI : MonoBehaviour {
+	
+	#region Public Variables  //公共变量区域
 
-    #region Public Variables  //公共变量区域
+	[Tooltip("显示在棋子英雄头顶的文本.")]
+	public string displayText;
+	[Tooltip("显示文本的字体大小.")]
+	public int fontSize = 14;
+	[Tooltip("字体颜色.")]
+	public Color fontColor = Color.black;
 
-	[Tooltip("玩家UI游戏对象预设")]
-	public GameObject PlayerUiPrefab;
-
-    [Tooltip("本地玩家实例。使用这个来了解本地玩家是否在场景中")]
-    public static GameObject LocalPlayerInstance;
-
-	[Tooltip("玩家当前的体力值")]
-	public float Health = 1f;
-
-    #endregion
-
-
-    #region Private Variables   //私有变量区域
+	[Tooltip("整个外框的大小.")]
+	public Vector2 containerSize = new Vector2(0.1f, 0.03f);
+	[Tooltip("字体框背景色.")]
+	public Color containerColor = Color.black;
+	[Tooltip("生命值")]
+	public Slider PlayerHealthSlider;
+	[Tooltip("和目标之间的偏移值")]
+	public Vector3 ScreenOffset = new Vector3(0f,5f,0f);
+	
+	#endregion
 
 
-    #endregion
+	#region Private Variables   //私有变量区域
 
+	ChessmanController _target;	//目标棋子
 
-    #region MonoBehaviour CallBacks //回调函数区域
+	float _characterControllerHeight = 0f;	//高度
 
-    void Awake()
-    {
-        // 用于GameManager.cs: 我们跟踪的本地玩家实例来防止在关卡被同步时实例化
-        if (photonView.isMine)
-        {
-            CameraRigManager.LocalPlayerInstance = this.gameObject;
-        }
-        // #关键  我们标识不在加载时被摧毁，使实例在关卡同步时保留下来，从而使关卡加载时有无缝体验。
-        DontDestroyOnLoad(this.gameObject);
-    }
+	Transform _targetTransform;	
 
-    // Use this for initialization
-    void Start () {
+	Renderer _targetRenderer;
 
-		//创建玩家UI
-		if (this.PlayerUiPrefab != null)
-		{
-			GameObject _uiGo = Instantiate(this.PlayerUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			//_uiGo.transform.SetParent (transform,false);
-			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
-			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-		}
-		else
-		{
-			Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
-		}
+	Vector3 _targetPosition;
+
+	#endregion
+	
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
+		ResetUI();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (photonView.isMine)
-		{
-
-			if (this.Health <= 0f)
-			{
-				GameManager.Instance.LeaveRoom();
-			}
+		if (_target == null) {
+			Destroy(this.gameObject);
+			return;
 		}
 
+		transform.LookAt (CameraRigManager.LocalPlayerInstance.transform);
+
+		// Reflect the Player Health
+		if (PlayerHealthSlider != null) {
+			PlayerHealthSlider.value = _target.Health;
+		}
 	}
-    #endregion
 
-    #region Public Methods	//公共方法区域
+	#endregion
+	
+	#region Public Methods	//公共方法区域
+
+	public void ResetUI()
+	{
+		SetContainer();
+		SetText("UITextFront");
+		SetText("UITextReverse");
+
+		if (PlayerHealthSlider != null) {
+			PlayerHealthSlider.value = _target.Health;
+		}
+	}
+
+	public void UpdateText(string newText)
+	{
+		displayText = newText;
+		ResetUI();
+	}
+
+	/// <summary>
+	/// 指派目标.
+	/// </summary>
+	/// <param name="target">Target.</param>
+	public void SetTarget(ChessmanController target){
+
+		if (target == null) {
+			Debug.LogError("<Color=Red><b>Missing</b></Color> PlayMakerManager target for PlayerUI.SetTarget.",this);
+			return;
+		}
+
+		// Cache references for efficiency because we are going to reuse them.
+		_target = target;
+		_targetTransform = _target.GetComponent<Transform>();
+		_targetRenderer = _target.GetComponent<Renderer>();
+
+		UpdateText (_target.name.TrimEnd("(Clone)".ToCharArray()));
 
 
-    #endregion
-    #region IPunObservable implementation
+	}
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.isWriting)
-        {
-            // 我们是本地玩家，则把数据发送给远程玩家
-           // stream.SendNext(this.IsFiring);
-            stream.SendNext(this.Health);
-        }
-        else
-        {
-            //网络玩家则接收数据
-          //  this.IsFiring = (bool)stream.ReceiveNext();
-            this.Health = (float)stream.ReceiveNext();
-        }
-    }
 
-    #endregion
+	#endregion
+
+
+	private void SetContainer()
+	{
+		transform.FindChild("Canvas").GetComponent<RectTransform>().sizeDelta = containerSize;
+		var tmpContainer = transform.FindChild("Canvas/UIContainer");
+		tmpContainer.GetComponent<RectTransform>().sizeDelta = containerSize;
+		tmpContainer.GetComponent<Image>().color = containerColor;
+	}
+
+	private void SetText(string name)
+	{
+		var tmpText = transform.FindChild("Canvas/" + name).GetComponent<Text>();
+		tmpText.material = Resources.Load("UIText") as Material;
+		tmpText.text = displayText.Replace("\\n", "\n");
+		tmpText.color = fontColor;
+		tmpText.fontSize = fontSize;
+	}
 }

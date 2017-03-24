@@ -14,8 +14,7 @@ using UnityEngine.UI;
 
 using System.Collections;
 
-namespace ExitGames.Demos.DemoAnimator
-{
+
 	/// <summary>
 	/// Player UI. Constraint the UI to follow a PlayerManager GameObject in the world,
 	/// Affect a slider and text to display Player's name and health
@@ -37,7 +36,7 @@ namespace ExitGames.Demos.DemoAnimator
 
 		#region Private Properties
 
-		PlayerManager _target;
+		CameraRigManager _target;
 
 		float _characterControllerHeight = 0f;
 
@@ -112,7 +111,7 @@ namespace ExitGames.Demos.DemoAnimator
 		/// Assigns a Player Target to Follow and represent.
 		/// </summary>
 		/// <param name="target">Target.</param>
-		public void SetTarget(PlayerManager target){
+		public void SetTarget(CameraRigManager target){
 
 			if (target == null) {
 				Debug.LogError("<Color=Red><b>Missing</b></Color> PlayMakerManager target for PlayerUI.SetTarget.",this);
@@ -140,4 +139,3 @@ namespace ExitGames.Demos.DemoAnimator
 		#endregion
 
 	}
-}

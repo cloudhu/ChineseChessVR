@@ -33,8 +33,15 @@ namespace VRTK
         public Color containerColor = Color.black;
         [Tooltip("The colour to use for the line drawn between the tooltip and the destination transform.")]
         public Color lineColor = Color.black;
+		[Tooltip("UI Slider to display Player's Health")]
+		public Slider PlayerHealthSlider;
+		[Tooltip("Pixel offset from the player target")]
+		public Vector3 ScreenOffset = new Vector3(0f,30f,0f);
 
-        private LineRenderer line;
+        
+		#region Private Properties
+		private LineRenderer line;
+		#endregion
 
         /// <summary>
         /// The ResetTooltip method resets the tooltip back to its initial state.
@@ -61,15 +68,22 @@ namespace VRTK
             ResetTooltip();
         }
 
+		#region Public Methods
+
+
+		#endregion
+
         protected virtual void Start()
         {
-            ResetTooltip();
+			ResetTooltip();
         }
 
         protected virtual void Update()
         {
             DrawLine();
+
         }
+			
 
         private void SetContainer()
         {

@@ -194,7 +194,18 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	
 	#region Public Methods	//公共方法区域
-	
+
+	public void Judge(){
+		if (ChessmanManager.chessman[0]._dead) {
+			result = ResultType.LocalLoss;
+			PlayLoseMusic ();
+		}
+		if (ChessmanManager.chessman[17]._dead) {
+			result = ResultType.LocalWin;
+			PlayWinMusic ();
+		}
+	}
+
 	public void Start()
 	{
 		this.turnManager = this.gameObject.AddComponent<PunTurnManager>();	//添加组件并赋值
@@ -330,7 +341,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnTurnCompleted: " + obj);
 
-		this.CalculateWinAndLoss();	//计算输赢
+		this.Judge();	//计算输赢
 		this.UpdateScores();	//更新得分
 		this.OnEndTurn();	//结束回合
 	}
@@ -472,16 +483,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("EndGame");
 	}
-
-	/// <summary>
-	/// 计算输赢
-	/// </summary>
-	private void CalculateWinAndLoss()
-	{
-		this.result = ResultType.Draw;
-
-	}
-
+		
 	/// <summary>
 	/// 选择精灵
 	/// </summary>
@@ -554,23 +556,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	#region Handling Of Buttons	//处理按钮
 
-	/// <summary>
-	/// 点击石头按钮就是选择石头,下同
-	/// </summary>
-	public void OnClickRock()
-	{
-
-	}
-
-	public void OnClickPaper()
-	{
-
-	}
-
-	public void OnClickScissors()
-	{
-
-	}
 
 	/// <summary>
 	/// 连接

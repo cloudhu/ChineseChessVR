@@ -15,8 +15,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-namespace ExitGames.Demos.DemoAnimator
-{
+
 	/// <summary>
 	/// Game manager.
 	/// Connects and watch Photon Status, Instantiate Player
@@ -29,8 +28,12 @@ namespace ExitGames.Demos.DemoAnimator
 
 		static public GameManager Instance;
 
-		[Tooltip("玩家预设")]
-		public GameObject playerPrefab;
+
+		[Tooltip("玩家头盔预设")]
+		public GameObject HeadPrefab;
+
+		[Tooltip("玩家双手预设")]
+		public GameObject HandPrefab;
 
         public Transform head;
         public Transform leftHand;
@@ -63,13 +66,13 @@ namespace ExitGames.Demos.DemoAnimator
 				return;
 			}
 
-			if (playerPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
+			if (HeadPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
 				
 				Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'",this);
 			} else {
 				
 
-				if (PlayerManager.LocalPlayerInstance==null)
+				if (CameraRigManager.LocalPlayerInstance==null)
 				{
 					Debug.Log("We are Instantiating LocalPlayer from "+SceneManagerHelper.ActiveSceneName);
 
@@ -77,11 +80,11 @@ namespace ExitGames.Demos.DemoAnimator
 
 
                     
-                    GameObject RHand= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+                    GameObject RHand= PhotonNetwork.Instantiate(this.HandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
 					RHand.transform.SetParent(rightHand,false);
-					GameObject LHand = PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					GameObject LHand = PhotonNetwork.Instantiate(this.HandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
 					LHand.transform.SetParent(leftHand,false);
-					GameObject Head= PhotonNetwork.Instantiate(this.playerPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					GameObject Head= PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
 					Head.transform.SetParent(head,false);
 
                 }
@@ -184,5 +187,4 @@ namespace ExitGames.Demos.DemoAnimator
 		#endregion
 
 	}
-
-}
+	
