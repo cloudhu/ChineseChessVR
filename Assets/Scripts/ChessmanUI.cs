@@ -101,7 +101,7 @@ public class ChessmanUI : MonoBehaviour {
 
 	Transform _targetTransform;	
 
-	Renderer _targetRenderer;
+	//Renderer _targetRenderer;
 
 	Vector3 _targetPosition;
 
@@ -164,9 +164,9 @@ public class ChessmanUI : MonoBehaviour {
 		// Cache references for efficiency because we are going to reuse them.
 		_target = target;
 		_targetTransform = _target.GetComponent<Transform>();
-		_targetRenderer = _target.GetComponent<Renderer>();
-
-		UpdateText (_target.name.TrimEnd("(Clone)".ToCharArray()));
+        //_targetRenderer = _target.GetComponent<Renderer>();
+        
+		UpdateText (ChessmanManager.chessman[int.Parse(_target.name)]._type.ToString());
 
 
 	}

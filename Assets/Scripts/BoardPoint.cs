@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=ChessmanController.cs company=League of HTC Vive Developers>
+// <copyright file=BoardPoint.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,114 +55,53 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/24/2017
+//中文注释：胡良云（CloudHu） 3/25/2017
 
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using VRTK;
-
-
 /// <summary>
-/// FileName: ChessmanController.cs
+/// FileName: BoardPoint.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 负责控制棋子的行为
-/// DateTime: 3/24/2017
+/// Description: 
+/// DateTime: 3/25/2017
 /// </summary>
-public class ChessmanController : VRTK_InteractableObject, IPunObservable {
-
-
+public class BoardPoint : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
-    [Tooltip("棋子唤醒时的音效")]
-    public AudioSource awakeMusic;
 
-    [Tooltip("UI游戏对象预设")]
-	public GameObject ChessmamUiPrefab;
+    [Tooltip("是否被占用")]
+    public bool isOccupied;
 
-	[Tooltip("玩家当前的体力值")]
-	public float Health = 1f;
-
-    [Tooltip("选中棋子的id")]
-    public int selectedId;
-
-    #endregion
+    [Tooltip("是红方")]
+    public bool isRed;
+	
+	#endregion
 
 
-    #region Private Variables   //私有变量区域
-
-
-    #endregion
-
-
-    #region MonoBehaviour CallBacks //回调函数区域
-    // Use this for initialization
-    void Start () {
-        selectedId =int.Parse(this.gameObject.name);
-        //创建棋子UI
-		if (this.ChessmamUiPrefab != null)
-		{
-			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
-			//_uiGo.transform.SetParent (transform,false);
-			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-		}
-		else
-		{
-			Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
-		}
-	}
+	#region Private Variables   //私有变量区域
+	
 
 	#endregion
 	
-	#region Public Methods	//公共方法区域
-
-	public override void StartUsing(GameObject usingObject)
-	{
-		base.StartUsing(usingObject);
-        PlayAwakeMusic();
-	}
-
-	public override void StopUsing(GameObject usingObject)
-	{
-		base.StopUsing(usingObject);
-
-	}
-
-	public void ShowPath(GameObject usingObject){
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
 		
 	}
-
-    public void PlayAwakeMusic()
-    {
-        if (awakeMusic!=null && !awakeMusic.isPlaying)
-        {
-            awakeMusic.Play();
-        }
-    }
-
-	#endregion
-
-	#region IPunObservable implementation
-
-	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-		if (stream.isWriting)
-		{
-			// 我们是本地玩家，则把数据发送给远程玩家
-			// stream.SendNext(this.IsFiring);
-			stream.SendNext(this.Health);
-		}
-		else
-		{
-			//网络玩家则接收数据
-			//  this.IsFiring = (bool)stream.ReceiveNext();
-			this.Health = (float)stream.ReceiveNext();
-		}
+	
+	// Update is called once per frame
+	void Update () {
+		
 	}
-
+	#endregion
+	
+	#region Public Methods	//公共方法区域
+	
+	
 	#endregion
 	
 }

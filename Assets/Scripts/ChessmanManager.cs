@@ -67,7 +67,7 @@ using UnityEngine;
 /// FileName: ChessmanManager.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 这个脚本用于管理棋子
+/// Description: 这个脚本用于管理所有棋子
 /// DateTime: 3/22/2017
 /// </summary>
 public class ChessmanManager : Photon.MonoBehaviour {
@@ -110,7 +110,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
 		//棋子在棋盘中的位置,  
 		public float _x;  
-		public float _y;  
+		public float _z;  
 
 		//棋子的类型  
 		public TYPE _type;  
@@ -146,13 +146,13 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			if (id < 16)  
 			{  
 				_x = pos[id].x;  
-				_y = pos[id].y;  
+				_z = pos[id].z;  
 				_type = pos[id].type;  
 			}  
 			else  
 			{  
 				_x = -pos[id - 16].x;  
-				_y = pos[id - 16].y;  
+				_z = pos[id - 16].z;  
 				_type = pos[id - 16].type;  
 			}  
 		}  
@@ -163,12 +163,12 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	/// </summary>  
 	public struct ChessmanPos  
 	{  
-		public float x, y;  
+		public float x, z;  
 		public Chessman.TYPE type;  
-		public ChessmanPos(float _x, float _y, Chessman.TYPE _type)  
+		public ChessmanPos(float _x, float _z, Chessman.TYPE _type)  
 		{  
 			x = _x;  
-			y = _y;  
+			z = _z;  
 			type = _type;  
 		}  
 	}  
@@ -271,8 +271,9 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		for (int i = 0; i < 32; ++i)  
 		{  
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
-			Debug.Log(i+"+++"+chessman[i]._type+"==="+chessman[i]._x+ " === "+chessman[i]._y);
-			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 1f, chessman[i]._y), Quaternion.identity,0) as GameObject; 
+			Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
+			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 1f, chessman[i]._z), Quaternion.identity,0) as GameObject;
+            ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
 
 			//ChessMan.AddComponent<BoxCollider>();  

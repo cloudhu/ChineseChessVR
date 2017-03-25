@@ -82,7 +82,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public int _selectedId=-1;  
 
 	[Tooltip("是否是红子的回合,默认红子先行")]
-	public bool isRedTurn=true;
+	public bool _isRedTurn=true;
 
 	public struct step
 	{
@@ -90,17 +90,17 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		public int killId;
 
 		public float xFrom;
-		public float yFrom;
+		public float zFrom;
 		public float xTo;
-		public float yTo;
+		public float zTo;
 
-		public step(int _moveId,int _killId,float _xFrom,float _yFrom,float _xTo,float _yTo){
+		public step(int _moveId,int _killId,float _xFrom,float _zFrom,float _xTo,float _zTo){
 			moveId = _moveId;
 			killId = _killId;
 			xFrom =_xFrom;
-			yFrom =_yFrom;
+			zFrom =_zFrom;
 			xTo=_xTo;
-			yTo = _yTo;
+			zTo = _zTo;
 		}
 	}
 	[Tooltip("保存每一步走棋")]
@@ -108,18 +108,21 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	[Tooltip("选中的音效,胜利，失败的音乐")]
 	public AudioSource selectClap,winMusic,loseMusic;
+	public AudioSource moveMusic,welcomMusic,DrawMusic;
 
 	[Tooltip("德邦总管")]
 	public ChessmanManager chessManManager;
+    [Tooltip("之前选中的棋子")]
+    public GameObject Selected;
+    [Tooltip("路径")]
+    public GameObject Path;
+    #endregion
 
 
-	#endregion
+    #region Private Variables   //私有变量区域
 
-
-	#region Private Variables   //私有变量区域
-
-	// 追踪显示结果的时机来处理游戏逻辑.
-	private bool IsShowingResults;
+    // 追踪显示结果的时机来处理游戏逻辑.
+    private bool IsShowingResults;
 
 	[Tooltip("选中的棋子")]
 	[SerializeField]
@@ -192,15 +195,42 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		LocalLoss	//输
 	}
 
-	
-	#region Public Methods	//公共方法区域
 
-	public void Judge(){
+    #region Public Methods	//公共方法区域
+
+
+    public void SelectChessman(int targetId,float x,float z)
+    {
+        TrySelectChessman(targetId);
+    }
+
+    public void TryMoveChessman(int killId, float x, float z)
+    {
+        if (killId != -1 && SameColor(killId, _selectedId))
+        {
+            TrySelectChessman(killId);
+            return;
+        }
+
+        bool ret = CanMove(_selectedId, killId, new Vector3(x, 1f, z));
+
+        if (ret)
+        {
+            MoveStone(_selectedId, killId, new Vector3(x, 1f, z));
+            _selectedId = -1;
+        }
+        else
+        {
+            MoveError(_selectedId, new Vector3(x, 1f, z));
+        }
+    }
+
+    public void Judge(){
 		if (ChessmanManager.chessman[0]._dead) {
 			result = ResultType.LocalLoss;
 			PlayLoseMusic ();
 		}
-		if (ChessmanManager.chessman[17]._dead) {
+		if (ChessmanManager.chessman[16]._dead) {
 			result = ResultType.LocalWin;
 			PlayWinMusic ();
 		}
@@ -434,11 +464,41 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 	}
 
-	/// <summary>
-	/// 回合中的选择
-	/// </summary>
-	/// <param name="selection">选择.</param>
-	public void MakeTurn()
+
+    /// <summary>
+    /// 行棋
+    /// </summary>
+    /// <param name="moveId">选中的棋子</param>
+    /// <param name="killId">击杀的棋子</param>
+    /// <param name="targetPosition">目标位置</param>
+    public void MoveStone(int moveId, int killId, Vector3 targetPosition)
+    {
+        // 1.若移动到的位置上有棋子，将其吃掉  
+        // 2.将移动棋子的路径显示出来  
+        // 3.将棋子移动到目标位置  
+        // 4.播放音效  
+        // 5.判断是否符合胜利或者失败的条件  
+
+        SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
+
+        KillChessman(killId);
+
+        ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), targetPosition);
+
+        MoveStone(moveId, targetPosition);
+
+        PlayMusic(moveMusic);
+
+        Judge();
+    }
+
+
+
+    /// <summary>
+    /// 回合中的选择
+    /// </summary>
+    /// <param name="selection">选择.</param>
+    public void MakeTurn()
 	{
 
 	}
@@ -483,52 +543,38 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("EndGame");
 	}
-		
-	/// <summary>
-	/// 选择精灵
-	/// </summary>
-	/// <returns>返回对应手势的精灵.</returns>
-	/// <param name="hand">手势.</param>
-	private Sprite SelectionToSprite()
-	{
 
+    /// <summary>  
+    /// 悔棋，退回一步  
+    /// </summary>  
+    public void BackOne()
+    {
+        if (_steps.Count == 0) return;
 
-		return null;
-	}
+        step tmpStep = _steps[_steps.Count - 1];
+        _steps.RemoveAt(_steps.Count - 1);
+        Back(tmpStep);
+    }
 
-	/// <summary>
-	/// 更新玩家文本信息
-	/// </summary>
-	private void UpdatePlayerTexts()
-	{
-		PhotonPlayer remote = PhotonNetwork.player.GetNext();
-		PhotonPlayer local = PhotonNetwork.player;
+    
 
-		if (remote != null)
-		{
-			// 应该是这种格式: "name        00"
-			this.RemotePlayerText.text = remote.NickName + "        " + remote.GetScore().ToString("D2");
-		}
-		else
-		{
+    /// <summary>
+    /// 播放指定音效.
+    /// </summary>
+    /// <param name="targetAudio">目标音效</param>
+    public void PlayMusic(AudioSource targetAudio)
+    {
+        if (targetAudio != null && !targetAudio.isPlaying)
+        {
+            targetAudio.Play();
+        }
+    }
 
-			TimerFillImage.anchorMax = new Vector2(0f,1f);
-			this.TimeText.text = "";
-			this.RemotePlayerText.text = "等待其他玩家        00";
-		}
-
-		if (local != null)
-		{
-			// 应该是这种样式: "YOU   00"
-			this.LocalPlayerText.text = "YOU   " + local.GetScore().ToString("D2");
-		}
-	}
-		
-	/// <summary>
-	/// 播放选择音效.
-	/// </summary>
-	public void PlaySelectSound(){
-		if (!selectClap.isPlaying) {
+    /// <summary>
+    /// 播放选择音效.
+    /// </summary>
+    public void PlaySelectSound(){
+		if (selectClap!=null && !selectClap.isPlaying) {
 			selectClap.Play ();
 		}
 	}
@@ -537,7 +583,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// 播放胜利音乐.
 	/// </summary>
 	public void PlayWinMusic(){
-		if (!winMusic.isPlaying) {
+		if (winMusic!=null && !winMusic.isPlaying) {
 			winMusic.Play ();
 		}
 	}
@@ -546,21 +592,211 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// 播放失败音乐.
 	/// </summary>
 	public void PlayLoseMusic(){
-		if (!loseMusic.isPlaying) {
+		if (loseMusic!=null &&!loseMusic.isPlaying) {
 			loseMusic.Play ();
 		}
 	}
 
-	#endregion
+    #endregion
+
+    #region Private Methods //私有方法
 
 
-	#region Handling Of Buttons	//处理按钮
+    /// <summary>
+    /// 更新玩家文本信息
+    /// </summary>
+    private void UpdatePlayerTexts()
+    {
+        PhotonPlayer remote = PhotonNetwork.player.GetNext();
+        PhotonPlayer local = PhotonNetwork.player;
+
+        if (remote != null)
+        {
+            // 应该是这种格式: "name        00"
+            this.RemotePlayerText.text = remote.NickName + "        " + remote.GetScore().ToString("D2");
+        }
+        else
+        {
+
+            TimerFillImage.anchorMax = new Vector2(0f, 1f);
+            this.TimeText.text = "";
+            this.RemotePlayerText.text = "等待其他玩家        00";
+        }
+
+        if (local != null)
+        {
+            // 应该是这种样式: "YOU   00"
+            this.LocalPlayerText.text = "YOU   " + local.GetScore().ToString("D2");
+        }
+    }
+
+    void MoveError(int moveId, Vector3 position)
+    {
+        GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
+        Vector3 oldPosition = new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z);
+        Vector3[] paths = new Vector3[3];
+        paths[0] = oldPosition;
+        paths[1] = position;
+        paths[2] = oldPosition;
+        
+    }
+
+    void TrySelectChessman(int selectId)
+    {
+        if (selectId==-1)
+        {
+            return;
+        }
+        if (!CanSelect(selectId)) return;
+        _selectedId = selectId;
+    }
+
+    /// <summary>  
+    /// 设置棋子死亡  
+    /// </summary>  
+    /// <param name="id"></param>  
+    void KillChessman(int id)
+    {
+        if (id == -1) return;
+
+        ChessmanManager.chessman[id]._dead = true;
+        Transform chessman=chessManManager.transform.FindChild(id.ToString());
+        transform.gameObject.SetActive(true);
+    }
+
+    /// <summary>  
+    /// 复活棋子  
+    /// </summary>  
+    /// <param name="id"></param>  
+    void ReliveChess(int id)
+    {
+        if (id == -1) return;
+
+        //因GameObject.Find();函数不能找到active==false的物体，故先找到其父物体，再找到其子物体才可以找到active==false的物体  
+        ChessmanManager.chessman[id]._dead = false;
+        GameObject Stone = chessManManager.transform.Find(id.ToString()).gameObject;
+        Stone.SetActive(true);
+    }
+
+    /// <summary>  
+    /// 将移动的棋子ID、吃掉的棋子ID以及棋子从A点的坐标移动到B点的坐标都记录下来  
+    /// </summary>  
+    /// <param name="moveId">选中的棋子ID</param>  
+    /// <param name="killId">击杀的棋子ID</param>  
+    /// <param name="toX">目标X坐标</param>  
+    /// <param name="toZ">目标Z坐标</param>  
+    void SaveStep(int moveId, int killId, float toX, float toZ)
+    {
+        step tmpStep = new step();
+        //当前棋子的位置
+        float fromX = ChessmanManager.chessman[moveId]._x;
+        float fromZ = ChessmanManager.chessman[moveId]._z;
+
+        tmpStep.moveId = moveId;
+        tmpStep.killId = killId;
+        tmpStep.xFrom = fromX;
+        tmpStep.zFrom = fromZ;
+        tmpStep.xTo = toX;
+        tmpStep.zTo = toZ;
+
+        _steps.Add(tmpStep);
+    }
+
+    /// <summary>  
+    /// 设置上一步棋子走过的路径，即将上一步行动的棋子的位置留下标识，并标识该棋子  
+    /// </summary>  
+    void ShowPath(Vector3 oldPosition, Vector3 newPosition)
+    {
+        Selected.transform.position = newPosition;
+        Selected.SetActive(true);
+
+        Path.transform.position = oldPosition;
+        Path.SetActive(true);
+    }
 
 
-	/// <summary>
-	/// 连接
-	/// </summary>
-	public void OnClickConnect()
+    /// <summary>  
+    /// 隐藏路径  
+    /// </summary>  
+    void HidePath()
+    {
+        Selected.SetActive(false);
+        Path.SetActive(false);
+    }
+
+
+
+    /// <summary>  
+    /// 移动棋子到目标位置  
+    /// </summary>  
+    /// <param name="targetPosition">目标位置</param>  
+    void MoveStone(int moveId, Vector3 targetPosition)
+    {
+        GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
+        //chessman.transform.DOMove(targetPosition, 0.5f);
+        ChessmanManager.chessman[moveId]._x = targetPosition.x;
+        ChessmanManager.chessman[moveId]._z = targetPosition.z;
+
+        _isRedTurn = !_isRedTurn;
+    }
+
+    /// <summary>  
+    /// 通过记录的步骤结构体来返回上一步  
+    /// </summary>  
+    /// <param name="_step"></param>  
+    void Back(step _step)
+    {
+        ReliveChess(_step.killId);
+        MoveStone(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
+        HidePath();
+        if (_selectedId != -1)
+        {
+            
+            _selectedId = -1;
+        }
+    }
+
+
+
+    /// <summary>
+    /// 刷新UI视图
+    /// </summary>
+    void RefreshUIViews()
+    {
+        TimerFillImage.anchorMax = new Vector2(0f, 1f);
+
+        ConnectUiView.gameObject.SetActive(!PhotonNetwork.inRoom);
+        GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
+
+        ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;
+    }
+
+    bool IsRed(int id)
+    {
+        return ChessmanManager.chessman[id]._red;
+    }
+
+    bool IsDead(int id)
+    {
+        if (id == -1) return true;
+        return ChessmanManager.chessman[id]._dead;
+    }
+
+    bool SameColor(int id1, int id2)
+    {
+        if (id1 == -1 || id2 == -1) return false;
+
+        return IsRed(id1) == IsRed(id2);
+    }
+
+    #endregion
+
+    #region Handling Of Buttons	//处理按钮
+
+    /// <summary>
+    /// 连接
+    /// </summary>
+    public void OnClickConnect()
 	{
 		PhotonNetwork.ConnectUsingSettings(null);
 		PhotonHandler.StopFallbackSendAckThread();  // 这在案例中被用于后台超时!
@@ -575,100 +811,138 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		PhotonHandler.StopFallbackSendAckThread();  // this is used in the demo to timeout in background!
 	}
 
-	#endregion
+    #endregion
 
-	/// <summary>
-	/// 刷新UI视图
-	/// </summary>
-	void RefreshUIViews()
-	{
-		TimerFillImage.anchorMax = new Vector2(0f,1f);
-
-		ConnectUiView.gameObject.SetActive(!PhotonNetwork.inRoom);
-		GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-
-		ButtonCanvasGroup.interactable = PhotonNetwork.room!=null?PhotonNetwork.room.PlayerCount > 1:false;
-	}
-
-	/// <summary>
-	/// 当本地用户/客户离开房间时调用。
-	/// </summary>
-	/// <remarks>当离开一个房间时，PUN将你带回主服务器。
-	/// 在您可以使用游戏大厅和创建/加入房间之前，OnJoinedLobby()或OnConnectedToMaster()会再次被调用。</remarks>
-	public override void OnLeftRoom()
-	{
-		Debug.Log("OnLeftRoom()");
+    #region Call PositionManager //调用棋子规则
 
 
+    /// <summary>  
+    /// 判断走棋是否符合走棋的规则  
+    /// </summary>  
+    /// <param name="selectedId">选中的棋子</param>  
+    /// <param name="killId">击杀的棋子</param>
+    /// <param name="targetPosition">目标位置</param>
+    /// <returns></returns>
+    bool CanMove(int moveId, int killId, Vector3 targetPosition)
+    {
+        if (SameColor(moveId, killId)) return false;
+        float row = targetPosition.x;
+        float col = targetPosition.z;
+        switch (ChessmanManager.chessman[moveId]._type)
+        {
+            case ChessmanManager.Chessman.TYPE.KING:
+                return PositionManager.canMoveKing(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.GUARD:
+                return PositionManager.canMoveGuard(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.ELEPHANT:
+                return PositionManager.canMoveElephant(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.HORSE:
+                return PositionManager.canMoveHorse(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.ROOK:
+                return PositionManager.canMoveRook(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.CANNON:
+                return PositionManager.canMoveCannon(moveId, row, col, killId);
+            case ChessmanManager.Chessman.TYPE.PAWN:
+                return PositionManager.canMovePawn(moveId, row, col, killId);
+        }
 
-		RefreshUIViews();
-	}
+        return true;
+    }
 
-	/// <summary>
-	/// 当进入一个房间（通过创建或加入）时被调用。在所有客户端（包括主客户端）上被调用.
-	/// </summary>
-	/// <remarks>这种方法通常用于实例化玩家角色。
-	/// 如果一场比赛必须“积极地”被开始，你也可以调用一个由用户的按键或定时器触发的PunRPC 。
-	/// 
-	/// 当这个被调用时，你通常可以通过PhotonNetwork.playerList访问在房间里现有的玩家。
-	/// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
-	public override void OnJoinedRoom()
-	{
-		RefreshUIViews();
+    /// <summary>  
+    /// 判断点击的棋子是否可以被选中，即点击的棋子是否在它可以移动的回合  
+    /// </summary>  
+    /// <param name="id">棋子ID</param>  
+    /// <returns></returns>  
+    bool CanSelect(int id)
+    {
+        return _isRedTurn == ChessmanManager.chessman[id]._red;
+    }
+    #endregion
 
-		if (PhotonNetwork.room.PlayerCount == 2)
-		{
-			if (this.turnManager.Turn == 0)
-			{
-				// 当房间内有两个玩家,则开始首回合
-				this.StartTurn();
-			}
-		}
-		else
-		{
-			Debug.Log("Waiting for another player");
-		}
-	}
+    #region PUN Callbacks   //重新PUN回调函数
 
-	/// <summary>
-	/// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
-	/// </summary>
-	/// <remarks>如果你的游戏开始时就有一定数量的玩家，这个回调在检查Room.playerCount并发现你是否可以开始游戏时会很有用.</remarks>
-	/// <param name="newPlayer">New player.</param>
-	public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
-	{
-		Debug.Log("Other player arrived");
-
-		if (PhotonNetwork.room.PlayerCount == 2)
-		{
-			if (this.turnManager.Turn == 0)
-			{
-
-				this.StartTurn();
-			}
-		}
-	}
+    /// <summary>
+    /// 当本地用户/客户离开房间时调用。
+    /// </summary>
+    /// <remarks>当离开一个房间时，PUN将你带回主服务器。
+    /// 在您可以使用游戏大厅和创建/加入房间之前，OnJoinedLobby()或OnConnectedToMaster()会再次被调用。</remarks>
+    public override void OnLeftRoom()
+    {
+        Debug.Log("OnLeftRoom()");
 
 
-	/// <summary>
-	/// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.
-	/// </summary>
-	/// <remarks>当你的客户端调用PhotonNetwork.leaveRoom时，PUN将在现有的客户端上调用此方法。当远程客户端关闭连接或被关闭时，这个回调函数会在经过几秒钟的暂停后被执行.</remarks>
-	/// <param name="otherPlayer">Other player.</param>
-	public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
-	{
-		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
-	}
 
-	/// <summary>
-	/// 当未知因素导致连接失败（在建立连接之后）时调用，接着调用OnDisconnectedFromPhoton()。
-	/// </summary>
-	/// <remarks>如果服务器不能一开始就被连接，就会调用OnFailedToConnectToPhoton。错误的原因会以DisconnectCause的形式提供。</remarks>
-	/// <param name="cause">Cause.</param>
-	public override void OnConnectionFail(DisconnectCause cause)
-	{
-		this.DisconnectedPanel.gameObject.SetActive(true);
-	}
+        RefreshUIViews();
+    }
+
+    /// <summary>
+    /// 当进入一个房间（通过创建或加入）时被调用。在所有客户端（包括主客户端）上被调用.
+    /// </summary>
+    /// <remarks>这种方法通常用于实例化玩家角色。
+    /// 如果一场比赛必须“积极地”被开始，你也可以调用一个由用户的按键或定时器触发的PunRPC 。
+    /// 
+    /// 当这个被调用时，你通常可以通过PhotonNetwork.playerList访问在房间里现有的玩家。
+    /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
+    public override void OnJoinedRoom()
+    {
+        RefreshUIViews();
+
+        if (PhotonNetwork.room.PlayerCount == 2)
+        {
+            if (this.turnManager.Turn == 0)
+            {
+                // 当房间内有两个玩家,则开始首回合
+                this.StartTurn();
+            }
+        }
+        else
+        {
+            Debug.Log("Waiting for another player");
+        }
+    }
+
+    /// <summary>
+    /// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
+    /// </summary>
+    /// <remarks>如果你的游戏开始时就有一定数量的玩家，这个回调在检查Room.playerCount并发现你是否可以开始游戏时会很有用.</remarks>
+    /// <param name="newPlayer">New player.</param>
+    public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+    {
+        Debug.Log("Other player arrived");
+
+        if (PhotonNetwork.room.PlayerCount == 2)
+        {
+            if (this.turnManager.Turn == 0)
+            {
+
+                this.StartTurn();
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.
+    /// </summary>
+    /// <remarks>当你的客户端调用PhotonNetwork.leaveRoom时，PUN将在现有的客户端上调用此方法。当远程客户端关闭连接或被关闭时，这个回调函数会在经过几秒钟的暂停后被执行.</remarks>
+    /// <param name="otherPlayer">Other player.</param>
+    public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
+    {
+        Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
+    }
+
+    /// <summary>
+    /// 当未知因素导致连接失败（在建立连接之后）时调用，接着调用OnDisconnectedFromPhoton()。
+    /// </summary>
+    /// <remarks>如果服务器不能一开始就被连接，就会调用OnFailedToConnectToPhoton。错误的原因会以DisconnectCause的形式提供。</remarks>
+    /// <param name="cause">Cause.</param>
+    public override void OnConnectionFail(DisconnectCause cause)
+    {
+        this.DisconnectedPanel.gameObject.SetActive(true);
+    }
+
+    #endregion
 
 
 

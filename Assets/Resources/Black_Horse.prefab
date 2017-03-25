@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 119e57d3489dc074ebe3eacebb5a5c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableWhenIdle: 1
+  disableWhenIdle: 0
   touchHighlightColor: {r: 0, g: 1, b: 0.17368157, a: 0}
   allowedTouchControllers: 0
   isGrabbable: 0
