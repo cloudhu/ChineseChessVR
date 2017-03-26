@@ -271,8 +271,8 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		for (int i = 0; i < 32; ++i)  
 		{  
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
-			Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-			GameObject ChessMan = PhotonNetwork.Instantiate(prefabs.name, new Vector3(chessman[i]._x, 1f, chessman[i]._z), Quaternion.identity,0) as GameObject;
+			//Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
+			GameObject ChessMan = GameObject.Instantiate(prefabs, new Vector3(chessman[i]._x, 1f, chessman[i]._z), Quaternion.identity) as GameObject;
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
 
@@ -285,7 +285,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	/// </summary>
 	public void DestroyAllChessman(){
 		foreach (var item in transform.GetComponentsInChildren<PhotonView>(true)) {
-			PhotonNetwork.Destroy (item);
+			GameObject.Destroy (item.gameObject);
 		}
 	}
 

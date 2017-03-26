@@ -82,7 +82,10 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
     [Tooltip("UI游戏对象预设")]
 	public GameObject ChessmamUiPrefab;
 
-	[Tooltip("玩家当前的体力值")]
+    [Tooltip("战斗UI游戏对象预设")]
+    public GameObject warUiPrefab;
+
+    [Tooltip("玩家当前的体力值")]
 	public float Health = 1f;
 
     [Tooltip("选中棋子的id")]
@@ -113,7 +116,21 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		{
 			Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
 		}
-	}
+
+        //创建战斗UI
+        if (this.warUiPrefab != null)
+        {
+            GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform) as GameObject;
+            _uiGo.transform.localPosition = new Vector3(0, 2f, 0);
+            //_uiGo.transform.SetParent (transform,false);
+            _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+        }
+        else
+        {
+            Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
+        }
+
+    }
 
 	#endregion
 	

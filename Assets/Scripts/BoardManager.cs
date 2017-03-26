@@ -55,7 +55,7 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/24/2017
+//中文注释：胡良云（CloudHu） 3/26/2017
 
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
@@ -65,38 +65,222 @@ using UnityEngine;
 /// FileName: BoardManager.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 负责管理棋盘
-/// DateTime: 3/24/2017
+/// Description: 
+/// DateTime: 3/26/2017
 /// </summary>
 public class BoardManager : MonoBehaviour {
-	
-	#region Public Variables  //公共变量区域
-	
-	
-	#endregion
+
+    #region Public Variables  //公共变量区域
+
+    public BoardPoint[] points=new BoardPoint[90];
+    #endregion
 
 
-	#region Private Variables   //私有变量区域
-	
+    #region Private Variables   //私有变量区域
 
-	#endregion
-	
-	
-	#region MonoBehaviour CallBacks //回调函数区域
-	// Use this for initialization
-	void Start () {
-		
+
+    #endregion
+
+
+    #region MonoBehaviour CallBacks //回调函数区域
+    // Use this for initialization
+    void Start () {
+        points = transform.GetComponentsInChildren<BoardPoint>();
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
-	#endregion
-	
-	#region Public Methods	//公共方法区域
-	
-	
-	#endregion
-	
+    #endregion
+
+    #region Public Methods	//公共方法区域
+
+    /// <summary>
+    /// 分别展示各个棋子可行的路线
+    /// </summary>
+    /// <param name="id">棋子id</param>
+    public void showPossibleWay(int id)
+    {
+        switch (ChessmanManager.chessman[id]._type)
+        {
+            case ChessmanManager.Chessman.TYPE.KING:
+                ShowKingWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.GUARD:
+                ShowGuardWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.ELEPHANT:
+                ShowElephantWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.HORSE:
+                ShowHorseWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.ROOK:
+                ShowRookWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.CANNON:
+                ShowCannonWay(id);
+                break;
+            case ChessmanManager.Chessman.TYPE.PAWN:
+                ShowPawnWay(id);
+                break;
+        }
+    }
+
+
+
+    #endregion
+
+    #region Private Methods  //辅助方法
+
+    void SortArray()
+    {
+        for (int i = 0; i < 15; i++)
+        {
+
+        }
+    }
+
+    void ShowKingWay(int id)
+    {
+        for (int i = 12; i < 31; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                if (PositionManager.canMoveKing(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
+                {
+                    points[i].ShowBeams();
+                }
+            }
+        }
+    }
+
+    void ShowGuardWay(int id)
+    {
+        for (int i = 12; i < 31; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                if (PositionManager.canMoveGuard(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
+                {
+                    points[i].ShowBeams();
+                }
+
+            }
+        }
+    }
+
+    void ShowElephantWay(int id)
+    {
+
+        for (int i = 0; i < 14; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                if (PositionManager.canMoveElephant(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
+                {
+                    points[i].ShowBeams();
+                }
+
+            }
+        }
+    }
+
+
+
+    void ShowHorseWay(int id)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                float _x = points[i].transform.localPosition.x;
+                float fromX = ChessmanManager.chessman[id]._x;
+
+                if (_x > (fromX-9f) && _x < (fromX+12f))
+                {
+                    float _z = points[i].transform.localPosition.z;
+                    float fromZ= ChessmanManager.chessman[id]._z;
+                    if (_z > (fromZ-9f) && _z < (fromZ+9f))
+                    {
+                        if (PositionManager.canMoveHorse(id, _x, _z, -1))
+                        {
+                            points[i].ShowBeams();
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    void ShowRookWay(int id)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                float _x = points[i].transform.localPosition.x;
+                float _z = points[i].transform.localPosition.z;
+                if (_x== ChessmanManager.chessman[id]._x || _z== ChessmanManager.chessman[id]._z)
+                {
+                    if (PositionManager.canMoveRook(id, _x, _z, -1))
+                    {
+                        points[i].ShowBeams();
+                    }
+                }
+            }
+        }
+    }
+
+    void ShowCannonWay(int id)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                float _x = points[i].transform.localPosition.x;
+                float _z = points[i].transform.localPosition.z;
+                if (_x == ChessmanManager.chessman[id]._x || _z == ChessmanManager.chessman[id]._z)
+                {
+                    if (PositionManager.canMoveCannon(id, _x, _z, -1))
+                    {
+                        points[i].ShowBeams();
+                    }
+                }
+            }
+        }
+    }
+
+    void ShowPawnWay(int id)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                float _x = points[i].transform.localPosition.x;
+                
+                float fromX = ChessmanManager.chessman[id]._x;
+                if (_x<(fromX+9f) && _x > (fromX - 9f))
+                {
+                    float _z = points[i].transform.localPosition.z;
+                    float fromZ = ChessmanManager.chessman[id]._z;
+                    if (_z>(fromZ-6f) && _z<(fromZ+6f))
+                    {
+                        if (PositionManager.canMovePawn(id, _x, _z, -1))
+                        {
+                            points[i].ShowBeams();
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    #endregion
+
+
 }

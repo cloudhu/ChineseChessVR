@@ -77,12 +77,18 @@ public class BoardPoint : MonoBehaviour {
 
     [Tooltip("是红方")]
     public bool isRed;
-	
-	#endregion
+
+    [Tooltip("光圈预设，用于提示玩家")]
+    public GameObject beamsPreb;
+
+    [Tooltip("战斗UI预设")]
+    public GameObject warUiPre;
+    #endregion
 
 
-	#region Private Variables   //私有变量区域
-	
+    #region Private Variables   //私有变量区域
+
+    GameObject beams,warUI;
 
 	#endregion
 	
@@ -90,8 +96,9 @@ public class BoardPoint : MonoBehaviour {
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
-		
-	}
+        beams = transform.FindChild("Beams(Clone)").gameObject;
+        warUI = transform.FindChild("WarUI(Clone)").gameObject;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -101,6 +108,54 @@ public class BoardPoint : MonoBehaviour {
 	
 	#region Public Methods	//公共方法区域
 	
+    public void Occupied()
+    {
+        if (beams==null)
+        {
+            beams= transform.FindChild("Beams(Clone)").gameObject;
+
+        }
+        if (warUI==null)
+        {
+            warUI= transform.FindChild("WarUI(Clone)").gameObject;
+        }
+        warUI.SetActive(false);
+        beams.SetActive(false);
+        isOccupied = true;
+    }
+
+    public void ShowBeams()
+    {
+        if (isOccupied) //如果这个位置已被占用，则返回
+        {
+            return;
+        }
+        if (beams==null)
+        {
+            beams = GameObject.Instantiate(beamsPreb, transform, false) as GameObject;
+
+        }
+        else
+        {
+            if (!beams.activeSelf)
+            {
+                beams.SetActive(true);
+            }
+        }
+
+        if (warUI==null)
+        {
+            warUI = GameObject.Instantiate(warUiPre, transform, false) as GameObject;
+            warUI.transform.localPosition = new Vector3(transform.localPosition.x,1f,transform.localPosition.z);
+        }
+        else
+        {
+            if (!warUI.activeSelf)
+            {
+                warUI.SetActive(true);
+            }
+        }
+    }
 	
 	#endregion
 	

@@ -169,16 +169,6 @@ public class RpsCore : PunBehaviour, IPunTurnManagerCallbacks
 				return;	//回合结束
 			}
 
-			/*
-			// check if we ran out of time, in which case we loose
-			if (turnEnd<0f && !IsShowingResults)
-			{
-					Debug.Log("Calling OnTurnCompleted with turnEnd ="+turnEnd);
-					OnTurnCompleted(-1);
-					return;
-			}
-		*/
-
             if (this.TurnText != null)
             {
                 this.TurnText.text = this.turnManager.Turn.ToString();	//更新回合数

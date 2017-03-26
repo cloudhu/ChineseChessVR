@@ -459,10 +459,10 @@ PlayerSettings:
   vrEditorSettings: {}
   cloudServicesEnabled:
     Build: 0
-    Collab: 1
+    Collab: 0
     ErrorHub: 0
     Hub: 0
-    UNet: 1
+    UNet: 0
   cloudProjectId: 857a45cc-6d8f-46e6-a641-ec9bdc47d901
   projectName: PUN Basics Tutorial (1)
   organizationId: cloud1989

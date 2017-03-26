@@ -75,6 +75,15 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	
 	#region Public Variables  //公共变量区域
 
+    public enum ChessPlayerType
+    {
+        Red,    //红方
+        Black,  //黑方
+        Guest   //游客
+    }
+    [Tooltip("玩家类型")]
+    public ChessPlayerType localPlayerType = ChessPlayerType.Guest;
+
 	/// <summary>  
 	/// 被选中的棋子的ID，若没有被选中的棋子，则ID为-1  
 	/// </summary>  
@@ -116,6 +125,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public GameObject Selected;
     [Tooltip("路径")]
     public GameObject Path;
+    [Tooltip("棋盘总管")]
+    public BoardManager boardManager;
+
+
+    static public NetworkTurn Instance;
     #endregion
 
 
@@ -124,9 +138,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     // 追踪显示结果的时机来处理游戏逻辑.
     private bool IsShowingResults;
 
-	[Tooltip("选中的棋子")]
-	[SerializeField]
-	private GameObject selectedChess;
 
 	[Tooltip("连接UI视图")]
 	[SerializeField]
@@ -160,7 +171,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private Text LocalPlayerText;
 
-	[Tooltip("输赢图片")]
+    [Tooltip("游戏状态文本")]
+    [SerializeField]
+    private Text GameStatusText;
+
+    [Tooltip("输赢图片")]
 	[SerializeField]
 	private Image WinOrLossImage;
 
@@ -184,10 +199,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	private PunTurnManager turnManager;//回合管家
 
+    private GameObject instance;
 
-	#endregion
+    #endregion
 
-	public enum ResultType	//结果类型枚举
+    public enum ResultType	//结果类型枚举
 	{
 		None = 0,
 		Draw,	//和
@@ -217,6 +233,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         if (ret)
         {
             MoveStone(_selectedId, killId, new Vector3(x, 1f, z));
+            OnMoveChessman(_selectedId, killId, x, z);
             _selectedId = -1;
         }
         else
@@ -241,8 +258,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		this.turnManager = this.gameObject.AddComponent<PunTurnManager>();	//添加组件并赋值
 		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
 		this.turnManager.TurnDuration = 120f;		//初始化回合持续时间
-
-		RefreshUIViews();	//刷新UI视图
+        Instance = this;
+        
+        RefreshUIViews();	//刷新UI视图
 	}
 
 	public void Update()
@@ -387,6 +405,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnPlayerMove(PhotonPlayer photonPlayer, int turn, object move)
 	{
 		Debug.Log("OnPlayerMove: " + photonPlayer + " turn: " + turn + " action: " + move);
+
 	}
 
 
@@ -401,14 +420,15 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnTurnFinished: " + photonPlayer + " turn: " + turn + " action: " + move);
 
-		if (photonPlayer.IsLocal)
+		if (!photonPlayer.IsLocal)
 		{
-			//this.localSelection = (Hand)(byte)move;
-		}
-		else
-		{
-			//this.remoteSelection = (Hand)(byte)move;
-		}
+            step tmpStep = new step();
+
+            tmpStep = (step)move;
+
+            MoveStone(tmpStep.moveId, tmpStep.killId, new Vector3(tmpStep.xTo, 1f, tmpStep.zTo));
+        }
+
 	}
 
 
@@ -492,21 +512,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         Judge();
     }
 
-
-
     /// <summary>
-    /// 回合中的选择
+    /// 回合结束
     /// </summary>
-    /// <param name="selection">选择.</param>
-    public void MakeTurn()
-	{
-
-	}
-
-	/// <summary>
-	/// 回合结束
-	/// </summary>
-	public void OnEndTurn()
+    public void OnEndTurn()
 	{
 		this.StartCoroutine("ShowResultsBeginNextTurnCoroutine");
 	}
@@ -613,7 +622,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         if (remote != null)
         {
             // 应该是这种格式: "name        00"
-            this.RemotePlayerText.text = remote.NickName + "        " + remote.GetScore().ToString("D2");
+            if (PhotonNetwork.isMasterClient)
+            {
+                this.RemotePlayerText.text = remote.NickName + "—黑方 | Black   " + remote.GetScore().ToString("D2");
+            }else
+            this.RemotePlayerText.text = remote.NickName + "—红方 | Red   " + remote.GetScore().ToString("D2");
         }
         else
         {
@@ -626,7 +639,21 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         if (local != null)
         {
             // 应该是这种样式: "YOU   00"
-            this.LocalPlayerText.text = "YOU   " + local.GetScore().ToString("D2");
+            if (PhotonNetwork.isMasterClient)
+            {
+                this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
+            }
+
+            if(localPlayerType==ChessPlayerType.Black){
+                this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
+            }
+
+            if (localPlayerType == ChessPlayerType.Guest)
+            {
+                this.LocalPlayerText.text = PhotonNetwork.player.Get(1).NickName + ":黑方 | Black   " + PhotonNetwork.player.Get(1).GetScore().ToString("D2");
+            }
+
+
         }
     }
 
@@ -647,9 +674,32 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         {
             return;
         }
+
+        if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
+
+        if (selectId>16)    //黑子无法被红方或红色回合内选定
+        {
+            if (PhotonNetwork.isMasterClient || _isRedTurn)
+            {
+                return;
+            }
+        }
+
+        if (selectId<16)    //红子同样无法被其他阵营选定
+        {
+            if (!PhotonNetwork.isMasterClient || !_isRedTurn)
+            {
+                return;
+            }
+        }
+
         if (!CanSelect(selectId)) return;
         _selectedId = selectId;
+        PlaySelectSound();
+        boardManager.showPossibleWay(selectId);
+        
     }
+
 
     /// <summary>  
     /// 设置棋子死亡  
@@ -661,7 +711,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         ChessmanManager.chessman[id]._dead = true;
         Transform chessman=chessManManager.transform.FindChild(id.ToString());
-        transform.gameObject.SetActive(true);
+        transform.gameObject.SetActive(false);
     }
 
     /// <summary>  
@@ -700,6 +750,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         tmpStep.zTo = toZ;
 
         _steps.Add(tmpStep);
+        
     }
 
     /// <summary>  
@@ -748,10 +799,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         ReliveChess(_step.killId);
         MoveStone(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
+        this.turnManager.SendMove(_step, true);
         HidePath();
         if (_selectedId != -1)
-        {
-            
+        {      
             _selectedId = -1;
         }
     }
@@ -793,6 +844,44 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     #region Handling Of Buttons	//处理按钮
 
+    public void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
+    {
+        step tmpStep = new step();
+        //当前棋子的位置
+        float fromX = ChessmanManager.chessman[selectedId]._x;
+        float fromZ = ChessmanManager.chessman[selectedId]._z;
+
+        tmpStep.moveId = selectedId;
+        tmpStep.killId = killId;
+        tmpStep.xFrom = fromX;
+        tmpStep.zFrom = fromZ;
+        tmpStep.xTo = toX;
+        tmpStep.zTo = toZ;
+        this.turnManager.SendMove(tmpStep, true);
+    }
+
+    public void OnCancelSelected(int targetId)
+    {
+        if (_selectedId==targetId)
+        {
+            _selectedId = -1;
+        }
+        
+    }
+
+    public void OnSelectChessman(int selectId,float x,float z)
+    {
+        if (_selectedId == -1)
+        {
+            TrySelectChessman(selectId);
+        }
+        else
+        {
+            TryMoveChessman(selectId, x, z);
+        }
+        
+    }
+
     /// <summary>
     /// 连接
     /// </summary>
@@ -825,7 +914,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <returns></returns>
     bool CanMove(int moveId, int killId, Vector3 targetPosition)
     {
-        if (SameColor(moveId, killId)) return false;
+        if (SameColor(moveId, killId)) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
+            OnCancelSelected(moveId);
+            TrySelectChessman(killId);
+            return false;
+        }
         float row = targetPosition.x;
         float col = targetPosition.z;
         switch (ChessmanManager.chessman[moveId]._type)
@@ -862,6 +955,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     #region PUN Callbacks   //重新PUN回调函数
 
+
     /// <summary>
     /// 当本地用户/客户离开房间时调用。
     /// </summary>
@@ -890,8 +984,19 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (PhotonNetwork.room.PlayerCount == 2)
         {
+            if (PhotonNetwork.isMasterClient) {
+                localPlayerType = ChessPlayerType.Red;
+                GameStatusText.text = "您是红方棋手……";
+            }
+            else
+            {
+                localPlayerType = ChessPlayerType.Black;
+                GameStatusText.text = "您是黑方棋手……";
+            }
+
             if (this.turnManager.Turn == 0)
             {
+                
                 // 当房间内有两个玩家,则开始首回合
                 this.StartTurn();
             }
@@ -899,8 +1004,17 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         else
         {
             Debug.Log("Waiting for another player");
+            GameStatusText.text = "等待玩家加入……";
         }
-    }
+
+        if (PhotonNetwork.room.PlayerCount > 2)
+        {
+            if (localPlayerType == ChessPlayerType.Guest)
+            {
+                GameStatusText.text = "棋局已开始，正在进入观棋模式……";
+            }
+        }
+       }
 
     /// <summary>
     /// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
@@ -910,7 +1024,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
     {
         Debug.Log("Other player arrived");
-
+        GameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
         if (PhotonNetwork.room.PlayerCount == 2)
         {
             if (this.turnManager.Turn == 0)
@@ -930,6 +1044,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
     {
         Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
+        GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
     }
 
     /// <summary>
