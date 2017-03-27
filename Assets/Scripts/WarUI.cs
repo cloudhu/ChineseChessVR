@@ -159,10 +159,11 @@ public class WarUI : MonoBehaviour {
             {
                 case "Select":
                     NetworkTurn.Instance.OnSelectChessman(-1, transform.parent.localPosition.x, transform.parent.localPosition.z);
-                    transform.parent.GetComponent<BoardPoint>().isOccupied = true;
+					transform.parent.GetComponent<BoardPoint>().Occupied();
                     break;
-                case "Selected":
-                    NetworkTurn.Instance.OnCancelSelected(-1);
+				case "Selected":
+					NetworkTurn.Instance.OnCancelSelected (-1);
+					transform.parent.GetComponent<BoardPoint> ().isOccupied = false;
                     UpdateText("Select");
                     break;
                 default:

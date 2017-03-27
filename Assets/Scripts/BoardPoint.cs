@@ -94,16 +94,7 @@ public class BoardPoint : MonoBehaviour {
 	
 	
 	#region MonoBehaviour CallBacks //回调函数区域
-	// Use this for initialization
-	void Start () {
-        beams = transform.FindChild("Beams(Clone)").gameObject;
-        warUI = transform.FindChild("WarUI(Clone)").gameObject;
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 	#endregion
 	
 	#region Public Methods	//公共方法区域
@@ -133,7 +124,7 @@ public class BoardPoint : MonoBehaviour {
         if (beams==null)
         {
             beams = GameObject.Instantiate(beamsPreb, transform, false) as GameObject;
-
+			beams.transform.localPosition = new Vector3(transform.localPosition.x,1f,transform.localPosition.z);
         }
         else
         {
@@ -146,7 +137,7 @@ public class BoardPoint : MonoBehaviour {
         if (warUI==null)
         {
             warUI = GameObject.Instantiate(warUiPre, transform, false) as GameObject;
-            warUI.transform.localPosition = new Vector3(transform.localPosition.x,1f,transform.localPosition.z);
+            warUI.transform.localPosition = new Vector3(transform.localPosition.x,2f,transform.localPosition.z);
         }
         else
         {

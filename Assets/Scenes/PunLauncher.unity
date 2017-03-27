@@ -3196,7 +3196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controlPanel: {fileID: 1384252624}
   feedbackText: {fileID: 1814088000}
-  maxPlayersPerRoom: 4
+  maxPlayersPerRoom: 2
   loaderAnime: {fileID: 2023195871}
 --- !u!1 &950115327
 GameObject:

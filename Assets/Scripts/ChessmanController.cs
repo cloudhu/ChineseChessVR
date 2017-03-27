@@ -62,6 +62,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
+using UnityEngine.AI;
 
 
 /// <summary>
@@ -77,7 +78,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
     #region Public Variables  //公共变量区域
     [Tooltip("棋子唤醒时的音效")]
-    public AudioSource awakeMusic;
+    public AudioSource awakeMusic,walkAS;
 
     [Tooltip("UI游戏对象预设")]
 	public GameObject ChessmamUiPrefab;
@@ -96,7 +97,8 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
     #region Private Variables   //私有变量区域
 
-
+	private NavMeshAgent agent;    //寻路组件
+	WarUI war; //战争UI
     #endregion
 
 
@@ -104,6 +106,15 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
     // Use this for initialization
     void Start () {
         selectedId =int.Parse(this.gameObject.name);
+
+		agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之
+		if (agent == null)
+		{
+			agent=gameObject.AddComponent<NavMeshAgent>();
+			agent.radius = 0.3f;
+		}
+		agent.enabled = true;
+
         //创建棋子UI
 		if (this.ChessmamUiPrefab != null)
 		{
@@ -124,6 +135,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
             _uiGo.transform.localPosition = new Vector3(0, 2f, 0);
             //_uiGo.transform.SetParent (transform,false);
             _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+			war = _uiGo.GetComponent<WarUI> ();
         }
         else
         {
@@ -139,7 +151,9 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 	public override void StartUsing(GameObject usingObject)
 	{
 		base.StartUsing(usingObject);
-        PlayAwakeMusic();
+		PlaySound (awakeMusic);
+
+		war.TrySelectChessman ();
 	}
 
 	public override void StopUsing(GameObject usingObject)
@@ -148,17 +162,26 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
 	}
 
-	public void ShowPath(GameObject usingObject){
+	/// <summary>
+	/// 设置目标位置.
+	/// </summary>
+	/// <param name="targetPosition">目标位置.</param>
+	public void SetTarget(Vector3 targetPosition){
 		
+		agent.SetDestination (targetPosition);
+		if (Vector3.Distance(this.transform.position, targetPosition) < 0f)
+		{
+			agent.Stop();
+			ChessmanManager.chessman[selectedId]._x = targetPosition.x;
+			ChessmanManager.chessman[selectedId]._z = targetPosition.z;
+		}
+		else
+		{
+			PlaySound(walkAS);
+			agent.Resume();
+		}
 	}
 
-    public void PlayAwakeMusic()
-    {
-        if (awakeMusic!=null && !awakeMusic.isPlaying)
-        {
-            awakeMusic.Play();
-        }
-    }
 
 	#endregion
 
@@ -178,6 +201,60 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 			//  this.IsFiring = (bool)stream.ReceiveNext();
 			this.Health = (float)stream.ReceiveNext();
 		}
+	}
+
+	#endregion
+
+	#region Private Methods //私有方法
+
+	/// <summary>
+	/// 播放音效
+	/// </summary>
+	/// <param name="ac">声音</param>
+	void PlaySound(AudioSource As)
+	{
+		if (As!=null && !As.isPlaying)
+		{
+			As.Play();
+		}
+
+	}
+	/// <summary>
+	/// 减血
+	/// </summary>
+	/// <param name="_damageAmount">伤害值</param>
+	void ApplyDamage(float _damageAmount)
+	{
+		float t = Health - _damageAmount;
+		if (t > 0)//如果健康值不低于0则造成伤害
+			Health = t;
+		else //反之则切换到死亡，并且震动下手柄提醒玩家已经消灭敌人
+		{
+			Health = 0;
+			SwitchDead();
+			HitHapticPulse(1000);
+		}
+	}
+	/// <summary>
+	/// 震动
+	/// </summary>
+	/// <param name="duration">震动时间.</param>
+	void HitHapticPulse(ushort duration)
+	{
+		var deviceIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
+		var deviceIndex1 = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
+		SteamVR_Controller.Input(deviceIndex).TriggerHapticPulse(duration);
+		SteamVR_Controller.Input(deviceIndex1).TriggerHapticPulse(duration);
+	}
+
+	/// <summary>
+	/// 切换死亡
+	/// </summary>
+	void SwitchDead()
+	{
+		//ani.SetBool("isDead", true);
+		agent.enabled = false;//停止寻路
+
 	}
 
 	#endregion
