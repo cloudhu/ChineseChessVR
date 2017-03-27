@@ -120,11 +120,14 @@ public class ChessmanUI : MonoBehaviour {
 			Destroy(this.gameObject);
 			return;
 		}
+        //保持UI看向本地玩家
+        if (CameraRigManager.LocalPlayerInstance != null)
+        {
+            transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+        }
 
-		transform.LookAt (CameraRigManager.LocalPlayerInstance.transform);
-
-		// Reflect the Player Health
-		if (PlayerHealthSlider != null) {
+        // Reflect the Player Health
+        if (PlayerHealthSlider != null) {
 			PlayerHealthSlider.value = _target.Health;
 		}
 	}

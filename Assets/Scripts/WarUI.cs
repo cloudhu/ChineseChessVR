@@ -127,7 +127,7 @@ public class WarUI : MonoBehaviour {
         {
             UpdateText("Selected");
         }
-        transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+
 
     }
 

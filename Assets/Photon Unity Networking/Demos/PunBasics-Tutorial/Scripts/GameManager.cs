@@ -126,7 +126,7 @@ using UnityEngine.SceneManagement;
 			{
 				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
 
-                //LoadArena();    //加载竞技场
+                PhotonNetwork.LoadLevel("ChineseChessVR");   //加载关卡
             }
 		}
 
@@ -141,9 +141,9 @@ using UnityEngine.SceneManagement;
 			if ( PhotonNetwork.isMasterClient ) 
 			{
 				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
-				
-				//LoadArena();
-			}
+
+                 PhotonNetwork.LoadLevel("ChineseChessVR");
+            }
 		}
 
         /// <summary>
@@ -172,17 +172,7 @@ using UnityEngine.SceneManagement;
 
 		#region Private Methods
 
-		void LoadArena()
-		{
-			if ( ! PhotonNetwork.isMasterClient ) 
-			{
-				Debug.LogError( "PhotonNetwork : Trying to Load a level but we are not the master Client" );
-			}
 
-			Debug.Log( "PhotonNetwork : Loading Level : " + PhotonNetwork.room.PlayerCount ); 
-
-			PhotonNetwork.LoadLevel("PunBasics-Room for "+PhotonNetwork.room.PlayerCount);
-		}
 
 		#endregion
 
