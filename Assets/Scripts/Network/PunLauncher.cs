@@ -212,7 +212,7 @@ public class PunLauncher  : Photon.PunBehaviour {
 			if (isConnecting)
 			{
 				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
-				Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
+				Debug.Log("Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
 
 				//#Critical | 极重要: 我们首先尝试要做的就是加入一个潜在现有房间。如果有，很好，否则，我们将调用回调OnPhotonRandomJoinFailed()  
 				PhotonNetwork.JoinRandomRoom();
@@ -277,11 +277,11 @@ public class PunLauncher  : Photon.PunBehaviour {
 			Debug.Log("We load the 'ChineseChessVR' ");
 
 			//  #Critical | 极重要：加载房间关卡
-			//if (PhotonNetwork.room.PlayerCount > 1)
-			//{
+			if (PhotonNetwork.room.PlayerCount > 1)
+			{
 				PhotonNetwork.LoadLevel("ChineseChessVR");
 
-			//}
+			}
 		}
 
 		#endregion

@@ -275,7 +275,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
 		this.turnManager.TurnDuration = 120f;		//初始化回合持续时间
         Instance = this;
-		OnJoinedRoom ();
+		//OnJoinedRoom ();
         RefreshUIViews();	//刷新UI视图
 	}
 
@@ -1077,8 +1077,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
     public override void OnJoinedRoom()
     {
-		Debug.Log ("OnJoinedRoom+您是红方棋手");
-        
+        GameManager.Instance.OnJoinRoom();
 		if (PhotonNetwork.isMasterClient) {
 			localPlayerType = ChessPlayerType.Red;
 			GameStatusText.text = "您是红方棋手……";
