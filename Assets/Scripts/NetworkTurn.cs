@@ -284,18 +284,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		{
 			Destroy(this.gameObject);
 		}
-
-		// 为了方便调试, 弄一些快捷键是很有用的:
-		if (Input.GetKeyUp(KeyCode.L)) 	//L键离开房间
-		{
-			PhotonNetwork.LeaveRoom();
-		}
-		if (Input.GetKeyUp(KeyCode.C)) //C键连接
-		{
-			PhotonNetwork.ConnectUsingSettings(null);
-			PhotonHandler.StopFallbackSendAckThread();
-		}
-
+	
 
 		if ( ! PhotonNetwork.inRoom)	//不在房间则退出
 		{
@@ -338,40 +327,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		this.UpdatePlayerTexts();	//更新玩家文本信息
 
-
-
-		// 远程玩家的选择只在回合结束时（双方都完成回合）展示
-		if (this.turnManager.IsCompletedByAll)
-		{
-
-		}
-		else
-		{
-			ButtonCanvasGroup.interactable = PhotonNetwork.room.PlayerCount > 1;	//玩家数量大于1才可以触发按钮
-
-			if (PhotonNetwork.room.PlayerCount < 2)
-			{
-
-			}
-
-			// 如果所有玩家都没有完成该回合,我们为远程玩家的手势使用一个随机图片
-			else if (this.turnManager.Turn > 0 && !this.turnManager.IsCompletedByAll)
-			{
-				// 远程玩家手势图片的阿尔法值（透明度）被用于表明远程玩家是否“活跃”以及“完成回合”
-				PhotonPlayer remote = PhotonNetwork.player.GetNext();
-				float alpha = 0.5f;
-				if (this.turnManager.GetPlayerFinishedTurn(remote))
-				{
-					alpha = 1;	//完成回合为1
-				}
-				if (remote != null && remote.IsInactive)
-				{
-					alpha = 0.1f;
-				}
-					
-
-			}
-		}
 
 	}
 	#endregion
