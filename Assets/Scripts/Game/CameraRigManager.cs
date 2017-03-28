@@ -111,16 +111,12 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
     void Start () {
 
 		//创建玩家UI
-		if (this.PlayerUiPrefab != null)
+		if (this.PlayerUiPrefab != null && index==1)
 		{
 			GameObject _uiGo = Instantiate(this.PlayerUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
 			//_uiGo.transform.SetParent (transform,false);
 			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
 			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
-		}
-		else
-		{
-			Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
 		}
 	}
 	
