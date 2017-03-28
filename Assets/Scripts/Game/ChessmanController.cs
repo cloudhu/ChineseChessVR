@@ -132,7 +132,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
         if (this.warUiPrefab != null)
         {
             GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform) as GameObject;
-            _uiGo.transform.localPosition = new Vector3(0, 1.5f, 0);
+            _uiGo.transform.localPosition = new Vector3(0, 2.5f, 0);
             //_uiGo.transform.SetParent (transform,false);
             _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 			war = _uiGo.GetComponent<WarUI> ();

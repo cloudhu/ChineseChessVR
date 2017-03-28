@@ -106,24 +106,6 @@ public class GameManager : Photon.MonoBehaviour {
 	void Start()
 	{
 		Instance = this;
-
-		// in case we started this demo with the wrong scene being active, simply load the menu scene
-		if (!PhotonNetwork.connected)
-		{
-			//SceneManager.LoadScene("PunLauncher");
-
-			return;
-		}
-
-		if (HeadPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
-
-			Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'",this);
-		} else {
-
-
-
-		}
-
 	}
 
 	/// <summary>
@@ -142,22 +124,16 @@ public class GameManager : Photon.MonoBehaviour {
 
 	#region Photon Messages //Photon消息区域
 
-    public void OnJoinRoom()
+    public void OnJoinedRoom()
     {
-        if (CameraRigManager.LocalPlayerInstance == null)
+        if (CameraRigManager.LocalPlayerInstance == null && HeadPrefab!=null)
         {
             Debug.Log("We are Instantiating LocalPlayer from " + SceneManagerHelper.ActiveSceneName);
 
             // 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
-
-
-
-            GameObject RHand = PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-
-            GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-
             GameObject Head = PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-
+            GameObject RHand = PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+            GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
 
         }
         else

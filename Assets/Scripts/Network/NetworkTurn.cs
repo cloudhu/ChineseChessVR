@@ -1077,7 +1077,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
     public override void OnJoinedRoom()
     {
-        GameManager.Instance.OnJoinRoom();
 		if (PhotonNetwork.isMasterClient) {
 			localPlayerType = ChessPlayerType.Red;
 			GameStatusText.text = "您是红方棋手……";
