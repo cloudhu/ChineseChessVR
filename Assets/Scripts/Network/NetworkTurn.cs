@@ -135,6 +135,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     [Tooltip("棋盘总管")]
     public BoardManager boardManager;
 
+	public AudioClip JoinClip;
+	public AudioClip LeaveClip;
 
     static public NetworkTurn Instance;
     #endregion
@@ -144,7 +146,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     // 追踪显示结果的时机来处理游戏逻辑.
     private bool IsShowingResults;
-
+	private AudioSource source;
 
 	[Tooltip("连接UI视图")]
 	[SerializeField]
@@ -273,7 +275,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
 		this.turnManager.TurnDuration = 120f;		//初始化回合持续时间
         Instance = this;
-        
+		OnJoinedRoom ();
         RefreshUIViews();	//刷新UI视图
 	}
 
@@ -1075,6 +1077,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
     public override void OnJoinedRoom()
     {
+		Debug.Log ("OnJoinedRoom+您是红方棋手");
         
 		if (PhotonNetwork.isMasterClient) {
 			localPlayerType = ChessPlayerType.Red;
@@ -1110,38 +1113,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             }
         }
 		RefreshUIViews();
-       }
+   	}
+		
 
-    /// <summary>
-    /// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
-    /// </summary>
-    /// <remarks>如果你的游戏开始时就有一定数量的玩家，这个回调在检查Room.playerCount并发现你是否可以开始游戏时会很有用.</remarks>
-    /// <param name="newPlayer">New player.</param>
-    public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
-    {
-        Debug.Log("Other player arrived");
-        GameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
-        if (PhotonNetwork.room.PlayerCount == 2)
-        {
-            if (this.turnManager.Turn == 0)
-            {
-
-                this.StartTurn();
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.
-    /// </summary>
-    /// <remarks>当你的客户端调用PhotonNetwork.leaveRoom时，PUN将在现有的客户端上调用此方法。当远程客户端关闭连接或被关闭时，这个回调函数会在经过几秒钟的暂停后被执行.</remarks>
-    /// <param name="otherPlayer">Other player.</param>
-    public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
-    {
-        Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
-        GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
-    }
 
     /// <summary>
     /// 当未知因素导致连接失败（在建立连接之后）时调用，接着调用OnDisconnectedFromPhoton()。
@@ -1153,6 +1127,45 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         this.DisconnectedPanel.gameObject.SetActive(true);
     }
 
+	/// <summary>
+	/// 当一个远程玩家进入房间时调用。这个PhotonPlayer在这个时候已经被添加playerlist玩家列表.
+	/// </summary>
+	/// <remarks>如果你的游戏开始时就有一定数量的玩家，这个回调在检查Room.playerCount并发现你是否可以开始游戏时会很有用.</remarks>
+	/// <param name="newPlayer">New player.</param>
+	public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+	{
+		Debug.Log("Other player arrived");
+		GameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
+		if (PhotonNetwork.room.PlayerCount == 2)
+		{
+			if (this.turnManager.Turn == 0)
+			{
+
+				this.StartTurn();
+			}
+		}
+		if (this.JoinClip != null)
+		{
+			if (this.source == null) this.source = FindObjectOfType<AudioSource>();
+			this.source.PlayOneShot(this.JoinClip);
+		}
+	}
+
+	/// <summary>
+	/// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.
+	/// </summary>
+	/// <remarks>当你的客户端调用PhotonNetwork.leaveRoom时，PUN将在现有的客户端上调用此方法。当远程客户端关闭连接或被关闭时，这个回调函数会在经过几秒钟的暂停后被执行.</remarks>
+	/// <param name="otherPlayer">Other player.</param>
+	public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
+	{
+		if (this.LeaveClip != null)
+		{
+			if (this.source == null) this.source = FindObjectOfType<AudioSource>();
+			this.source.PlayOneShot(this.LeaveClip);
+		}
+		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
+		GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
+	}
     #endregion
 
 

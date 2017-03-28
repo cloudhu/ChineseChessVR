@@ -6,7 +6,6 @@
 //  Used in "PUN Basic tutorial" to handle typical game management requirements
 // </summary>
 // <author>developer@exitgames.com</author>
-//中文注释：胡良云（CloudHu）
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
@@ -15,7 +14,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-
+namespace ExitGames.Demos.DemoAnimator
+{
 	/// <summary>
 	/// Game manager.
 	/// Connects and watch Photon Status, Instantiate Player
@@ -28,25 +28,14 @@ using UnityEngine.SceneManagement;
 
 		static public GameManager Instance;
 
+		[Tooltip("The prefab to use for representing the player")]
+		public GameObject playerPrefab;
 
-		[Tooltip("玩家头盔预设")]
-		public GameObject HeadPrefab;
-		[Tooltip("玩家双手预设")]
-		public GameObject LHandPrefab;
-		[Tooltip("玩家双手预设")]
-		public GameObject RHandPrefab;
+		#endregion
 
-        public Transform head;
-        public Transform leftHand;
-        public Transform rightHand;
-        //[Tooltip("VRTK")]
-        // public GameObject vrtk;
+		#region Private Variables
 
-        #endregion
-
-        #region Private Variables
-
-        private GameObject instance;
+		private GameObject instance;
 
 		#endregion
 
@@ -62,34 +51,24 @@ using UnityEngine.SceneManagement;
 			// in case we started this demo with the wrong scene being active, simply load the menu scene
 			if (!PhotonNetwork.connected)
 			{
-				SceneManager.LoadScene("PunLauncher");
+				SceneManager.LoadScene("PunBasics-Launcher");
 
 				return;
 			}
 
-			if (HeadPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
+			if (playerPrefab == null) { // #Tip Never assume public properties of Components are filled up properly, always check and inform the developer of it.
 				
 				Debug.LogError("<Color=Red><b>Missing</b></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'",this);
 			} else {
 				
 
-				if (CameraRigManager.LocalPlayerInstance==null)
+				if (PlayerManager.LocalPlayerInstance==null)
 				{
 					Debug.Log("We are Instantiating LocalPlayer from "+SceneManagerHelper.ActiveSceneName);
 
-					// 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
-
-
-                    
-                    GameObject RHand= PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					
-					GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					
-					GameObject Head= PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					
-
-                }
-                else{
+					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+				}else{
 
 					Debug.Log("Ignoring scene load for "+ SceneManagerHelper.ActiveSceneName);
 				}
@@ -111,48 +90,48 @@ using UnityEngine.SceneManagement;
 			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Photon Messages //Photon消息区域
+		#region Photon Messages
 
-        /// <summary>
-        /// 当Photon玩家已连接时调用。我们需要在那时加载更大的场景。
-        /// </summary>
-        /// <param name="other">Other.</param>
-        public void OnPhotonPlayerConnected( PhotonPlayer other  )
+		/// <summary>
+		/// Called when a Photon Player got connected. We need to then load a bigger scene.
+		/// </summary>
+		/// <param name="other">Other.</param>
+		public void OnPhotonPlayerConnected( PhotonPlayer other  )
 		{
-			Debug.Log( "OnPhotonPlayerConnected() " + other.NickName); //如果你是正在连接的玩家则看不到
+			Debug.Log( "OnPhotonPlayerConnected() " + other.NickName); // not seen if you're the player connecting
 
-            if ( PhotonNetwork.isMasterClient ) 
+			if ( PhotonNetwork.isMasterClient ) 
 			{
-				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
+				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // called before OnPhotonPlayerDisconnected
 
-                PhotonNetwork.LoadLevel("ChineseChessVR");   //加载关卡
-            }
+				LoadArena();
+			}
 		}
 
 		/// <summary>
-		/// 当Photon玩家断连时调用。我们需要加载小一点的场景。
+		/// Called when a Photon Player got disconnected. We need to load a smaller scene.
 		/// </summary>
 		/// <param name="other">Other.</param>
 		public void OnPhotonPlayerDisconnected( PhotonPlayer other  )
 		{
-			Debug.Log( "OnPhotonPlayerDisconnected() " + other.NickName ); // 当其他玩家断连时可见
+			Debug.Log( "OnPhotonPlayerDisconnected() " + other.NickName ); // seen when other disconnects
 
 			if ( PhotonNetwork.isMasterClient ) 
 			{
-				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // 在OnPhotonPlayerDisconnected之前调用
-
-                 PhotonNetwork.LoadLevel("ChineseChessVR");
-            }
+				Debug.Log( "OnPhotonPlayerConnected isMasterClient " + PhotonNetwork.isMasterClient ); // called before OnPhotonPlayerDisconnected
+				
+				LoadArena();
+			}
 		}
 
-        /// <summary>
-        /// 当本地玩家离开房间时被调用。我们需要加载Launcher场景。
-        /// </summary>
-        public virtual void OnLeftRoom()
+		/// <summary>
+		/// Called when the local player left the room. We need to load the launcher scene.
+		/// </summary>
+		public virtual void OnLeftRoom()
 		{
-			SceneManager.LoadScene("PunLauncher");
+			SceneManager.LoadScene("PunBasics-Launcher");
 		}
 
 		#endregion
@@ -173,9 +152,20 @@ using UnityEngine.SceneManagement;
 
 		#region Private Methods
 
+		void LoadArena()
+		{
+			if ( ! PhotonNetwork.isMasterClient ) 
+			{
+				Debug.LogError( "PhotonNetwork : Trying to Load a level but we are not the master Client" );
+			}
 
+			Debug.Log( "PhotonNetwork : Loading Level : " + PhotonNetwork.room.PlayerCount ); 
+
+			PhotonNetwork.LoadLevel("PunBasics-Room for "+PhotonNetwork.room.PlayerCount);
+		}
 
 		#endregion
 
 	}
-	
+
+}

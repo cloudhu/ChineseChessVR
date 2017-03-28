@@ -6,7 +6,6 @@
 //  Used in DemoAnimator to cdeal with the networked player Animator Component controls.
 // </summary>
 // <author>developer@exitgames.com</author>
-// 中文注释：胡良云（CloudHu）
 // --------------------------------------------------------------------------------------------------------------------
 
 
@@ -36,8 +35,8 @@ namespace ExitGames.Demos.DemoAnimator
 		/// </summary>
 	    void Start () 
 	    {
-	        animator = GetComponent<Animator>();    //获取动画组件
-        }
+	        animator = GetComponent<Animator>();
+	    }
 	        
 		/// <summary>
 		/// MonoBehaviour method called on GameObject by Unity on every frame.
@@ -51,33 +50,33 @@ namespace ExitGames.Demos.DemoAnimator
 	            return;
 	        }
 
-            //如果没有获取到则报错
-            if (!animator)
+			// failSafe is missing Animator component on GameObject
+	        if (!animator)
 	        {
-				return;//如果没有获取到动画组件，则用return中断
-            }
+				return;
+			}
 
-            // 处理跳跃
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+			// deal with Jumping
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);			
 
-            // 只有当我们在奔跑的时候才能跳跃。
+			// only allow jumping if we are running.
             if (stateInfo.IsName("Base Layer.Run"))
             {
-                // 何时使用触发参数。
+				// When using trigger parameter
                 if (Input.GetButtonDown("Fire2")) animator.SetTrigger("Jump"); 
 			}
            
-			// 处理移动
+			// deal with movement
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
 
-
-            if( v < 0)//数值校正
+			// prevent negative Speed.
+            if( v < 0 )
             {
                 v = 0;
             }
 
-            //设置速度参数值
+			// set the Animator Parameters
             animator.SetFloat( "Speed", h*h+v*v );
             animator.SetFloat( "Direction", h, DirectionDampTime, Time.deltaTime );
 	    }

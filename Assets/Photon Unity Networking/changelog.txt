@@ -1,3 +1,22 @@
+v1.81 (16. March 2017)
+Updated: Basic Demo Launcher.cs: removed Log Level setup, it's now done in the Photon Settings.
+Updated: Chat Demo ChatGui.cs: removed running in background setup, it's now done in the Photon settings.
+Fixed: NetworkingPeer.cs: Fixed Scene Object OwnerShip transfer on late Join. 
+Fixed: ColorPerPlayer.cs and ColorPerPlayerApply.cs for a more robust connection with PlayerRoomIndexing.cs instance.
+Fixed: Ownership handling when returning to a game.
+Updated: Setting the log levels via code will now override the logging settings ("Pun Logging" and "Network Logging") from the PhotonServerSettings config.
+Updated: Demo Hub scene to better highlight tutorial links versus links to online documentation.
+Updated: Link for PhotonAnimatorView trigger doc url.
+Added: Callback OnOwnershipTransfered. Called when a PhotonView Owner is transfered to a Player.
+Added: Callback OnPhotonPlayerActivityChanged. Called when a remote Photon Player activity changed. This will be called ONLY is PlayerTtl is greater than 0. Check PhotonPlayer.IsInactive for the player.
+Added: GetCustomRoomList(). Enables you to fetch a short, filtered list of room names from an "SQL lobby".
+Fixed: Basic Demo Launcher: Fixed 5.4+ SceneManager OnSceneLoad callback to not throw errors when coming back to the demo hub
+Fixed: ColorPerPlayerApply.cs: Disable routine was not safe and would throw errors
+Changed: WebGL exports will now use secure https "GetPing" requests. This enables Best Region for content on https hosting.
+Changed: The fallback thread to keep connections doesn't have to run when in offlineMode.
+Updated: The Photon assemblies to v4.1.1.9, which includes several fixes. E.g. "WouldBlock Exception" and "BlockCopy Exception". More info is in the release history file for the dll.
+
+
 v1.80 (15. December 2016)
 Fixed: PhotonTransformView first take routine to take in consideration what to update instead of forcing position, rotation scale no matter what.
 Updated: PlayerRoomIndexing.cs to account for potential race conditions when masterClient is transfered and new player joins. SanitizeIndexing() is now in place.
@@ -12,7 +31,6 @@ Removed: Surplus debug log output.
 Changed: Public variable- and property-naming to PascalCase (beginning with an uppercase character) in RoomInfo, Room and PhotonPlayer class. The old naming is still available but attributed as Obsolete, so you should update asap. Sadly, this is extra work for everyone but we want to make the API more stringent.
 Changed: The PhotonPlayer.name is now .NickName to make it more obvious that this is not the user's ID (and might be changed at will).
 Removed: Obsolete PhotonView.observed. Since a while, each PhotonView has a list of observed components instead. If you have a very old (!) project, check your PhotonViews and make sure they still observe the scripts you meant to observe. Newer projects won't be affected.
-
 
 v1.79 (18. November 2016)
 Changed: PUN will no longer aggregate the data from ALL objects in a group into ONE message. Instead, a maximum of 10 objects will be sent together. The idea is to avoid huge messages, which need fragmentation. Fragmentation needs to be avoided, cause fragments are always reliable (and you basically lose "unreliable" updates when you send too much). There is a new variable for this: NetworkingPeer.ObjectsInOneUpdate.

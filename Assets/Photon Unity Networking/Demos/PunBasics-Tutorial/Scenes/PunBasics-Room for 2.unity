@@ -603,7 +603,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4433564e76b1940028e7e531f171050d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 100030, guid: fe764102aa5aa431795da15fa2dec0e2, type: 2}
+  HeadPrefab: {fileID: 0}
+  LHandPrefab: {fileID: 0}
+  RHandPrefab: {fileID: 0}
+  head: {fileID: 0}
+  leftHand: {fileID: 0}
+  rightHand: {fileID: 0}
 --- !u!4 &752597775
 Transform:
   m_ObjectHideFlags: 0
@@ -1406,7 +1411,7 @@ Light:
   serializedVersion: 7
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.370351
   m_Range: 53.88
   m_SpotAngle: 30
   m_CookieSize: 10

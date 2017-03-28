@@ -215,7 +215,7 @@ internal class PhotonHandler : MonoBehaviour
     /// <summary>A thread which runs independent from the Update() calls. Keeps connections online while loading or in background. See PhotonNetwork.BackgroundTimeout.</summary>
     public static bool FallbackSendAckThread()
     {
-        if (sendThreadShouldRun && PhotonNetwork.networkingPeer != null)
+        if (sendThreadShouldRun && !PhotonNetwork.offlineMode && PhotonNetwork.networkingPeer != null)
         {
             // check if the client should disconnect after some seconds in background
             if (timerToStopConnectionInBackground != null && PhotonNetwork.BackgroundTimeout > 0.1f)

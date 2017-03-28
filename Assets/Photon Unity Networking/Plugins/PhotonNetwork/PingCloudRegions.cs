@@ -103,7 +103,7 @@ public class PingHttp : PhotonPing
 
     public override bool StartPing(string address)
     {
-        address = "http://" + address + "/photon/m/?ping&r=" + UnityEngine.Random.Range(0, 10000);
+        address = "https://" + address + "/photon/m/?ping&r=" + UnityEngine.Random.Range(0, 10000);
         Debug.Log("StartPing: " + address);
         this.webRequest = new WWW(address);
         return true;

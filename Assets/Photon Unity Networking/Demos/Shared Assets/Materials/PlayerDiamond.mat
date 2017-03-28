@@ -29,6 +29,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
+        name: _Emission
+      second: 1
+    - first:
         name: _EmissionLM
       second: 0
     m_Colors:

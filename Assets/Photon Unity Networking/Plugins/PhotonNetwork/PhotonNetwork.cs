@@ -28,7 +28,7 @@ using System.IO;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.80";
+    public const string versionPUN = "1.81";
 
     /// <summary>Version string for your this build. Can be used to separate incompatible clients. Sent during connect.</summary>
     /// <remarks>This is only sent when you connect so that is also the place you set it usually (e.g. in ConnectUsingSettings).</remarks>
@@ -1217,8 +1217,18 @@ public static class PhotonNetwork
             return false;
         }
 
-        PhotonNetwork.logLevel = PhotonServerSettings.PunLogging;
-        PhotonNetwork.networkingPeer.DebugOut = PhotonServerSettings.NetworkLogging;
+		// only apply Settings if logLevel is default ( see ServerSettings.cs), else it means it's been set programmatically
+		if (PhotonNetwork.logLevel == PhotonLogLevel.ErrorsOnly)
+		{
+        	PhotonNetwork.logLevel = PhotonServerSettings.PunLogging;
+		}
+
+		// only apply Settings if logLevel is default ( see ServerSettings.cs), else it means it's been set programmatically
+		if (PhotonNetwork.networkingPeer.DebugOut == DebugLevel.ERROR)
+		{
+        	PhotonNetwork.networkingPeer.DebugOut = PhotonServerSettings.NetworkLogging;
+		}
+
 
         SwitchToProtocol(PhotonServerSettings.Protocol);
         networkingPeer.SetApp(PhotonServerSettings.AppID, gameVersion);
@@ -2153,6 +2163,22 @@ public static class PhotonNetwork
         }
 
         return true;
+    }
+
+    /// <summary>Fetches a custom list of games from the server, matching a SQL-like "where" clause, then triggers OnReceivedRoomListUpdate callback.</summary>
+    /// <remarks>
+    /// Operation is only available for lobbies of type SqlLobby. Note: You don't have to join that lobby.
+    /// This is an async request.
+    /// 
+    /// When done, OnReceivedRoomListUpdate gets called. Use GetRoomList() to access it.
+    /// </remarks>
+    /// <see cref="http://doc.photonengine.com/en-us/pun/current/manuals-and-demos/matchmaking-and-lobby#sql_lobby_type"/>
+    /// <param name="typedLobby">The lobby to query. Has to be of type SqlLobby.</param>
+    /// <param name="sqlLobbyFilter">The sql query statement.</param>
+    /// <returns>If the operation could be sent (has to be connected).</returns>
+    public static bool GetCustomRoomList(TypedLobby typedLobby, string sqlLobbyFilter)
+    {
+        return networkingPeer.OpGetGameList(typedLobby, sqlLobbyFilter);
     }
 
     /// <summary>

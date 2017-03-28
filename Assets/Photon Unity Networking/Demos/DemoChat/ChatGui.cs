@@ -5,17 +5,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 这是一个简单的聊天API基本用法演示
+/// This simple Chat UI demonstrate basics usages of the Chat Api
 /// </summary>
 /// <remarks>
 /// The ChatClient basically lets you create any number of channels.
 ///
 /// some friends are already set in the Chat demo "DemoChat-Scene", 'Joe', 'Jane' and 'Bob', simply log with them so that you can see the status changes in the Interface
 ///
-/// 工作流程:
-/// 创建ChatClient, 用AppID连接到服务器, 验证用户 (应用唯一的名称)
-/// 并订阅一些频道.
-/// 在你发布到频道前订阅!
+/// Workflow:
+/// Create ChatClient, Connect to a server with your AppID, Authenticate the user (apply a unique name,)
+/// and subscribe to some channels.
+/// Subscribe a channel before you publish to that channel!
 ///
 ///
 /// Note:
@@ -23,64 +23,45 @@ using UnityEngine.UI;
 /// </remarks>
 public class ChatGui : MonoBehaviour, IChatClientListener
 {
-	[Tooltip("连接加入的频道")]
+
 	public string[] ChannelsToJoinOnConnect; // set in inspector. Demo channels to join automatically.
-
-	[Tooltip("好友列表")]
+	
 	public string[] FriendsList;
-
-	[Tooltip("聊天历史长度")]
+	
 	public int HistoryLengthToFetch; // set in inspector. Up to a certain degree, previously sent messages can be fetched for context
-
-
+	
 	public string UserName { get; set; }
 	
-	private string selectedChannelName; // 主要用于GUI/input
-
-	[Tooltip("聊天客户端")]
+	private string selectedChannelName; // mainly used for GUI/input
+	
 	public ChatClient chatClient;
-
-	[Tooltip("缺少AppId错误面板")]
+	
 	public GameObject missingAppIdErrorPanel;
-
-	[Tooltip("连接标签")]
+	
 	public GameObject ConnectingLabel;
-
-	[Tooltip("聊天面板")]
+	
 	public RectTransform ChatPanel;     // set in inspector (to enable/disable panel)
-
-	[Tooltip("用户ID表面板")]
 	public GameObject UserIdFormPanel;
-
-	[Tooltip("聊天输入框")]
 	public InputField InputFieldChat;   // set in inspector
-
-	[Tooltip("当前频道文本")]
 	public Text CurrentChannelText;     // set in inspector
-
-	[Tooltip("频道开关来实例化")]
 	public Toggle ChannelToggleToInstantiate; // set in inspector
 	
-	[Tooltip("要实例化的好友UI项")]
+	
 	public GameObject FriendListUiItemtoInstantiate;
 	
 	private readonly Dictionary<string, Toggle> channelToggles = new Dictionary<string, Toggle>();
 	
 	private readonly Dictionary<string,FriendItem> friendListItemLUT =  new Dictionary<string, FriendItem>();
-
-	[Tooltip("是否显示状态")]
+	
 	public bool ShowState = true;
-	[Tooltip("标题")]
 	public GameObject Title;
-	[Tooltip("状态文本")]
 	public Text StateText; // set in inspector
-	[Tooltip("用户ID文本")]
 	public Text UserIdText; // set in inspector
 	
 	// private static string WelcomeText = "Welcome to chat. Type \\help to list commands.";
-	private static string HelpText = "\n    -- 帮助 --\n" +
-		"要订阅频道:\n" +
-		"\t<color=#E07B00>\\subscribe</color> <color=green><list of channelnames></color>\n" +
+	private static string HelpText = "\n    -- HELP --\n" +
+		"To subscribe to channel(s):\n" +
+			"\t<color=#E07B00>\\subscribe</color> <color=green><list of channelnames></color>\n" +
 			"\tor\n" +
 			"\t<color=#E07B00>\\s</color> <color=green><list of channelnames></color>\n" +
 			"\n" +
@@ -114,8 +95,8 @@ public class ChatGui : MonoBehaviour, IChatClientListener
 	public void Start()
 	{
 		DontDestroyOnLoad(gameObject);
-		Application.runInBackground = true; // this must run in background or it will drop connection if not focussed.
-		
+
+
 		UserIdText.text = "";
 		StateText.text  = "";
 		StateText.gameObject.SetActive(true);
@@ -133,7 +114,7 @@ public class ChatGui : MonoBehaviour, IChatClientListener
 		this.missingAppIdErrorPanel.SetActive(_AppIdPresent);
 		
 		this.UserIdFormPanel.gameObject.SetActive(!_AppIdPresent);
-		Connect ();
+		
 		if (string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID))
 		{
 			Debug.LogError("You need to set the chat app ID in the PhotonServerSettings file in order to continue.");

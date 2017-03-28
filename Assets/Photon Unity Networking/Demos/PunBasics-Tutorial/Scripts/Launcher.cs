@@ -6,7 +6,6 @@
 //  Used in "PUN Basic tutorial" to connect, and join/create room automatically
 // </summary>
 // <author>developer@exitgames.com</author>
-//中文注释：胡良云（CloudHu）
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
@@ -25,81 +24,77 @@ namespace ExitGames.Demos.DemoAnimator
 {
 	public class Launcher : Photon.PunBehaviour {
 
-		#region Public Variables  //公共变量区域
+		#region Public Variables
 
-		[Tooltip("让用户输入姓名、连接和开始游戏的UI面板")]
+		[Tooltip("The Ui Panel to let the user enter name, connect and play")]
 		public GameObject controlPanel;
 
-		[Tooltip("告知用户连接进程的UI文本")]
+		[Tooltip("The Ui Text to inform the user about the connection progress")]
 		public Text feedbackText;
 
-		[Tooltip("每间房间的最大玩家数量")]
-		public byte maxPlayersPerRoom = 10;
+		[Tooltip("The maximum number of players per room")]
+		public byte maxPlayersPerRoom = 4;
 
-		[Tooltip("UI加载动画")]
+		[Tooltip("The UI Loader Anime")]
 		public LoaderAnime loaderAnime;
 
-        #endregion
+		#endregion
 
-        #region Private Variables   //私有变量区域
-        /// <summary>
-        /// 跟踪当前进程。因为连接是异步的，且是基于来自Photon的几个回调，
-        /// 我们需要跟踪这一点，以在我们收到Photon回调时适当地调整该行为。
-        /// 这通常是用于OnConnectedToMaster()回调。
-        /// </summary>
-        bool isConnecting;
+		#region Private Variables
+		/// <summary>
+		/// Keep track of the current process. Since connection is asynchronous and is based on several callbacks from Photon, 
+		/// we need to keep track of this to properly adjust the behavior when we receive call back by Photon.
+		/// Typically this is used for the OnConnectedToMaster() callback.
+		/// </summary>
+		bool isConnecting;
 
-        /// <summary>
-        /// 此客户端的版本号。用户通过gameversion彼此分离 (这让你可以做出突破性的改变).
-        /// </summary>
-        string _gameVersion = "1";
+		/// <summary>
+		/// This client's version number. Users are separated from each other by gameversion (which allows you to make breaking changes).
+		/// </summary>
+		string _gameVersion = "1";
 
-        #endregion
+		#endregion
 
-        #region MonoBehaviour CallBacks //回调函数区域
+		#region MonoBehaviour CallBacks
 
-        /// <summary>
-        /// 在早期初始化阶段里被Unity在游戏对象上调用的MonoBehaviour方法。
-        /// </summary>
-        void Awake()
+		/// <summary>
+		/// MonoBehaviour method called on GameObject by Unity during early initialization phase.
+		/// </summary>
+		void Awake()
 		{
 			if (loaderAnime==null)
 			{
-				Debug.LogError("<Color=Red><b>缺少</b></Color> loaderAnime引用.",this);
+				Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.",this);
 			}
 
-			// #NotImportant
-			// Force LogLevel
-			PhotonNetwork.logLevel = PhotonLogLevel.ErrorsOnly;
+			// #Critical
+			// we don't join the lobby. There is no need to join a lobby to get the list of rooms.
+			PhotonNetwork.autoJoinLobby = false;
 
-            // #Critical | 极重要
-            //我们不加入大厅。没有必要加入一个大厅来获得房间列表。
-            PhotonNetwork.autoJoinLobby = false;
-
-            // #Critical | 极重要
-            //这样可以确保我们可以在主客户端上使用PhotonNetwork.LoadLevel()方法，并且在相同房间里的所有客户端都会自动同步它们的关卡。
-            PhotonNetwork.automaticallySyncScene = true;
+			// #Critical
+			// this makes sure we can use PhotonNetwork.LoadLevel() on the master client and all clients in the same room sync their level automatically
+			PhotonNetwork.automaticallySyncScene = true;
 
 
 		}
 
-        #endregion
+		#endregion
 
 
-        #region Public Methods //公共方法
+		#region Public Methods
 
-        /// <summary>
-        /// 启动连接进程。
-        /// - 如果已经连接，我们试图加入一个随机的房间
-        /// - 如果尚未连接，请将此应用程序实例连接到Photon云网络
-        /// </summary>
-        public void Connect()
+		/// <summary>
+		/// Start the connection process. 
+		/// - If already connected, we attempt joining a random room
+		/// - if not yet connected, Connect this application instance to Photon Cloud Network
+		/// </summary>
+		public void Connect()
 		{
-			// 我们想要确保每次连接的时候记录都被清空，如果连接失败我们可能会有几次失败的尝试。
+			// we want to make sure the log is clear everytime we connect, we might have several failed attempted if connection failed.
 			feedbackText.text = "";
 
-            // 跟踪玩家加入一个房间的意愿，因为当我们从游戏中回来时，我们会得到一个我们已连接的回调，所以我们需要知道那个时候该怎么做
-            isConnecting = true;
+			// keep track of the will to join a room, because when we come back from the game we will get a callback that we are connected, so we need to know what to do then
+			isConnecting = true;
 
 			// hide the Play button for visual consistency
 			controlPanel.SetActive(false);
@@ -110,19 +105,19 @@ namespace ExitGames.Demos.DemoAnimator
 				loaderAnime.StartLoaderAnimation();
 			}
 
-            // 我们检查是否连接，如果我们已连接则加入，否则我们启动连接到服务器。
-            if (PhotonNetwork.connected)
+			// we check if we are connected or not, we join if we are , else we initiate the connection to the server.
+			if (PhotonNetwork.connected)
 			{
 				LogFeedback("Joining Room...");
-                // #Critical | 极重要 -我们需要在这个点上企图加入一个随机房间。如果失败，我们将在OnPhotonRandomJoinFailed()里面得到通知，这样我们将创建一个房间。
-                PhotonNetwork.JoinRandomRoom();
+				// #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnPhotonRandomJoinFailed() and we'll create one.
+				PhotonNetwork.JoinRandomRoom();
+				PhotonNetwork.JoinRandomRoom(null,(byte)(2));
 			}else{
 
 				LogFeedback("Connecting...");
-
-
-                // #Critical | 极重要 -我们必须首先连接到Photon在线服务器。
-                PhotonNetwork.ConnectUsingSettings(_gameVersion);
+				
+				// #Critical, we must first and foremost connect to Photon Online Server.
+				PhotonNetwork.ConnectUsingSettings(_gameVersion);
 			}
 		}
 
@@ -144,7 +139,7 @@ namespace ExitGames.Demos.DemoAnimator
 		#endregion
 
 
-		#region Photon.PunBehaviour CallBacks   //PUN回调区域
+		#region Photon.PunBehaviour CallBacks
 		// below, we implement some callbacks of PUN
 		// you can find PUN's callbacks in the class PunBehaviour or in enum PhotonNetworkingMessage
 
@@ -164,9 +159,9 @@ namespace ExitGames.Demos.DemoAnimator
 			{
 				LogFeedback("OnConnectedToMaster: Next -> try to Join Random Room");
 				Debug.Log("DemoAnimator/Launcher: OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room.\n Calling: PhotonNetwork.JoinRandomRoom(); Operation will fail if no room found");
-
-                //#Critical | 极重要: 我们首先尝试要做的就是加入一个潜在现有房间。如果有，很好，否则，我们将调用回调OnPhotonRandomJoinFailed()  
-                PhotonNetwork.JoinRandomRoom();
+		
+				// #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnPhotonRandomJoinFailed()
+				PhotonNetwork.JoinRandomRoom();
 			}
 		}
 
@@ -182,8 +177,8 @@ namespace ExitGames.Demos.DemoAnimator
 			LogFeedback("<Color=Red>OnPhotonRandomJoinFailed</Color>: Next -> Create a new Room");
 			Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
 
-            // #Critical | 极重要: 我们加入一个随机房间失败，也许没有房间存在或房间已满。别担心，我们创建一个新的房间即可。
-            PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = this.maxPlayersPerRoom}, null);
+			// #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
+			PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = this.maxPlayersPerRoom}, null);
 		}
 
 
@@ -207,30 +202,32 @@ namespace ExitGames.Demos.DemoAnimator
 
 		}
 
-        /// <summary>
-        /// 当进入一个房间时（通过创建或加入该房间）在所有客户端上调用（包括主客户端）。
-        /// </summary>
-        /// <remarks>
-        /// 该方法常被用于实例化玩家角色。
-        /// 如果匹配必须被玩家主动启动，你可以调用一个[PunRPC](@ref PhotonView.RPC)由用户按钮按下或定时器触发。
-        /// 
-        /// 当该方法被调用时，你通常已经可以通过PhotonNetwork.playerList访问到房间里存在的玩家了。
-        /// 同样的，所有自定义属性应该已经作为Room.customProperties可供使用了。检查Room.PlayerCount来查看房间里是否有足够的玩家来开始游戏了。
-        /// </remarks>
-        public override void OnJoinedRoom()
+		/// <summary>
+		/// Called when entering a room (by creating or joining it). Called on all clients (including the Master Client).
+		/// </summary>
+		/// <remarks>
+		/// This method is commonly used to instantiate player characters.
+		/// If a match has to be started "actively", you can call an [PunRPC](@ref PhotonView.RPC) triggered by a user's button-press or a timer.
+		///
+		/// When this is called, you can usually already access the existing players in the room via PhotonNetwork.playerList.
+		/// Also, all custom properties should be already available as Room.customProperties. Check Room..PlayerCount to find out if
+		/// enough players are in the room to start playing.
+		/// </remarks>
+		public override void OnJoinedRoom()
 		{
 			LogFeedback("<Color=Green>OnJoinedRoom</Color> with "+PhotonNetwork.room.PlayerCount+" Player(s)");
 			Debug.Log("DemoAnimator/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running. For reference, all callbacks are listed in enum: PhotonNetworkingMessage");
+		
+			// #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.automaticallySyncScene to sync our instance scene.
+			if (PhotonNetwork.room.PlayerCount == 1)
+			{
+				Debug.Log("We load the 'Room for 1' ");
 
-            // #Critical | 极重要：只有第一个玩家才加载，否则我们依赖PhotonNetwork.automaticallySyncScene来同步我们的场景实例
-           // if (PhotonNetwork.room.PlayerCount == 1)
-			//{
-			Debug.Log("We load the 'ChineseChessVR' ");
+				// #Critical
+				// Load the Room Level. 
+				PhotonNetwork.LoadLevel("PunBasics-Room for 1");
 
-                //  #Critical | 极重要：加载房间关卡
-                PhotonNetwork.LoadLevel("ChineseChessVR");
-
-			//}
+			}
 		}
 
 		#endregion

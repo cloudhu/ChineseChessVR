@@ -29,12 +29,34 @@ public class ServerSettingsInspector : Editor
     private bool hasVoice = false;
     private bool hasChat = false;
 
+
+	CloudRegionCode _CurrentRegionCode;
+
     [ExecuteInEditMode]
     public void OnEnable()
     {
         this.hasVoice = Type.GetType("ExitGames.Client.Photon.Voice.VoiceClient, Assembly-CSharp") != null || Type.GetType("ExitGames.Client.Photon.Voice.VoiceClient, Assembly-CSharp-firstpass") != null;
         this.hasChat = Type.GetType("ExitGames.Client.Photon.Chat.ChatClient, Assembly-CSharp") != null || Type.GetType("ExitGames.Client.Photon.Chat.ChatClient, Assembly-CSharp-firstpass") != null;
-    }
+
+		_CurrentRegionCode = ServerSettings.BestRegionCodeCurrently;
+
+		EditorApplication.update += OnUpdate;
+
+	}
+
+	public void OnDisable()
+	{
+		EditorApplication.update -= OnUpdate;
+	}
+
+	void OnUpdate()
+	{
+		if (_CurrentRegionCode !=  ServerSettings.BestRegionCodeCurrently)
+		{
+			_CurrentRegionCode = ServerSettings.BestRegionCodeCurrently;
+			Repaint();
+		}
+	}
 
 
     public override void OnInspectorGUI()
@@ -56,6 +78,34 @@ public class ServerSettingsInspector : Editor
                 }
                 else
                 {
+
+					string _regionFeedback = "Prefs:"+ServerSettings.BestRegionCodeInPreferences.ToString();
+
+					if (Application.isPlaying)
+					{
+						_regionFeedback = "Current:"+ServerSettings.BestRegionCodeCurrently.ToString()+" "+_regionFeedback;
+					}
+
+					EditorGUILayout.BeginHorizontal ();
+					EditorGUILayout.PrefixLabel (" ");
+					Rect rect = GUILayoutUtility.GetRect(new GUIContent("_regionFeedback"),"Label");
+					int indentLevel = EditorGUI.indentLevel;
+					EditorGUI.indentLevel = 0;
+					EditorGUI.LabelField (rect, _regionFeedback);
+					EditorGUI.indentLevel = indentLevel;
+					
+					rect.x += rect.width-37;
+					rect.width = 37;
+					
+					rect.height -=2;
+					if (GUI.Button(rect,"Reset",EditorStyles.miniButton))
+					{
+						ServerSettings.ResetBestRegionCodeInPreferences();
+					}
+					EditorGUILayout.EndHorizontal ();
+
+
+
                     CloudRegionFlag valRegions = (CloudRegionFlag)EditorGUILayout.EnumMaskField("Enabled Regions", settings.EnabledRegions);
 
                     if (valRegions != settings.EnabledRegions)
@@ -67,6 +117,10 @@ public class ServerSettingsInspector : Editor
                     {
                         EditorGUILayout.HelpBox("You should enable at least two regions for 'Best Region' hosting.", MessageType.Warning);
                     }
+
+					
+
+
                 }
 
                 // appid
@@ -218,8 +272,23 @@ public class ServerSettingsInspector : Editor
         settings.JoinLobby = EditorGUILayout.Toggle("Auto-Join Lobby", settings.JoinLobby);
         settings.EnableLobbyStatistics = EditorGUILayout.Toggle("Enable Lobby Stats", settings.EnableLobbyStatistics);
 
-        settings.PunLogging = (PhotonLogLevel)EditorGUILayout.EnumPopup("Pun Logging", settings.PunLogging);            // TODO: update at runtime
-        settings.NetworkLogging = (DebugLevel)EditorGUILayout.EnumPopup("Network Logging", settings.NetworkLogging);    // TODO: update at runtime
+		// Pun Logging Level
+		PhotonLogLevel _PunLogging = (PhotonLogLevel)EditorGUILayout.EnumPopup("Pun Logging", settings.PunLogging); 
+		if (EditorApplication.isPlaying && PhotonNetwork.logLevel!=_PunLogging)
+		{
+			PhotonNetwork.logLevel = _PunLogging;
+		}
+		settings.PunLogging = _PunLogging;
+
+		// Network Logging Level
+		DebugLevel _DebugLevel = (DebugLevel)EditorGUILayout.EnumPopup("Network Logging", settings.NetworkLogging);
+		if (EditorApplication.isPlaying && settings.NetworkLogging!=_DebugLevel)
+		{
+			settings.NetworkLogging = _DebugLevel;
+		}
+		settings.NetworkLogging = _DebugLevel;
+
+
         //EditorGUILayout.LabelField("automaticallySyncScene");
         //EditorGUILayout.LabelField("autoCleanUpPlayerObjects");
         //EditorGUILayout.LabelField("lobby stats");

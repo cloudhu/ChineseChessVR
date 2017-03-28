@@ -90,7 +90,10 @@ namespace ExitGames.Client.Photon.Chat
         /// It's not a nickname and we assume users with the same userID are the same person.</remarks>
         public string UserId
         {
-            get { return (this.AuthValues != null) ? this.AuthValues.UserId : null; }
+            get
+            {
+                return (this.AuthValues != null) ? this.AuthValues.UserId : null;
+            }
             private set
             {
                 if (this.AuthValues == null)

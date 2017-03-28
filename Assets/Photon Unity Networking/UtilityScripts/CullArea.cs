@@ -242,21 +242,10 @@ public class CullArea : MonoBehaviour
     /// <returns>A list containing all cell IDs the player is currently inside or nearby.</returns>
     public List<int> GetActiveCells(Vector3 position)
     {
-        List<int> insideCells = new List<int>(0);
-        CellTree.RootNode.GetInsideCells(insideCells, YIsUpAxis, position);
-
-        List<int> nearbyCells = new List<int>(0);
-        CellTree.RootNode.GetNearbyCells(nearbyCells, YIsUpAxis, position);
+        List<int> activeCells = new List<int>(0);
+        CellTree.RootNode.GetActiveCells(activeCells, YIsUpAxis, position);
         
-        foreach (int id in nearbyCells)
-        {
-            if (!insideCells.Contains(id))
-            {
-                insideCells.Add(id);
-            }
-        }
-
-        return insideCells;
+        return activeCells;
     }
 }
 
@@ -316,7 +305,7 @@ public class CellTreeNode
     public ENodeType NodeType;
 
     /// <summary>
-    ///     Reference tot he parent node.
+    ///     Reference to the parent node.
     /// </summary>
     public CellTreeNode Parent;
 
@@ -372,8 +361,7 @@ public class CellTreeNode
     /// </summary>
     public void Draw()
     {
-#if UNITY_EDITOR
-
+        #if UNITY_EDITOR
         if (Childs != null)
         {
             foreach (CellTreeNode node in Childs)
@@ -386,71 +374,44 @@ public class CellTreeNode
         Gizmos.DrawWireCube(Center, Size);
 
         UnityEditor.Handles.Label(Center, Id.ToString(), new GUIStyle() { fontStyle = FontStyle.Bold });
-
-#endif
+        #endif
     }
-
+    
     /// <summary>
-    ///     Gathers all leaf nodes and adds them to a given list.
+    ///     Gathers all cell IDs the player is currently inside or nearby.
     /// </summary>
-    /// <param name="leafNodes">The list containing all gathered leaf nodes.</param>
-    public void GetAllLeafNodes(List<CellTreeNode> leafNodes)
+    /// <param name="activeCells">The list to add all cell IDs to the player is currently inside or nearby.</param>
+    /// <param name="yIsUpAxis">Describes if the y-axis is used as up-axis.</param>
+    /// <param name="position">The current position of the player.</param>
+    public void GetActiveCells(List<int> activeCells, bool yIsUpAxis, Vector3 position)
     {
-        if (Childs != null)
+        if (NodeType != ENodeType.Leaf)
         {
             foreach (CellTreeNode node in Childs)
             {
-                node.GetAllLeafNodes(leafNodes);
+                node.GetActiveCells(activeCells, yIsUpAxis, position);
             }
         }
         else
         {
-            leafNodes.Add(this);
-        }
-    }
-
-    /// <summary>
-    ///     Gathers all cell IDs the player is currently inside.
-    /// </summary>
-    /// <param name="insideCells">The list to add all cell IDs to the player is currently inside.</param>
-    /// <param name="yIsUpAxis">Describes if the y-axis is used as up-axis.</param>
-    /// <param name="position">The current position of the player</param>
-    public void GetInsideCells(List<int> insideCells, bool yIsUpAxis, Vector3 position)
-    {
-        if (IsPointInsideCell(yIsUpAxis, position))
-        {
-            insideCells.Add(Id);
-
-            if (Childs != null)
+            if (IsPointNearCell(yIsUpAxis, position))
             {
-                foreach (CellTreeNode node in Childs)
+                if (IsPointInsideCell(yIsUpAxis, position))
                 {
-                    node.GetInsideCells(insideCells, yIsUpAxis, position);
-                }
-            }
-        }
-    }
+                    activeCells.Insert(0, Id);
+                    
+                    var p = Parent;
+                    while (p != null)
+                    {
+                        activeCells.Insert(0, p.Id);
 
-    /// <summary>
-    ///     Gathers all cell IDs the palyer is currently nearby.
-    /// </summary>
-    /// <param name="nearbyCells">The list to add all cell IDs to the player is currently nearby.</param>
-    /// <param name="yIsUpAxis">Describes if the y-axis is used as up-axis.</param>
-    /// <param name="position">The current position of the player</param>
-    public void GetNearbyCells(List<int> nearbyCells, bool yIsUpAxis, Vector3 position)
-    {
-        if (IsPointNearCell(yIsUpAxis, position))
-        {
-            if (NodeType != ENodeType.Leaf)
-            {
-                foreach (CellTreeNode node in Childs)
-                {
-                    node.GetNearbyCells(nearbyCells, yIsUpAxis, position);
+                        p = p.Parent;
+                    }
                 }
-            }
-            else
-            {
-                nearbyCells.Add(Id);
+                else
+                {
+                    activeCells.Add(Id);
+                }
             }
         }
     }

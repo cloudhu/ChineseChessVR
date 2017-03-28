@@ -708,11 +708,14 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         #pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
         if (PhotonPeer.NoSocket)
         {
-            if (this.TransportProtocol != ConnectionProtocol.Udp)
+            if (this.AuthMode != AuthModeOption.AuthOnceWss || serverType != ServerConnection.NameServer)
             {
-                Debug.Log("This Photon3Unity3d.dll only allows UDP. TransportProtocol was: " + this.TransportProtocol + ". SocketImplementation: " + this.SocketImplementation);
+                if (this.TransportProtocol != ConnectionProtocol.Udp)
+                {
+                    Debug.Log("This Photon3Unity3d.dll only allows UDP. TransportProtocol was: " + this.TransportProtocol + ". SocketImplementation: " + this.SocketImplementation);
+                }
+                protocolOverride = ConnectionProtocol.Udp;
             }
-            protocolOverride = ConnectionProtocol.Udp;
 
             #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
             this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
@@ -1282,6 +1285,13 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         {
             // player becomes inactive (but might return / is not gone for good)
             player.IsInactive = (bool)evLeave.Parameters[ParameterCode.IsInactive];
+
+
+			if (player.IsInactive != _isAlreadyInactive)
+			{
+				SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerActivityChanged, player);
+			}
+
 			if (player.IsInactive && _isAlreadyInactive)
             {
                 Debug.LogWarning("HandleEventLeave for player ID: " + actorID + " isInactive: " + player.IsInactive + ". Stopping handling if inactive.");
@@ -1834,6 +1844,25 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 break;
             }
 
+            case OperationCode.GetGameList:
+                if (operationResponse.ReturnCode != 0)
+                {
+                    this.DebugReturn(DebugLevel.ERROR, "GetGameList failed: " + operationResponse.ToStringFull());
+                    break;
+                }
+
+                this.mGameList = new Dictionary<string, RoomInfo>();
+                Hashtable games = (Hashtable)operationResponse[ParameterCode.GameList];
+                foreach (var gameKey in games.Keys)
+                {
+                    string gameName = (string)gameKey;
+                    this.mGameList[gameName] = new RoomInfo(gameName, (Hashtable)games[gameKey]);
+                }
+                mGameListCopy = new RoomInfo[mGameList.Count];
+                mGameList.Values.CopyTo(mGameListCopy, 0);
+                SendMonoMessage(PhotonNetworkingMessage.OnReceivedRoomListUpdate);
+                break;
+
             case OperationCode.JoinLobby:
                 this.State = ClientState.JoinedLobby;
                 this.insideLobby = true;
@@ -2223,7 +2252,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 }
 
                 if (PhotonNetwork.logLevel == PhotonLogLevel.Informational)
-                    Debug.Log("Ev OwnershipRequest " + requestedView.ownershipTransfer + ". ActorNr: " + actorNr + " takes from: " + currentOwner + ". Current owner: " + requestedView.ownerId + " isOwnerActive: " + requestedView.isOwnerActive + ". MasterClient: " + this.mMasterClientId + ". This client's player: " + PhotonNetwork.player.ToStringFull());
+                    Debug.Log("Ev OwnershipRequest " + requestedView.ownershipTransfer + ". ActorNr: " + actorNr + " takes from: " + currentOwner + ". local RequestedView.ownerId: " + requestedView.ownerId + " isOwnerActive: " + requestedView.isOwnerActive + ". MasterClient: " + this.mMasterClientId + ". This client's player: " + PhotonNetwork.player.ToStringFull());
 
                 switch (requestedView.ownershipTransfer)
                 {
@@ -2231,15 +2260,23 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                         Debug.LogWarning("Ownership mode == fixed. Ignoring request.");
                         break;
                     case OwnershipOption.Takeover:
-                        if (currentOwner == requestedView.ownerId || (currentOwner == 0 && requestedView.ownerId == this.mMasterClientId))
+						if (currentOwner == requestedView.ownerId || (currentOwner == 0 && requestedView.ownerId == this.mMasterClientId) || requestedView.ownerId == 0)
                         {
                             // a takeover is successful automatically, if taken from current owner
 							requestedView.OwnerShipWasTransfered = true;
+							int _oldOwnerId = requestedView.ownerId;
+							PhotonPlayer _oldOwner = this.GetPlayerWithId(_oldOwnerId);
+
                             requestedView.ownerId = actorNr;
-                            if (PhotonNetwork.logLevel == PhotonLogLevel.Informational)
+
+
+                            if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
                             {
-                                Debug.LogWarning(requestedView + " ownership transfered to: "+ actorNr);
+                             Debug.LogWarning(requestedView + " ownership transfered to: "+ actorNr);
                             }
+
+							SendMonoMessage(PhotonNetworkingMessage.OnOwnershipTransfered, new object[] {requestedView, originatingPlayer,_oldOwner});
+
                         }
                         break;
                     case OwnershipOption.Request:
@@ -2260,7 +2297,13 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             case PunEvent.OwnershipTransfer:
                 {
                     int[] transferViewToUserID = (int[]) photonEvent.Parameters[ParameterCode.CustomEventContent];
-                    Debug.Log("Ev OwnershipTransfer. ViewID " + transferViewToUserID[0] + " to: " + transferViewToUserID[1] + " Time: " + Environment.TickCount%1000);
+
+					if (PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
+					{
+                  	  Debug.Log("Ev OwnershipTransfer. ViewID " + transferViewToUserID[0] + " to: " + transferViewToUserID[1] + " Time: " + Environment.TickCount%1000);
+					}
+
+
 
                     int requestedViewId = transferViewToUserID[0];
                     int newOwnerId = transferViewToUserID[1];
@@ -2268,10 +2311,13 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                     PhotonView pv = PhotonView.Find(requestedViewId);
                     if (pv != null)
                     {
+						int _oldOwnerID = pv.ownerId;
 						pv.OwnerShipWasTransfered = true;
                         pv.ownerId = newOwnerId;
 
+						SendMonoMessage(PhotonNetworkingMessage.OnOwnershipTransfered, new object[] {pv, PhotonPlayer.Find(newOwnerId),PhotonPlayer.Find(_oldOwnerID)});
                     }
+
 
                     break;
                 }
@@ -2324,6 +2370,10 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 break;
 
             case EventCode.Join:
+
+				// save the IsInactive Property to be able to detect if activity state changed
+				bool wasInactive = false;
+
                 // actorNr is fetched out of event above
                 Hashtable actorProperties = (Hashtable)photonEvent[ParameterCode.PlayerProperties];
                 if (originatingPlayer == null)
@@ -2334,6 +2384,8 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 }
                 else
                 {
+					wasInactive = originatingPlayer.IsInactive;
+
                     originatingPlayer.InternalCacheProperties(actorProperties);
                     originatingPlayer.IsInactive = false;
                 }
@@ -2354,7 +2406,13 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 }
                 else
                 {
-                    SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerConnected, this.mActors[actorNr]);
+					SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerConnected, this.mActors[actorNr]);
+
+					if (wasInactive)
+					{
+						SendMonoMessage(PhotonNetworkingMessage.OnPhotonPlayerActivityChanged, this.mActors[actorNr]);
+					}
+
                 }
                 break;
 
@@ -2504,6 +2562,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 this.AuthValues.Token = photonEvent[ParameterCode.Secret] as string;
                 this.tokenCache = this.AuthValues.Token;
                 break;
+
 
             default:
                 if (photonEvent.Code < 200)

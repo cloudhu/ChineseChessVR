@@ -3,10 +3,9 @@
 //   PhotonNetwork Framework for Unity - Copyright (C) 2016 Exit Games GmbH
 // </copyright>
 // <summary>
-//  使用PUN的回合制游戏管家
+//  Manager for Turn Based games, using PUN
 // </summary>
 // <author>developer@exitgames.com</author>
-// <interpreter>胡良云（CLoudHu）</interpreter>
 // ----------------------------------------------------------------------------
 
 
@@ -18,17 +17,17 @@ using UnityEngine;
 using ExitGames = ExitGames.Client.Photon.Hashtable;
 
 /// <summary>
-/// Pun回合制游戏管家.
-/// 为玩家之间典型的回合流程和逻辑提供一个接口(IPunTurnManagerCallbacks)
-/// 为PhotonPlayer、Room和RoomInfo提供了扩展来满足回合制游戏需求而专门制作的API
+/// Pun turnBased Game manager.
+/// Provides an Interface (IPunTurnManagerCallbacks) for the typical turn flow and logic, between players
+/// Provides Extensions for PhotonPlayer, Room and RoomInfo to feature dedicated api for TurnBased Needs
 /// </summary>
 public class PunTurnManager : PunBehaviour
 {
 	/// <summary>
-	/// 包装了对房间的自定义属性"turn"的访问.
+	/// Wraps accessing the "turn" custom properties of a room.
 	/// </summary>
-	/// <value>回合的索引</value>
-    public int Turn	//回合
+	/// <value>The turn index</value>
+    public int Turn
     {
         get { return PhotonNetwork.room.GetTurn(); }
         private set {
@@ -41,14 +40,14 @@ public class PunTurnManager : PunBehaviour
 
 
 	/// <summary>
-	/// 回合的持续时间（单位：秒）.
+	/// The duration of the turn in seconds.
 	/// </summary>
     public float TurnDuration = 20f;
 
 	/// <summary>
-	/// 获取当前回合过去的时间（秒）
+	/// Gets the elapsed time in the current turn in seconds
 	/// </summary>
-	/// <value>回合流逝的时间.</value>
+	/// <value>The elapsed time in the turn.</value>
 	public float ElapsedTimeInTurn
 	{
 		get { return ((float)(PhotonNetwork.ServerTimestamp - PhotonNetwork.room.GetTurnStart()))/1000.0f; }
@@ -56,9 +55,9 @@ public class PunTurnManager : PunBehaviour
 
 
 	/// <summary>
-	/// 获取当前回合剩余的时间. 范围从0到TurnDuration
+	/// Gets the remaining seconds for the current turn. Ranges from 0 to TurnDuration
 	/// </summary>
-	/// <value>当前回合剩余的时间（秒）</value>
+	/// <value>The remaining seconds fo the current turn</value>
 	public float RemainingSecondsInTurn
 	{
 		get { return Mathf.Max(0f,this.TurnDuration - this.ElapsedTimeInTurn); }
@@ -66,65 +65,62 @@ public class PunTurnManager : PunBehaviour
 
 
 	/// <summary>
-	/// 获取表明回合是否被全部玩家完成的布尔值.
+	/// Gets a value indicating whether the turn is completed by all.
 	/// </summary>
-	/// <value><c>true</c> 如果该回合被所有玩家完成则返回真; 否则返回假, <c>false</c>.</value>
+	/// <value><c>true</c> if this turn is completed by all; otherwise, <c>false</c>.</value>
     public bool IsCompletedByAll
     {
         get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == PhotonNetwork.room.PlayerCount; }
     }
 
 	/// <summary>
-	/// 获取表明当前回合是否被我完成的布尔值.
+	/// Gets a value indicating whether the current turn is finished by me.
 	/// </summary>
-	/// <value><c>true</c> 如果当前回合被我完成返回真; 否则返回假, <c>false</c>.</value>
+	/// <value><c>true</c> if the current turn is finished by me; otherwise, <c>false</c>.</value>
     public bool IsFinishedByMe
     {
         get { return this.finishedPlayers.Contains(PhotonNetwork.player); }
     }
 
 	/// <summary>
-	/// 获取表明当前回合是否完成的布尔值.即是ElapsedTimeinTurn>=TurnDuration 或 RemainingSecondsInTurn <= 0f
+	/// Gets a value indicating whether the current turn is over. That is the ElapsedTimeinTurn is greater or equal to the TurnDuration
 	/// </summary>
-	/// <value><c>true</c> 如果当前回合完了返回真; 否则返回假, <c>false</c>.</value>
+	/// <value><c>true</c> if the current turn is over; otherwise, <c>false</c>.</value>
     public bool IsOver
     {
 		get { return this.RemainingSecondsInTurn <= 0f; }
     }
 
 	/// <summary>
-	/// 回合管家监听器. 设置该监听器到你自己的脚本实例来捕捉回调函数
+	/// The turn manager listener. Set this to your own script instance to catch Callbacks
 	/// </summary>
     public IPunTurnManagerCallbacks TurnManagerListener;
 
 
 	/// <summary>
-	/// 完成回合的玩家哈希集.
+	/// The finished players.
 	/// </summary>
     private readonly HashSet<PhotonPlayer> finishedPlayers = new HashSet<PhotonPlayer>();
 
 	/// <summary>
-	/// 回合管家事件偏移事件消息字节. 内部用于定义房间自定义属性中的数据
+	/// The turn manager event offset event message byte. Used internaly for defining data in Room Custom Properties
 	/// </summary>
     public const byte TurnManagerEventOffset = 0;
-
 	/// <summary>
-	/// 移动事件消息字节. 内部用于保存房间自定义属性中的数据
+	/// The Move event message byte. Used internaly for saving data in Room Custom Properties
 	/// </summary>
     public const byte EvMove = 1 + TurnManagerEventOffset;
-
 	/// <summary>
-	/// 最终移动事件消息字节. 内部用于保存房间自定义属性中的数据
+	/// The Final Move event message byte. Used internaly for saving data in Room Custom Properties
 	/// </summary>
     public const byte EvFinalMove = 2 + TurnManagerEventOffset;
 
-	// 追踪消息调用
+	// keep track of message calls
 	private bool _isOverCallProcessed = false;
 
 	#region MonoBehaviour CallBack
-
 	/// <summary>
-	/// 注册来自PhotonNetwork的事件调用.
+	/// Register for Event Call from PhotonNetwork.
 	/// </summary>
     void Start()
     {
@@ -144,32 +140,31 @@ public class PunTurnManager : PunBehaviour
 
 	#endregion
 
-	#region Public Methods
 
 	/// <summary>
-	/// 告诉TurnManager开始一个新的回合.
+	/// Tells the TurnManager to begins a new turn.
 	/// </summary>
     public void BeginTurn()
     {
-        Turn = this.Turn + 1; // 注意: 这将设置房间里的一个属性,该属性对于其他玩家可用.
+        Turn = this.Turn + 1; // note: this will set a property in the room, which is available to the other players.
     }
 
 
     /// <summary>
-	/// 调用来发送一个动作. 也可以选择结束该回合.
-	/// 移动对象可以是任何事物. 尝试去优化,只发送严格的最小化信息集来定义回合移动.
+	/// Call to send an action. Optionally finish the turn, too.
+	/// The move object can be anything. Try to optimize though and only send the strict minimum set of information to define the turn move.
 	/// </summary>
-    /// <param name="move">回合移动</param>
-    /// <param name="finished">是否完成</param>
+    /// <param name="move"></param>
+    /// <param name="finished"></param>
     public void SendMove(object move, bool finished)
     {
         if (IsFinishedByMe)
         {
-            UnityEngine.Debug.LogWarning("不能SendMove. 该玩家已经完成了这回合.");
+            UnityEngine.Debug.LogWarning("Can't SendMove. Turn is finished by this player.");
             return;
         }
 
-        // 与实际移动一起,我们不得不发送该移动属于哪一个回合
+        // along with the actual move, we have to send which turn this move belongs to
         Hashtable moveHt = new Hashtable();
         moveHt.Add("turn", Turn);
         moveHt.Add("move", move);
@@ -181,15 +176,15 @@ public class PunTurnManager : PunBehaviour
             PhotonNetwork.player.SetFinishedTurn(Turn);
         }
 
-        // 服务器不会把该事件发送回源头 (默认). 要获取该事件,本地调用即可
-		// (注意: 事件的顺序可能会混淆，因为我们在本地做这个调用)
+        // the server won't send the event back to the origin (by default). to get the event, call it locally
+        // (note: the order of events might be mixed up as we do this locally)
         OnEvent(evCode, moveHt, PhotonNetwork.player.ID);
     }
 
 	/// <summary>
-	/// 获取该玩家是否完成了当前回合.
+	/// Gets if the player finished the current turn.
 	/// </summary>
-	/// <returns><c>true</c>, 如果传入的玩家完成了当前回合则返回真, <c>false</c> 否则返回假.</returns>
+	/// <returns><c>true</c>, if player finished the current turn, <c>false</c> otherwise.</returns>
 	/// <param name="player">The Player to check for</param>
     public bool GetPlayerFinishedTurn(PhotonPlayer player)
     {
@@ -200,16 +195,15 @@ public class PunTurnManager : PunBehaviour
 
         return false;
     }
-	#endregion
 
 	#region Callbacks
 
 	/// <summary>
-	/// 被PhotonNetwork.OnEventCall的注册调用（Start方法中注册了该事件）
+	/// Called by PhotonNetwork.OnEventCall registration
 	/// </summary>
-	/// <param name="eventCode">事件代码.</param>
-	/// <param name="content">内容.</param>
-	/// <param name="senderId">发送者Id.</param>
+	/// <param name="eventCode">Event code.</param>
+	/// <param name="content">Content.</param>
+	/// <param name="senderId">Sender identifier.</param>
     public void OnEvent(byte eventCode, object content, int senderId)
     {
         PhotonPlayer sender = PhotonPlayer.Find(senderId);
@@ -248,7 +242,7 @@ public class PunTurnManager : PunBehaviour
     }
 
 	/// <summary>
-	/// 当一个房间的自定义属性更改时被调用。propertiesThatChanged改变的属性包含所有通过Room.SetCustomProperties设置的.
+	/// Called by PhotonNetwork
 	/// </summary>
 	/// <param name="propertiesThatChanged">Properties that changed.</param>
     public override void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
@@ -271,38 +265,38 @@ public class PunTurnManager : PunBehaviour
 public interface IPunTurnManagerCallbacks
 {
 	/// <summary>
-	/// 发起回合开始事件.
+	/// Called the turn begins event.
 	/// </summary>
-	/// <param name="turn">回合.</param>
+	/// <param name="turn">Turn Index</param>
     void OnTurnBegins(int turn);
 
 	/// <summary>
-	/// 当回合完成时调用(被所有玩家完成)
+	/// Called when a turn is completed (finished by all players)
 	/// </summary>
-	/// <param name="turn">回合索引</param>
+	/// <param name="turn">Turn Index</param>
     void OnTurnCompleted(int turn);
 
 	/// <summary>
-	/// 当玩家移动时调用(但是没有完成该回合)
+	/// Called when a player moved (but did not finish the turn)
 	/// </summary>
-	/// <param name="player">玩家引用</param>
-	/// <param name="turn">回合索引</param>
-	/// <param name="move">移动对象数据</param>
+	/// <param name="player">Player reference</param>
+	/// <param name="turn">Turn Index</param>
+	/// <param name="move">Move Object data</param>
     void OnPlayerMove(PhotonPlayer player, int turn, object move);
 
 	/// <summary>
-	/// 当玩家完成回合时调用(包括该玩家的动作/移动)
+	/// When a player finishes a turn (includes the action/move of that player)
 	/// </summary>
-	/// <param name="player">玩家引用</param>
-	/// <param name="turn">回合索引</param>
-	/// <param name="move">移动对象数据</param>
+	/// <param name="player">Player reference</param>
+	/// <param name="turn">Turn index</param>
+	/// <param name="move">Move Object data</param>
     void OnPlayerFinished(PhotonPlayer player, int turn, object move);
 
 
 	/// <summary>
-	/// 当回合由于时间限制完成时调用(回合超时)
+	/// Called when a turn completes due to a time constraint (timeout for a turn)
 	/// </summary>
-	/// <param name="turn">回合索引</param>
+	/// <param name="turn">Turn index</param>
     void OnTurnTimeEnds(int turn);
 }
 
@@ -310,26 +304,26 @@ public interface IPunTurnManagerCallbacks
 public static class TurnExtensions
 {
 	/// <summary>
-	/// 当前进行的回合数
+	/// currently ongoing turn number
 	/// </summary>
     public static readonly string TurnPropKey = "Turn";
 
 	/// <summary>
-	/// 当前进行的回合开始（服务器）时间（用于计算结束）
+	/// start (server) time for currently ongoing turn (used to calculate end)
 	/// </summary>
     public static readonly string TurnStartPropKey = "TStart";
 
 	/// <summary>
-	/// 完成回合的演员 (后面接数字)
+	/// Finished Turn of Actor (followed by number)
 	/// </summary>
     public static readonly string FinishedTurnPropKey = "FToA";
 
 	/// <summary>
-	/// 设置该回合.
+	/// Sets the turn.
 	/// </summary>
-	/// <param name="room">房间引用</param>
-	/// <param name="turn">回合索引</param>
-	/// <param name="setStartTime">如果设置为真 <c>true</c> 则设置开始时间.</param>
+	/// <param name="room">Room reference</param>
+	/// <param name="turn">Turn index</param>
+	/// <param name="setStartTime">If set to <c>true</c> set start time.</param>
     public static void SetTurn(this Room room, int turn, bool setStartTime = false)
     {
         if (room == null || room.CustomProperties == null)
@@ -348,10 +342,10 @@ public static class TurnExtensions
     }
 
 	/// <summary>
-	/// 从RoomInfo获取当前回合
+	/// Gets the current turn from a RoomInfo
 	/// </summary>
-	/// <returns>返回回合索引 </returns>
-	/// <param name="room">RoomInfo引用</param>
+	/// <returns>The turn index </returns>
+	/// <param name="room">RoomInfo reference</param>
     public static int GetTurn(this RoomInfo room)
     {
         if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(TurnPropKey))
@@ -364,10 +358,10 @@ public static class TurnExtensions
 
 
 	/// <summary>
-	/// 返回回合开始的时间. 可用于计算回合进行的时间.
+	/// Returns the start time when the turn began. This can be used to calculate how long it's going on.
 	/// </summary>
-	/// <returns>返回回合开始时间.</returns>
-	/// <param name="room">房间信息.</param>
+	/// <returns>The turn start.</returns>
+	/// <param name="room">Room.</param>
     public static int GetTurnStart(this RoomInfo room)
     {
         if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(TurnStartPropKey))
@@ -379,10 +373,10 @@ public static class TurnExtensions
     }
 
 	/// <summary>
-	/// 获取玩家完成的回合 (从房间属性中)
+	/// gets the player's finished turn (from the ROOM properties)
 	/// </summary>
-	/// <returns>返回已完成的回合索引</returns>
-	/// <param name="player">玩家引用</param>
+	/// <returns>The finished turn index</returns>
+	/// <param name="player">Player reference</param>
     public static int GetFinishedTurn(this PhotonPlayer player)
     {
         Room room = PhotonNetwork.room;
@@ -396,10 +390,10 @@ public static class TurnExtensions
     }
 
 	/// <summary>
-	/// 设置玩家完成的回合 (在房间属性中)
+	/// Sets the player's finished turn (in the ROOM properties)
 	/// </summary>
-	/// <param name="player">玩家引用</param>
-	/// <param name="turn">回合索引</param>
+	/// <param name="player">Player Reference</param>
+	/// <param name="turn">Turn Index</param>
     public static void SetFinishedTurn(this PhotonPlayer player, int turn)
     {
         Room room = PhotonNetwork.room;

@@ -6,7 +6,6 @@
 //  Used in DemoAnimator to deal with the networked player instance
 // </summary>
 // <author>developer@exitgames.com</author>
-// 中文注释：胡良云（CloudHu）
 // --------------------------------------------------------------------------------------------------------------------
 
 #if UNITY_5 && (!UNITY_5_0 && !UNITY_5_1 && !UNITY_5_2 && !UNITY_5_3) || UNITY_6
@@ -19,39 +18,42 @@ using UnityEngine.EventSystems;
 namespace ExitGames.Demos.DemoAnimator
 {
     /// <summary>
-    /// 玩家总管，处理发射输入和射线。
+    /// Player manager.
+    /// Handles fire Input and Beams.
     /// </summary>
     public class PlayerManager : Photon.PunBehaviour, IPunObservable
     {
-        #region Public Variables    //公共变量区域
+        #region Public Variables
 
-        [Tooltip("玩家UI游戏对象预设")]
+        [Tooltip("The Player's UI GameObject Prefab")]
         public GameObject PlayerUiPrefab;
 
-        [Tooltip("要控制的射线游戏对象")]
+        [Tooltip("The Beams GameObject to control")]
         public GameObject Beams;
 
-        [Tooltip("玩家当前的体力值")]
+        [Tooltip("The current Health of our player")]
         public float Health = 1f;
 
-        [Tooltip("本地玩家实例。使用这个来判断本地玩家是否在场景中。")]
+        [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
         public static GameObject LocalPlayerInstance;
 
-        #endregion  
+        #endregion
 
         #region Private Variables
 
-        //当玩家发射的时候为true
+        //True, when the user is firing
         bool IsFiring;
 
         #endregion
 
         #region MonoBehaviour CallBacks
 
-
+        /// <summary>
+        /// MonoBehaviour method called on GameObject by Unity during early initialization phase.
+        /// </summary>
         public void Awake()
         {
-            if (this.Beams == null) //如果射线为空，则报错
+            if (this.Beams == null)
             {
                 Debug.LogError("<Color=Red><b>Missing</b></Color> Beams Reference.", this);
             }
@@ -104,12 +106,18 @@ namespace ExitGames.Demos.DemoAnimator
 
             #if UNITY_MIN_5_4
             // Unity 5.4 has a new scene management. register a method to call CalledOnLevelWasLoaded.
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded += (scene, loadingMode) =>
-            {
-                this.CalledOnLevelWasLoaded(scene.buildIndex);
-            };
+			UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
             #endif
         }
+
+
+		public void OnDisable()
+		{
+			#if UNITY_MIN_5_4
+			UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+			#endif
+		}
+
 
         /// <summary>
         /// MonoBehaviour method called on GameObject by Unity on every frame.
@@ -130,17 +138,17 @@ namespace ExitGames.Demos.DemoAnimator
                 }
             }
 
-            if (this.Beams != null && this.IsFiring != this.Beams.GetActive())  //触发射线的激活状态
+            if (this.Beams != null && this.IsFiring != this.Beams.GetActive())
             {
                 this.Beams.SetActive(this.IsFiring);
             }
         }
 
         /// <summary>
-        /// 当碰撞器'other'进入触发器时调用的MonoBehaviour方法。
-        /// 如果碰撞器是射线就会影响到玩家的体力值
-        /// 注：当跳跃的同时射击，你会发现自己的射线和自身发生交互
-        /// 你可以把碰撞器移动稍远一些，以防止这样的Bug或检查光束是否属于玩家。
+        /// MonoBehaviour method called when the Collider 'other' enters the trigger.
+        /// Affect Health of the Player if the collider is a beam
+        /// Note: when jumping and firing at the same, you'll find that the player's own beam intersects with itself
+        /// One could move the collider further away to prevent this or check if the beam belongs to the player.
         /// </summary>
         public void OnTriggerEnter(Collider other)
         {
@@ -150,7 +158,8 @@ namespace ExitGames.Demos.DemoAnimator
             }
 
 
-            // 我们只对敌人感兴趣，我们可以通过标签来区分，也可以简单地检查名称
+            // We are only interested in Beamers
+            // we should be using tags but for the sake of distribution, let's simply check by name.
             if (!other.name.Contains("Beam"))
             {
                 return;
@@ -160,25 +169,26 @@ namespace ExitGames.Demos.DemoAnimator
         }
 
         /// <summary>
-        /// 每一个'other'[其他的]碰撞器触摸这个触发器的时候每帧调用的MonoBehaviour方法
-        /// 当射线持续触碰玩家时我们将继续影响体力值。
+        /// MonoBehaviour method called once per frame for every Collider 'other' that is touching the trigger.
+        /// We're going to affect health while the beams are interesting the player
         /// </summary>
         /// <param name="other">Other.</param>
         public void OnTriggerStay(Collider other)
         {
-            // 如果不是本地玩家，什么都不做
+            // we dont' do anything if we are not the local player.
             if (!photonView.isMine)
             {
                 return;
             }
 
-            // 我们只对敌人感兴趣，我们可以通过标签来区分，也可以简单地检查名称
+            // We are only interested in Beamers
+            // we should be using tags but for the sake of distribution, let's simply check by name.
             if (!other.name.Contains("Beam"))
             {
                 return;
             }
 
-            // 当射线持续击中我们的时候我们缓慢地影响体力值，这样玩家不得不移动来防止被击杀。
+            // we slowly affect health when beam is constantly hitting us, so player has to move to prevent death.
             this.Health -= 0.1f*Time.deltaTime;
         }
 
@@ -214,8 +224,17 @@ namespace ExitGames.Demos.DemoAnimator
 
         #region Private Methods
 
+
+		#if UNITY_MIN_5_4
+		void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode loadingMode)
+		{
+			
+			this.CalledOnLevelWasLoaded(scene.buildIndex);
+		}
+		#endif
+
         /// <summary>
-        /// 处理输入。必须只有当玩家通过该网络游戏对象(photonView.isMine == true)认证该方法才能被使用。
+        /// Processes the inputs. This MUST ONLY BE USED when the player has authority over this Networked GameObject (photonView.isMine == true)
         /// </summary>
         void ProcessInputs()
         {

@@ -25,10 +25,10 @@ namespace ExitGames.Demos.DemoAnimator
 
 		#region Public Variables
 
-		[Tooltip("角速度，单位：度/秒")]
+		[Tooltip("Angular Speed in degrees per seconds")]
 		public float speed = 180f;
 
-		[Tooltip("加载器的半径")]
+		[Tooltip("Radius os the loader")]
 		public float radius = 1f;
 
 		public GameObject particles;

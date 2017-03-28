@@ -35,7 +35,7 @@ public class PhotonAnimatorViewEditor : Editor
     private AnimatorController m_Controller;
 #endif
 
-	private const string TRIGGER_HELP_URL = "https://doc.photonengine.com/en/pun/current/reference/animatorviewtriggerhelp";
+	private const string TRIGGER_HELP_URL = "https://doc.photonengine.com/en-us/pun/current/manuals-and-demos/animatorviewtriggerhelp/";
 
     public override void OnInspectorGUI()
     {

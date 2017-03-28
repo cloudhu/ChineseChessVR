@@ -337,6 +337,49 @@ using ExitGames.Client.Photon;
             return this.OpCustom(OperationCode.Leave, opParameters, true);
         }
 
+        /// <summary>Gets a list of games matching a SQL-like where clause.</summary>
+        /// <remarks>
+        /// Operation is only available in lobbies of type SqlLobby.
+        /// This is an async request which triggers a OnOperationResponse() call.
+        /// Returned game list is stored in RoomInfoList.
+        /// </remarks>
+        /// <see cref="http://doc.photonengine.com/en-us/pun/current/manuals-and-demos/matchmaking-and-lobby#sql_lobby_type"/>
+        /// <param name="lobby">The lobby to query. Has to be of type SqlLobby.</param>
+        /// <param name="queryData">The sql query statement.</param>
+        /// <returns>If the operation could be sent (has to be connected).</returns>
+        public virtual bool OpGetGameList(TypedLobby lobby, string queryData)
+        {
+            if (this.DebugOut >= DebugLevel.INFO)
+            {
+                this.Listener.DebugReturn(DebugLevel.INFO, "OpGetGameList()");
+            }
+
+            if (lobby == null)
+            {
+                if (this.DebugOut >= DebugLevel.INFO)
+                {
+                    this.Listener.DebugReturn(DebugLevel.INFO, "OpGetGameList not sent. Lobby cannot be null.");
+                }
+                return false;
+            }
+
+            if (lobby.Type != LobbyType.SqlLobby)
+            {
+                if (this.DebugOut >= DebugLevel.INFO)
+                {
+                    this.Listener.DebugReturn(DebugLevel.INFO, "OpGetGameList not sent. LobbyType must be SqlLobby.");
+                }
+                return false;
+            }
+
+            Dictionary<byte, object> opParameters = new Dictionary<byte, object>();
+            opParameters[(byte)ParameterCode.LobbyName] = lobby.Name;
+            opParameters[(byte)ParameterCode.LobbyType] = (byte)lobby.Type;
+            opParameters[(byte)ParameterCode.Data] = queryData;
+
+            return this.OpCustom(OperationCode.GetGameList, opParameters, true);
+        }
+
         /// <summary>
         /// Request the rooms and online status for a list of friends (each client must set a unique username via OpAuthenticate).
         /// </summary>
@@ -1325,6 +1368,9 @@ using ExitGames.Client.Photon;
 
         /// <summary>(218) Operation to set some server settings. Used with different parameters on various servers.</summary>
         public const byte ServerSettings = 218;
+
+        /// <summary>(217) Get the game list matching a supplied sql filter (SqlListLobby only) </summary>
+        public const byte GetGameList = 217;
     }
 
     /// <summary>Defines possible values for OpJoinRoom and OpJoinOrCreate. It tells the server if the room can be only be joined normally, created implicitly or found on a web-service for Turnbased games.</summary>

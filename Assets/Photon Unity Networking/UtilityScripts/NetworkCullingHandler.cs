@@ -5,7 +5,7 @@ using System.Collections.Generic;
 ///     Handles the network culling.
 /// </summary>
 [RequireComponent(typeof(PhotonView))]
-public class NetworkCullingHandler : MonoBehaviour
+public class NetworkCullingHandler : MonoBehaviour, IPunObservable
 {
     #region VARIABLES
     
@@ -70,14 +70,14 @@ public class NetworkCullingHandler : MonoBehaviour
             }
             else
             {
-                CheckGroupsChanged();
-                InvokeRepeating("UpdateActiveGroup", 0.0f, 1.0f / PhotonNetwork.sendRateOnSerialize);
+                // This is used to continuously update the active group.
+                pView.ObservedComponents.Add(this);
             }
         }
     }
 
     /// <summary>
-    ///     Checks if the player has moved perviously and updates the interest groups if necessary.
+    ///     Checks if the player has moved previously and updates the interest groups if necessary.
     /// </summary>
     private void Update()
     {
@@ -94,71 +94,103 @@ public class NetworkCullingHandler : MonoBehaviour
         // be more transform-related options, e.g. the rotation, or other options to check.
         if (currentPosition != lastPosition)
         {
-            CheckGroupsChanged();
-        }
-    }
-
-    /// <summary>
-    ///     Cancels all (upcoming) invoke calls.
-    /// </summary>
-    private void OnDisable()
-    {
-        CancelInvoke();
-    }
-
-    #endregion
-    
-    /// <summary>
-    ///     Checks if the interest groups have changed and perform action if necessary.
-    /// </summary>
-    private void CheckGroupsChanged()
-    {
-        if (cullArea.NumberOfSubdivisions == 0)
-        {
-            return;
-        }
-
-        previousActiveCells = new List<int>(activeCells);
-        activeCells = cullArea.GetActiveCells(transform.position);
-
-        if (activeCells.Count != previousActiveCells.Count)
-        {
-            UpdateInterestGroups();
-            return;
-        }
-
-        foreach (int groupId in activeCells)
-        {
-            if (!previousActiveCells.Contains(groupId))
+            if (HaveActiveCellsChanged())
             {
                 UpdateInterestGroups();
-                return;
             }
         }
     }
 
     /// <summary>
+    ///     Drawing informations.
+    /// </summary>
+    private void OnGUI()
+    {
+        if (!pView.isMine)
+        {
+            return;
+        }
+
+        string subscribedAndActiveCells = "Inside cells:\n";
+        string subscribedCells = "Subscribed cells:\n";
+
+        for (int index = 0; index < activeCells.Count; ++index)
+        {
+            if (index <= cullArea.NumberOfSubdivisions)
+            {
+                subscribedAndActiveCells += activeCells[index] + "  ";
+            }
+
+            subscribedCells += activeCells[index] + "  ";
+        }
+
+        GUI.Label(new Rect(20.0f, Screen.height - 100.0f, 200.0f, 40.0f), "<color=white>" + subscribedAndActiveCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
+        GUI.Label(new Rect(20.0f, Screen.height - 60.0f, 200.0f, 40.0f), "<color=white>" + subscribedCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
+    }
+
+    #endregion
+
+    /// <summary>
+    ///     Checks if the previously active cells have changed.
+    /// </summary>
+    /// <returns>True if the previously active cells have changed and false otherwise.</returns>
+    private bool HaveActiveCellsChanged()
+    {
+        if (cullArea.NumberOfSubdivisions == 0)
+        {
+            return false;
+        }
+
+        previousActiveCells = new List<int>(activeCells);
+        activeCells = cullArea.GetActiveCells(transform.position);
+
+        // If the player leaves the area we insert the whole area itself as an active cell.
+        // This can be removed if it is sure that the player is not able to leave the area.
+        while (activeCells.Count <= cullArea.NumberOfSubdivisions)
+        {
+            activeCells.Add(cullArea.FIRST_GROUP_ID);
+        }
+
+        if (activeCells.Count != previousActiveCells.Count)
+        {
+            return true;
+        }
+
+        if (activeCells[cullArea.NumberOfSubdivisions] != previousActiveCells[cullArea.NumberOfSubdivisions])
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    /// <summary>
     ///     Unsubscribes from old and subscribes to new interest groups.
     /// </summary>
     private void UpdateInterestGroups()
     {
+        List<int> disable = new List<int>(0);
+
         foreach (int groupId in previousActiveCells)
         {
-            PhotonNetwork.SetReceivingEnabled(groupId, false);
-            PhotonNetwork.SetSendingEnabled(groupId, false);
+            if (!activeCells.Contains(groupId))
+            {
+                disable.Add(groupId);
+            }
         }
-
-        foreach (int groupId in activeCells)
-        {
-            PhotonNetwork.SetReceivingEnabled(groupId, true);
-            PhotonNetwork.SetSendingEnabled(groupId, true);
-        }
+        
+        PhotonNetwork.SetReceivingEnabled(activeCells.ToArray(), disable.ToArray());
+        PhotonNetwork.SetSendingEnabled(activeCells.ToArray(), disable.ToArray());
     }
 
+    #region IPunObservable implementation
+
     /// <summary>
-    ///     Updates the current group of the PhotonView component.
+    ///     This time OnPhotonSerializeView is not used to send or receive any kind of data.
+    ///     It is used to change the currently active group of the PhotonView component, making it work together with PUN more directly.
+    ///     Keep in mind that this function is only executed, when there is at least one more player in the room.
     /// </summary>
-    private void UpdateActiveGroup()
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         // If the player leaves the area we insert the whole area itself as an active cell.
         // This can be removed if it is sure that the player is not able to leave the area.
@@ -184,30 +216,5 @@ public class NetworkCullingHandler : MonoBehaviour
         }
     }
 
-    /// <summary>
-    ///     Drawing informations.
-    /// </summary>
-    private void OnGUI()
-    {
-        if (!pView.isMine)
-        {
-            return;
-        }
-        
-        string subscribedAndActiveCells = "Inside cells:\n";
-        string subscribedCells = "Subscribed cells:\n";
-
-        for (int index = 0; index < activeCells.Count; ++index)
-        {
-            if (index <= cullArea.NumberOfSubdivisions)
-            {
-                subscribedAndActiveCells += activeCells[index] + "  ";
-            }
-
-            subscribedCells += activeCells[index] + "  ";
-        }
-        
-        GUI.Label(new Rect(20.0f, Screen.height - 100.0f, 200.0f, 40.0f), "<color=white>" + subscribedAndActiveCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 } );
-        GUI.Label(new Rect(20.0f, Screen.height - 60.0f, 200.0f, 40.0f), "<color=white>" + subscribedCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 } );
-    }
+    #endregion
 }

@@ -70,6 +70,7 @@ using UnityEngine.UI;
 /// Description: 
 /// DateTime: 3/24/2017
 /// </summary>
+[RequireComponent(typeof(Canvas))]
 public class VRPlayerUI : MonoBehaviour {
 	
 	#region Public Variables  //公共变量区域
@@ -94,7 +95,24 @@ public class VRPlayerUI : MonoBehaviour {
 
 
 	#region Private Variables   //私有变量区域
+	private Canvas canvas;
 
+	[SerializeField]
+	private PhotonVoiceRecorder recorder;
+
+	[SerializeField]
+	private PhotonVoiceSpeaker speaker;
+
+	[SerializeField]
+	private Image recorderSprite;
+
+	[SerializeField]
+	private Image speakerSprite;
+
+	[SerializeField]
+	private Text bufferLagText;
+
+	private bool showSpeakerLag;
 	CameraRigManager _target;	//目标棋子
 
 	float _characterControllerHeight = 0f;	//高度
@@ -111,6 +129,7 @@ public class VRPlayerUI : MonoBehaviour {
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
+		canvas = GetComponent<Canvas>();
 		ResetUI();
 	}
 
@@ -121,7 +140,10 @@ public class VRPlayerUI : MonoBehaviour {
 			return;
 		}
 
-
+		recorderSprite.enabled = recorder != null && recorder.IsTransmitting;
+		speakerSprite.enabled = speaker != null && speaker.IsPlaying;
+		bufferLagText.enabled = showSpeakerLag && speaker.IsPlaying && speaker.IsVoiceLinked;
+		bufferLagText.text = string.Format("{0}", speaker.CurrentBufferLag);
 		// Reflect the Player Health
 		if (PlayerHealthSlider != null) {
 			PlayerHealthSlider.value = _target.Health;
@@ -164,7 +186,8 @@ public class VRPlayerUI : MonoBehaviour {
 		_target = target;
 		_targetTransform = _target.GetComponent<Transform>();
 		_targetRenderer = _target.GetComponent<Renderer>();
-
+		recorder = _target.GetComponent<PhotonVoiceRecorder> ();
+		speaker = _target.GetComponent<PhotonVoiceSpeaker> ();
 		UpdateText (_target.photonView.owner.NickName);
 
 	}

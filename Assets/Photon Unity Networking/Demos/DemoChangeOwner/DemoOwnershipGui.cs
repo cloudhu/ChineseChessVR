@@ -17,6 +17,17 @@ public class DemoOwnershipGui : MonoBehaviour
         }
     }
 
+	public void OnOwnershipTransfered (object[] viewAndPlayers)
+	{
+		PhotonView view = viewAndPlayers[0] as PhotonView;
+		
+		PhotonPlayer newOwner = viewAndPlayers[1] as PhotonPlayer;
+		
+		PhotonPlayer oldOwner = viewAndPlayers[2] as PhotonPlayer;
+		
+		Debug.Log( "OnOwnershipTransfered for PhotonView"+view.ToString()+" from "+oldOwner+" to "+newOwner);
+	}
+
 
     #region Unity
 

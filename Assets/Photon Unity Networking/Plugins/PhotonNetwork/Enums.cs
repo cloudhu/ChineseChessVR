@@ -415,6 +415,36 @@ public enum PhotonNetworkingMessage
     /// And the client has to be connected to the Master Server, which is providing the info about lobbies.
     /// </remarks>
     OnLobbyStatisticsUpdate,
+
+
+	/// <summary>
+	/// Called when a remote Photon Player activity changed. This will be called ONLY is PlayerTtl is greater then 0.
+	/// 
+	/// Use PhotonPlayer.IsInactive to check the current activity state
+	/// 	
+	/// Example: void OnPhotonPlayerActivityChanged(PhotonPlayer otherPlayer) {...}
+	/// </summary>
+	/// <remarks>
+	/// This callback has precondition:
+	/// PlayerTtl must be greater then 0
+	/// </remarks>
+	OnPhotonPlayerActivityChanged,
+
+
+	/// <summary>
+	/// Called when a PhotonView Owner is transfered to a Player.
+	/// </summary>
+	/// <remarks>
+	/// The parameter viewAndPlayers contains:
+	///
+	/// PhotonView view = viewAndPlayers[0] as PhotonView;
+	///
+	/// PhotonPlayer newOwner = viewAndPlayers[1] as PhotonPlayer;
+	/// 
+	/// PhotonPlayer oldOwner = viewAndPlayers[2] as PhotonPlayer;
+	/// </remarks>
+	/// <example>void OnOwnershipTransfered(object[] viewAndPlayers) {} //</example>
+	OnOwnershipTransfered,
 }
 
 

@@ -120,6 +120,7 @@ public class ServerSettings : ScriptableObject
     {
         try
         {
+
             new Guid(val);
         }
         catch
@@ -128,6 +129,33 @@ public class ServerSettings : ScriptableObject
         }
         return true;
     }
+
+	/// <summary>
+	/// Gets the best region code in preferences.
+	/// This composes the PhotonHandler, since its Internal and can not be accessed by the custom inspector
+	/// </summary>
+	/// <value>The best region code in preferences.</value>
+	public static CloudRegionCode BestRegionCodeInPreferences{
+		get{
+			return PhotonHandler.BestRegionCodeInPreferences;
+		}
+	}
+
+	/// <summary>
+	/// Gets the best region code currently.
+	/// This composes the PhotonHandler, since its Internal and can not be accessed by the custom inspector
+	/// </summary>
+	/// <value>The best region code currently.</value>
+	public static CloudRegionCode BestRegionCodeCurrently{
+		get{
+			return PhotonHandler.BestRegionCodeCurrently;
+		}
+	}
+
+	public static void ResetBestRegionCodeInPreferences()
+	{
+		PhotonHandler.BestRegionCodeInPreferences = CloudRegionCode.none;
+	}
 
     public override string ToString()
     {

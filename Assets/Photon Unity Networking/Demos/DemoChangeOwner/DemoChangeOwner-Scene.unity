@@ -363,7 +363,7 @@ Light:
   serializedVersion: 7
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.370351
   m_Range: 20
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -509,7 +509,7 @@ Light:
   serializedVersion: 7
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.370351
   m_Range: 20
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -674,7 +674,8 @@ MonoBehaviour:
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 1
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1245954011}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 1
   instantiationId: 1

@@ -283,6 +283,11 @@
             </remarks>
             <param name="eventData">The event currently being dispatched.</param>
         </member>
+        <member name="M:ExitGames.Client.Photon.StreamBuffer.SetCapacityMinimum(System.Int32)">
+            <summary>
+            Guarantees that the buffer is at least neededSize bytes.
+            </summary>
+        </member>
         <member name="T:ExitGames.Client.Photon.PeerStateValue">
             <summary>
             Value range for a Peer's connection and initialization state, as returned by the PeerState property.
@@ -1279,9 +1284,6 @@
         <member name="M:ExitGames.Client.Photon.PeerBase.SerializeMessageToMessage(System.Object,System.Boolean,System.Byte[],System.Boolean)">
             <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
         </member>
-        <member name="M:ExitGames.Client.Photon.PeerBase.SerializeRawMessageToMessage(System.Byte[],System.Boolean,System.Byte[],System.Boolean)">
-            <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
-        </member>
         <member name="P:ExitGames.Client.Photon.PeerBase.mtu">
             <summary> Maximum Transfer Unit to be used for UDP+TCP</summary>
         </member>
@@ -1358,7 +1360,8 @@
             <returns>the invocation ID for this operation (the payload)</returns>
         </member>
         <member name="M:ExitGames.Client.Photon.EnetPeer.SerializeOperationToMessage(System.Byte,System.Collections.Generic.Dictionary{System.Byte,System.Object},ExitGames.Client.Photon.PeerBase.EgMessageType,System.Boolean)">
-            <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
+            <summary>Serializes an operation into our binary messages (magic number, msg-type byte and message). Optionally encrypts.</summary>
+            <remarks>This method is mostly the same in EnetPeer, TPeer and HttpPeerBase. Also, for raw messages, we have another variant.</remarks>
         </member>
         <member name="M:ExitGames.Client.Photon.EnetPeer.ReceiveIncomingCommands(System.Byte[],System.Int32)">
             <summary>reads incoming udp-packages to create and queue incoming commands*</summary>
@@ -1407,7 +1410,8 @@
             <returns>Always false in this case (local queues are ignored. true would be: "call again to send remaining data").</returns>
         </member>
         <member name="M:ExitGames.Client.Photon.TPeer.SerializeOperationToMessage(System.Byte,System.Collections.Generic.Dictionary{System.Byte,System.Object},ExitGames.Client.Photon.PeerBase.EgMessageType,System.Boolean)">
-            <summary> Returns the UDP Payload starting with Magic Number for binary protocol </summary>
+            <summary>Serializes an operation into our binary messages (magic number, msg-type byte and message). Optionally encrypts.</summary>
+            <remarks>This method is mostly the same in EnetPeer, TPeer and HttpPeerBase. Also, for raw messages, we have another variant.</remarks>
         </member>
         <member name="M:ExitGames.Client.Photon.TPeer.EnqueueMessageAsPayload(System.Boolean,System.Byte[],System.Byte)">
             <summary>enqueues serialized operations to be sent as tcp stream / package</summary>
@@ -1441,7 +1445,7 @@
             <remarks>
             The OperationCode defines the type of operation called on Photon and in turn also the Parameters that
             are set in the request. Those are provided as Dictionary with byte-keys.
-            There are pre-defined constants for various codes defined in the LoadBalancing application. 
+            There are pre-defined constants for various codes defined in the LoadBalancing application.
             Check: OperationCode, ParameterCode, etc.
             <para></para>
             An operation's request is summarized by the ReturnCode: a short typed code for &quot;Ok&quot; or
@@ -1482,16 +1486,16 @@
             <returns>To be used in debug situations only, as it returns a string for each value.</returns>
         </member>
         <member name="T:ExitGames.Client.Photon.EventData">
-            <summary>
-            Contains all components of a Photon Event.
-            Event Parameters, like OperationRequests and OperationResults, consist of a Dictionary with byte-typed keys per value.
-            </summary>
-            <remarks>
-            The indexer of this class provides access to the Parameters Dictionary.
+             <summary>
+             Contains all components of a Photon Event.
+             Event Parameters, like OperationRequests and OperationResults, consist of a Dictionary with byte-typed keys per value.
+             </summary>
+             <remarks>
+             The indexer of this class provides access to the Parameters Dictionary.
             
-            The operation RaiseEvent allows you to provide custom event content. Defined in LoadBalancing, this
-            CustomContent will be made the value of key ParameterCode.CustomEventContent.
-            </remarks>
+             The operation RaiseEvent allows you to provide custom event content. Defined in LoadBalancing, this
+             CustomContent will be made the value of key ParameterCode.CustomEventContent.
+             </remarks>
         </member>
         <member name="F:ExitGames.Client.Photon.EventData.Code">
             <summary>The event code identifies the type of event.</summary>
@@ -1990,6 +1994,13 @@
             </summary>
             <param name="obj">The object to serialize</param>
             <returns>The serialized byte-array</returns>
+        </member>
+        <member name="M:ExitGames.Client.IProtocol.Deserialize(ExitGames.Client.Photon.StreamBuffer)">
+            <summary>
+            Deserialize returns an object reassembled from the given StreamBuffer.
+            </summary>
+            <param name="stream">The buffer to be Deserialized</param>
+            <returns>The Deserialized object</returns>
         </member>
         <member name="M:ExitGames.Client.IProtocol.Deserialize(System.Byte[])">
             <summary>
