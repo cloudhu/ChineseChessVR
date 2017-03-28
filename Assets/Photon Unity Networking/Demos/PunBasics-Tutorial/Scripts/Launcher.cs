@@ -120,6 +120,7 @@ namespace ExitGames.Demos.DemoAnimator
 
 				LogFeedback("Connecting...");
 
+
                 // #Critical | 极重要 -我们必须首先连接到Photon在线服务器。
                 PhotonNetwork.ConnectUsingSettings(_gameVersion);
 			}

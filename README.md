@@ -17,4 +17,4 @@ Basics：
 
 0x03 版本
 
-Windows7、10+Unity5.5.0f3+VS2015
+Windows7、10+Unity5.5.0f3/Unity5.5.2f1+VS2015

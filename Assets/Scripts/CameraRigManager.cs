@@ -82,6 +82,8 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 	[Tooltip("玩家当前的体力值")]
 	public float Health = 1f;
 
+	[Tooltip("位置索引:1是头；2是左手；3是右手")]
+	public int index = 1;	
     #endregion
 
 
@@ -98,7 +100,8 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
         // 用于GameManager.cs: 我们跟踪的本地玩家实例来防止在关卡被同步时实例化
         if (photonView.isMine)
         {
-            CameraRigManager.LocalPlayerInstance = this.gameObject;
+			if(index==1)
+			CameraRigManager.LocalPlayerInstance = this.gameObject;
         }
         // #关键  我们标识不在加载时被摧毁，使实例在关卡同步时保留下来，从而使关卡加载时有无缝体验。
         DontDestroyOnLoad(this.gameObject);
@@ -126,11 +129,25 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 
 		if (photonView.isMine)
 		{
-
-			if (this.Health <= 0f)
-			{
-				GameManager.Instance.LeaveRoom();
+			switch (index) {
+			case 1:
+				transform.position = GameManager.Instance.head.position;
+				transform.rotation = GameManager.Instance.head.rotation;
+				if (this.Health <= 0f)
+				{
+					GameManager.Instance.LeaveRoom();
+				}
+				break;
+			case 2:
+				transform.position = GameManager.Instance.leftHand.position;
+				transform.rotation = GameManager.Instance.leftHand.rotation;
+				break;
+			default:
+				transform.position = GameManager.Instance.rightHand.position;
+				transform.rotation = GameManager.Instance.rightHand.rotation;
+				break;
 			}
+
 		}
 
 	}

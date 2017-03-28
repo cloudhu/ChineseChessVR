@@ -817,7 +817,7 @@ ParticleSystem:
   m_GameObject: {fileID: 863450934}
   serializedVersion: 5
   lengthInSec: 1
-  speed: 1
+  simulationSpeed: 1
   looping: 1
   prewarm: 0
   playOnAwake: 1

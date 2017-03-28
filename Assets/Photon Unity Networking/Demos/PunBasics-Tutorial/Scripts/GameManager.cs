@@ -31,9 +31,10 @@ using UnityEngine.SceneManagement;
 
 		[Tooltip("玩家头盔预设")]
 		public GameObject HeadPrefab;
-
 		[Tooltip("玩家双手预设")]
-		public GameObject HandPrefab;
+		public GameObject LHandPrefab;
+		[Tooltip("玩家双手预设")]
+		public GameObject RHandPrefab;
 
         public Transform head;
         public Transform leftHand;
@@ -80,12 +81,12 @@ using UnityEngine.SceneManagement;
 
 
                     
-                    GameObject RHand= PhotonNetwork.Instantiate(this.HandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					RHand.transform.SetParent(rightHand,false);
-					GameObject LHand = PhotonNetwork.Instantiate(this.HandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					LHand.transform.SetParent(leftHand,false);
+                    GameObject RHand= PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					
+					GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+					
 					GameObject Head= PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-					Head.transform.SetParent(head,false);
+					
 
                 }
                 else{
