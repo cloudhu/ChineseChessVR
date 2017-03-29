@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=PunLauncher.cs company=League of HTC Vive Developers>
+// <copyright file=pointer.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,109 +55,62 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/28/2017
-// --------------------------------------------------------------------------------------------------------------------
+//中文注释：胡良云（CloudHu） 3/29/2017
 
+// --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement; 
-
-using Random = UnityEngine.Random;
+using VRTK;
 /// <summary>
-/// FileName: PunLauncher.cs
+/// FileName: pointer.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
-/// DateTime: 3/28/2017
+/// Description: 负责标记出可以行走的棋子位置
+/// DateTime: 3/29/2017
 /// </summary>
-public class PunLauncher  : Photon.PunBehaviour {
-
-		#region Public Variables  //公共变量区域
-
-		[Tooltip("每间房间的最大玩家数量")]
-		public byte maxPlayersPerRoom = 2;
-
-		public string Version = "1.0";
-
-        [Tooltip("The UI Loader Anime")]
-        public Loader loaderAnime;
-        #endregion
-
-    #region Private Variables   //私有变量区域
-    /// <summary>
-    /// 跟踪当前进程。因为连接是异步的，且是基于来自Photon的几个回调，
-    /// 我们需要跟踪这一点，以在我们收到Photon回调时适当地调整该行为。
-    /// 这通常是用于OnConnectedToMaster()回调。
-    /// </summary>
-    bool isConnecting;
-
-		#endregion
-
-		#region MonoBehaviour CallBacks //回调函数区域
-
-		public virtual void Start()
-		{
-			PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
-			PhotonNetwork.automaticallySyncScene = true;
-		}
-
-		#endregion
+public class pointer : VRTK_InteractableObject
+{
+	
+	#region Public Variables  //公共变量区域
+	
+	
+	#endregion
 
 
-		#region Public Methods //公共方法
+	#region Private Variables   //私有变量区域
+	
 
+	#endregion
+	
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
+        
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+    #endregion
 
-		public void Connect(){
-			if (!PhotonNetwork.connected)
-			{
-				Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
-
-				PhotonNetwork.ConnectUsingSettings(Version);
-            if (loaderAnime != null)
-            {
-                loaderAnime.StartLoaderAnimation();
-            }
-        }
-		}
-
-		#endregion
-
-
-		#region Photon.PunBehaviour CallBacks   //PUN回调区域
-		public virtual void OnConnectedToMaster()
-		{
-			Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-			PhotonNetwork.JoinRandomRoom();
-		}
-
-		public virtual void OnJoinedLobby()
-		{
-			Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
-			PhotonNetwork.JoinRandomRoom();
-		}
-
-		public virtual void OnPhotonRandomJoinFailed()
-		{
-			Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
-			PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
-        loaderAnime.StopLoaderAnimation();
-    }
-
-		// the following methods are implemented to give you some context. re-implement them as needed.
-
-		public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
-		{
-			Debug.LogError("Cause: " + cause);
-        loaderAnime.StopLoaderAnimation();
-    }
-
-    public override void OnJoinedRoom()
+    #region Public Methods	//公共方法区域
+    public override void StartUsing(GameObject usingObject)
     {
-        loaderAnime.StopLoaderAnimation();
+        base.StartUsing(usingObject);
+        GameObject war= transform.parent.FindChild("WarUI(Clone)").gameObject;
+        war.GetComponent<WarUI>().TrySelectChessman();
+        Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }
 
-        #endregion
+    public override void StopUsing(GameObject usingObject)
+    {
+        base.StopUsing(usingObject);
 
     }
+
+    #endregion
+
+}

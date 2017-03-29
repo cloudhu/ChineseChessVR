@@ -705,7 +705,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (selectId>16)    //黑子无法被红方或红色回合内选定
         {
-            if (PhotonNetwork.isMasterClient || _isRedTurn)
+            if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
             {
                 return;
             }
@@ -713,7 +713,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (selectId<16)    //红子同样无法被其他阵营选定
         {
-            if (!PhotonNetwork.isMasterClient || !_isRedTurn)
+            if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
             {
                 return;
             }
@@ -867,7 +867,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         TimerFillImage.anchorMax = new Vector2(0f, 1f);
 
-        ConnectUiView.gameObject.SetActive(!PhotonNetwork.inRoom);
         GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		ChatUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);

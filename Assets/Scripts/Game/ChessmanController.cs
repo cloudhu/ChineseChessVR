@@ -144,16 +144,16 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
     }
 
-	#endregion
-	
-	#region Public Methods	//公共方法区域
+    #endregion
 
-	public override void StartUsing(GameObject usingObject)
+    #region Public Methods	//公共方法区域
+    public override void StartUsing(GameObject usingObject)
 	{
 		base.StartUsing(usingObject);
 		PlaySound (awakeMusic);
 
 		war.TrySelectChessman ();
+        Debug.Log("StartUsing :Called war.TrySelectChessman ();");
 	}
 
 	public override void StopUsing(GameObject usingObject)

@@ -105,13 +105,14 @@ MonoBehaviour:
   grabAttachMechanicScript: {fileID: 0}
   secondaryGrabActionScript: {fileID: 0}
   isUsable: 1
-  holdButtonToUse: 0
+  holdButtonToUse: 1
   useOnlyIfGrabbed: 0
-  pointerActivatesUseAction: 1
-  useOverrideButton: 3
+  pointerActivatesUseAction: 0
+  useOverrideButton: 0
   allowedUseControllers: 0
   usingState: 0
   awakeMusic: {fileID: 0}
+  walkAS: {fileID: 0}
   ChessmamUiPrefab: {fileID: 1571010476589250, guid: f4e04ce663e0c094682be1ef7cb1cdf2,
     type: 2}
   warUiPrefab: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0,

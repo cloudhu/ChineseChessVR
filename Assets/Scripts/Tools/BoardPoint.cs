@@ -83,12 +83,16 @@ public class BoardPoint : MonoBehaviour {
 
     [Tooltip("战斗UI预设")]
     public GameObject warUiPre;
+
+    [Tooltip("战斗光标")]
+    public GameObject warPointer;
+
     #endregion
 
 
     #region Private Variables   //私有变量区域
 
-    GameObject beams,warUI;
+    GameObject beams,warUI,pointer;
 
 	#endregion
 	
@@ -110,8 +114,13 @@ public class BoardPoint : MonoBehaviour {
         {
             warUI= transform.FindChild("WarUI(Clone)").gameObject;
         }
+        if (pointer == null)
+        {
+            pointer = transform.FindChild("PointerPrefab(Clone)").gameObject;
+        }
         warUI.SetActive(false);
         beams.SetActive(false);
+        pointer.SetActive(false);
         isOccupied = true;
     }
 
@@ -144,6 +153,18 @@ public class BoardPoint : MonoBehaviour {
             if (!warUI.activeSelf)
             {
                 warUI.SetActive(true);
+            }
+        }
+        if (pointer == null)
+        {
+            pointer = GameObject.Instantiate(warPointer, transform, false) as GameObject;
+            pointer.transform.localPosition = new Vector3(transform.localPosition.x, 1f, transform.localPosition.z);
+        }
+        else
+        {
+            if (!pointer.activeSelf)
+            {
+                pointer.SetActive(true);
             }
         }
     }

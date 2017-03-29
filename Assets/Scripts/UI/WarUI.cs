@@ -137,6 +137,7 @@ public class WarUI : MonoBehaviour {
 
     public void TrySelectChessman()
     {
+        Debug.Log("WarUI:Called TrySelectChessman()");
         string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
         if (transform.parent.GetComponent<ChessmanController>())    //如果是棋子
         {
