@@ -894,7 +894,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	}
 
 	void Restart(){
-		PhotonNetwork.LoadLevel ("ChineseChessVR");
+		PhotonNetwork.LoadLevel ("ChineseChessVR0");
 	}
 
     #endregion

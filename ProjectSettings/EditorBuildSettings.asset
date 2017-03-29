@@ -51,3 +51,5 @@ EditorBuildSettings:
     path: Assets/Scenes/PunLauncher.unity
   - enabled: 1
     path: Assets/Scenes/ChineseChessVR.unity
+  - enabled: 1
+    path: Assets/Scenes/ChineseChessVR0.unity
