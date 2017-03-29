@@ -1,0 +1,215 @@
+fileFormatVersion: 2
+guid: d587bc902907ddd4ca1a53e66125d828
+timeCreated: 1479603477
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Back
+    100002: Back_end
+    100004: Base
+    100006: Hand
+    100008: HandBones
+    100010: //RootNode
+    100012: Index1
+    100014: Index2
+    100016: Index3
+    100018: Index3_end
+    100020: IndexRoot
+    100022: IndexRoot_end
+    100024: IndexSq1
+    100026: IndexSq2
+    100028: IndexSq2_end
+    100030: Mid1
+    100032: Mid2
+    100034: Mid3
+    100036: Mid3_end
+    100038: MidRoot
+    100040: MidRoot_end
+    100042: MidSq1
+    100044: MidSq2
+    100046: MidSq2_end
+    100048: PalmSq1
+    100050: PalmSq2
+    100052: PalmSq3
+    100054: PalmSq3_end
+    100056: Pinky1
+    100058: Pinky2
+    100060: Pinky3
+    100062: Pinky3_end
+    100064: PinkyRoot
+    100066: PinkyRoot_end
+    100068: PinkySq1
+    100070: PinkySq2
+    100072: PinkySq2_end
+    100074: Ring1
+    100076: Ring2
+    100078: Ring3
+    100080: Ring3_end
+    100082: RingRoot
+    100084: RingRoot_end
+    100086: RingSq1
+    100088: RingSq2
+    100090: RingSq2_end
+    100092: Root
+    100094: Thumb1
+    100096: Thumb2
+    100098: Thumb3
+    100100: Thumb3_end
+    100102: Tstretch1
+    100104: Tstretch2
+    100106: Tstretch3
+    100108: Tstretch3_end
+    400000: Back
+    400002: Back_end
+    400004: Base
+    400006: Hand
+    400008: HandBones
+    400010: //RootNode
+    400012: Index1
+    400014: Index2
+    400016: Index3
+    400018: Index3_end
+    400020: IndexRoot
+    400022: IndexRoot_end
+    400024: IndexSq1
+    400026: IndexSq2
+    400028: IndexSq2_end
+    400030: Mid1
+    400032: Mid2
+    400034: Mid3
+    400036: Mid3_end
+    400038: MidRoot
+    400040: MidRoot_end
+    400042: MidSq1
+    400044: MidSq2
+    400046: MidSq2_end
+    400048: PalmSq1
+    400050: PalmSq2
+    400052: PalmSq3
+    400054: PalmSq3_end
+    400056: Pinky1
+    400058: Pinky2
+    400060: Pinky3
+    400062: Pinky3_end
+    400064: PinkyRoot
+    400066: PinkyRoot_end
+    400068: PinkySq1
+    400070: PinkySq2
+    400072: PinkySq2_end
+    400074: Ring1
+    400076: Ring2
+    400078: Ring3
+    400080: Ring3_end
+    400082: RingRoot
+    400084: RingRoot_end
+    400086: RingSq1
+    400088: RingSq2
+    400090: RingSq2_end
+    400092: Root
+    400094: Thumb1
+    400096: Thumb2
+    400098: Thumb3
+    400100: Thumb3_end
+    400102: Tstretch1
+    400104: Tstretch2
+    400106: Tstretch3
+    400108: Tstretch3_end
+    4300000: Hand
+    7400000: HandBones|Claw_Prep
+    7400002: HandBones|Claw_SqueezeHi
+    7400004: HandBones|Claw_SqueezeLo
+    7400006: HandBones|Claw_SqueezeMid
+    7400008: HandBones|Gun_FireHi
+    7400010: HandBones|Gun_FireLo
+    7400012: HandBones|Gun_FireMid
+    7400014: HandBones|Gun_SqueezeHi
+    7400016: HandBones|Gun_SqueezeLo
+    7400018: HandBones|Gun_SqueezeMid
+    7400020: HandBones|Hilt_Prep
+    7400022: HandBones|Hilt_SqueezeHi
+    7400024: HandBones|Hilt_SqueezeLo
+    7400026: HandBones|Hilt_SqueezeMid
+    7400028: HandBones|Misc_SqueezeMid
+    7400030: HandBones|Pinch_Prep
+    7400032: HandBones|Pinch_SqueezeHi
+    7400034: HandBones|Pinch_SqueezeLo
+    7400036: HandBones|Pinch_SqueezeMid
+    7400038: HandBones|Sphere_Prep
+    7400040: HandBones|Sphere_SqueezeHi
+    7400042: HandBones|Sphere_SqueezeLo
+    7400044: HandBones|Sphere_SqueezeMid
+    7400046: HandBones|Wall_Press
+    7400048: HandBones|z_Default
+    7400050: HandBones|z_DragDown
+    7400052: HandBones|z_DragLeft
+    7400054: HandBones|z_DragRight
+    7400056: HandBones|z_DragUp
+    7400058: HandBones|z_Fist
+    7400060: HandBones|z_Point
+    9500000: //RootNode
+    13700000: Hand
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

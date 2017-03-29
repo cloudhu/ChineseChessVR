@@ -188,7 +188,9 @@ public class VRPlayerUI : MonoBehaviour {
 		_targetRenderer = _target.GetComponent<Renderer>();
 		recorder = _target.GetComponent<PhotonVoiceRecorder> ();
 		speaker = _target.GetComponent<PhotonVoiceSpeaker> ();
-		UpdateText (_target.photonView.owner.NickName);
+		object playerType;
+		_target.photonView.owner.CustomProperties.TryGetValue ("playerType", out playerType);
+		UpdateText (playerType.ToString()+" ： "+_target.photonView.owner.NickName);
 
 	}
 

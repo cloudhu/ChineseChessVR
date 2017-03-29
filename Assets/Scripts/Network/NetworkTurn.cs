@@ -58,11 +58,12 @@
 //中文注释：胡良云（CloudHu） 3/22/2017
 
 // --------------------------------------------------------------------------------------------------------------------
-using System.Collections;
-using System.Collections.Generic;
+
 using Photon;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
 /// FileName: NetworkTurn.cs
@@ -667,11 +668,16 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             // 应该是这种样式: "YOU   00"
             if (PhotonNetwork.isMasterClient)
             {
-				localPlayerType = ChessPlayerType.Red;
+				ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
+				playerType.Add ("playerType", "红方选手");
+				local.SetCustomProperties (playerType,null,false);
+
 				this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
 				//Debug.Log ("MasterClient");
 			}else{
-				localPlayerType = ChessPlayerType.Black;
+				ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
+				playerType.Add ("playerType", "黑方选手");
+				local.SetCustomProperties (playerType,null,false);
 				this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
 			}
 				
@@ -1094,6 +1100,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			GameStatusText.text = "您是红方棋手……";
 			Debug.Log ("OnJoinedRoom+您是红方棋手");
 		}
+
         if (PhotonNetwork.room.PlayerCount == 2)
         {
             if (!PhotonNetwork.isMasterClient) {
@@ -1110,11 +1117,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
                 this.StartTurn();
 
             }
-        }
-        else
-        {
-            Debug.Log("Waiting for another player");
-            GameStatusText.text = "等待玩家加入……";
         }
 
         if (PhotonNetwork.room.PlayerCount > 2)

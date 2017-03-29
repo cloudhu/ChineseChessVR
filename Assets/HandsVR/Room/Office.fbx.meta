@@ -1,0 +1,108 @@
+fileFormatVersion: 2
+guid: 588f1b169898dca4baea354288a0ff30
+timeCreated: 1479918225
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Cube
+    100002: Cube.001
+    100004: Cube.004
+    100006: Cube.007
+    100008: Cube.008
+    100010: Door
+    100012: //RootNode
+    100014: Plane.004
+    400000: Cube
+    400002: Cube.001
+    400004: Cube.004
+    400006: Cube.007
+    400008: Cube.008
+    400010: Door
+    400012: //RootNode
+    400014: Plane.004
+    2300000: Cube
+    2300002: Cube.001
+    2300004: Cube.004
+    2300006: Cube.007
+    2300008: Cube.008
+    2300010: Door
+    2300012: Plane.004
+    3300000: Cube
+    3300002: Cube.001
+    3300004: Cube.004
+    3300006: Cube.007
+    3300008: Cube.008
+    3300010: Door
+    3300012: Plane.004
+    4300000: Door
+    4300002: Cube.008
+    4300004: Plane.004
+    4300006: Cube.007
+    4300008: Cube.004
+    4300010: Cube.001
+    4300012: Cube
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

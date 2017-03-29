@@ -1,0 +1,379 @@
+fileFormatVersion: 2
+guid: a2953693007d7144aa855323eef40201
+timeCreated: 1478295832
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Bomb
+    100002: Bomb 1
+    100004: //RootNode
+    100006: CenterBone
+    100008: FX
+    100010: Globby_Bones
+    100012: Plane
+    100014: Sparks1
+    100016: Sparks10
+    100018: Sparks10_end
+    100020: Sparks1_end
+    100022: Sparks2
+    100024: Sparks2_end
+    100026: Sparks3
+    100028: Sparks3_end
+    100030: Sparks4
+    100032: Sparks4_end
+    100034: Sparks5
+    100036: Sparks5_end
+    100038: Sparks6
+    100040: Sparks6_end
+    100042: Sparks7
+    100044: Sparks7_end
+    100046: Sparks8
+    100048: Sparks8_end
+    100050: Sparks9
+    100052: Sparks9_end
+    400000: Bomb
+    400002: Bomb 1
+    400004: //RootNode
+    400006: CenterBone
+    400008: FX
+    400010: Globby_Bones
+    400012: Plane
+    400014: Sparks1
+    400016: Sparks10
+    400018: Sparks10_end
+    400020: Sparks1_end
+    400022: Sparks2
+    400024: Sparks2_end
+    400026: Sparks3
+    400028: Sparks3_end
+    400030: Sparks4
+    400032: Sparks4_end
+    400034: Sparks5
+    400036: Sparks5_end
+    400038: Sparks6
+    400040: Sparks6_end
+    400042: Sparks7
+    400044: Sparks7_end
+    400046: Sparks8
+    400048: Sparks8_end
+    400050: Sparks9
+    400052: Sparks9_end
+    4300000: Plane
+    4300002: Bomb
+    7400000: Globby_Bones|Explode
+    7400002: Globby_Bones|FuzeIdle
+    7400004: Globby_Bones|Idle
+    9500000: //RootNode
+    13700000: Bomb
+    13700002: Plane
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Globby_Bones|Explode
+      takeName: Globby_Bones|Explode
+      firstFrame: 0
+      lastFrame: 17
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bomb
+        weight: 1
+      - path: Globby_Bones
+        weight: 1
+      - path: Globby_Bones/CenterBone
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1/Sparks1_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2/Sparks2_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3/Sparks3_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4/Sparks4_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5/Sparks5_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6/Sparks6_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7/Sparks7_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8/Sparks8_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9/Sparks9_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10/Sparks10_end
+        weight: 1
+      - path: Plane
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Globby_Bones|FuzeIdle
+      takeName: Globby_Bones|FuzeIdle
+      firstFrame: 0
+      lastFrame: 57
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bomb
+        weight: 1
+      - path: Globby_Bones
+        weight: 1
+      - path: Globby_Bones/CenterBone
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1/Sparks1_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2/Sparks2_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3/Sparks3_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4/Sparks4_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5/Sparks5_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6/Sparks6_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7/Sparks7_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8/Sparks8_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9/Sparks9_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10/Sparks10_end
+        weight: 1
+      - path: Plane
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Globby_Bones|Idle
+      takeName: Globby_Bones|Idle
+      firstFrame: 0
+      lastFrame: 13
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Bomb
+        weight: 1
+      - path: Globby_Bones
+        weight: 1
+      - path: Globby_Bones/CenterBone
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks1/Sparks1_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks2/Sparks2_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks3/Sparks3_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks4/Sparks4_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks5/Sparks5_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks6/Sparks6_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks7/Sparks7_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks8/Sparks8_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks9/Sparks9_end
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10
+        weight: 1
+      - path: Globby_Bones/CenterBone/Bomb 1/FX/Sparks10/Sparks10_end
+        weight: 1
+      - path: Plane
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
