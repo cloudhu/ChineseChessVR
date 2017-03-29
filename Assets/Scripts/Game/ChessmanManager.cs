@@ -184,11 +184,6 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	
 	#region MonoBehaviour CallBacks //回调函数区域
 
-
-	void Awake()  
-	{  
-		ChessmanInit();  
-	} 
 	/*	把操作都交给NetworkTurn来做,这里只提供方法
 	// Use this for initialization
 	void Start () {

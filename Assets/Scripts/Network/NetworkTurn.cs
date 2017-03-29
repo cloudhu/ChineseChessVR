@@ -1106,7 +1106,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             {
                 
                 // 当房间内有两个玩家,则开始首回合
+				chessManManager.ChessmanInit ();
                 this.StartTurn();
+
             }
         }
         else
