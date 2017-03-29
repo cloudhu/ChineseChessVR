@@ -83,7 +83,7 @@ public class PunLauncher  : Photon.PunBehaviour {
 		public Text feedbackText;
 
 		[Tooltip("每间房间的最大玩家数量")]
-		public byte maxPlayersPerRoom = 10;
+		public byte maxPlayersPerRoom = 2;
 
 		[Tooltip("UI加载动画")]
 		public Loader loaderAnime;
