@@ -98,9 +98,8 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
     void Awake()
     {
         // 用于GameManager.cs: 我们跟踪的本地玩家实例来防止在关卡被同步时实例化
-        if (photonView.isMine)
+        if (photonView.isMine && index==1)
         {
-			if(index==1)
 			CameraRigManager.LocalPlayerInstance = this.gameObject;
         }
         // #关键  我们标识不在加载时被摧毁，使实例在关卡同步时保留下来，从而使关卡加载时有无缝体验。
@@ -114,7 +113,6 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 		if (this.PlayerUiPrefab != null && index==1)
 		{
 			GameObject _uiGo = Instantiate(this.PlayerUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			//_uiGo.transform.SetParent (transform,false);
 			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
 			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 		}
@@ -123,11 +121,11 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 	// Update is called once per frame
 	void Update () {
 
-		if (photonView.isMine)
+		if (photonView.isMine)  //同步位置
 		{
 			switch (index) {
 			case 1:
-				transform.position = GameManager.Instance.head.position;
+				transform.position = new Vector3(GameManager.Instance.head.position.x, GameManager.Instance.head.position.y+0.5f, GameManager.Instance.head.position.z);
 				transform.rotation = GameManager.Instance.head.rotation;
 				if (this.Health <= 0f)
 				{
@@ -157,18 +155,22 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.isWriting)
+        if (index==1)
         {
-            // 我们是本地玩家，则把数据发送给远程玩家
-           // stream.SendNext(this.IsFiring);
-            stream.SendNext(this.Health);
+            if (stream.isWriting)
+            {
+                // 我们是本地玩家，则把数据发送给远程玩家
+                // stream.SendNext(this.IsFiring);
+                stream.SendNext(this.Health);
+            }
+            else
+            {
+                //网络玩家则接收数据
+                //  this.IsFiring = (bool)stream.ReceiveNext();
+                this.Health = (float)stream.ReceiveNext();
+            }
         }
-        else
-        {
-            //网络玩家则接收数据
-          //  this.IsFiring = (bool)stream.ReceiveNext();
-            this.Health = (float)stream.ReceiveNext();
-        }
+
     }
 
     #endregion
