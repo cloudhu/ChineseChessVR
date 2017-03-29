@@ -668,16 +668,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             // 应该是这种样式: "YOU   00"
             if (PhotonNetwork.isMasterClient)
             {
-				ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
-				playerType.Add ("playerType", "红方选手");
-				local.SetCustomProperties (playerType,null,false);
-
 				this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
 				//Debug.Log ("MasterClient");
 			}else{
-				ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
-				playerType.Add ("playerType", "黑方选手");
-				local.SetCustomProperties (playerType,null,false);
+
 				this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
 			}
 				
@@ -1095,16 +1089,23 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 同时，所有自定义属性Room.customProperties应该已经可用。检查Room.playerCount就知道房间里是否有足够的玩家来开始游戏.</remarks>
     public override void OnJoinedRoom()
     {
-		if (PhotonNetwork.isMasterClient) {
+        PhotonPlayer local = PhotonNetwork.player;
+        if (PhotonNetwork.isMasterClient) {
+
 			localPlayerType = ChessPlayerType.Red;
 			GameStatusText.text = "您是红方棋手……";
 			Debug.Log ("OnJoinedRoom+您是红方棋手");
-		}
+            ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
+            playerType.Add("playerType", "红方选手");
+            local.SetCustomProperties(playerType, null, false);
+        }
 
         if (PhotonNetwork.room.PlayerCount == 2)
         {
             if (!PhotonNetwork.isMasterClient) {
-
+                ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
+                playerType.Add("playerType", "黑方选手");
+                local.SetCustomProperties(playerType, null, false);
                 localPlayerType = ChessPlayerType.Black;
                 GameStatusText.text = "您是黑方棋手……";
             }
