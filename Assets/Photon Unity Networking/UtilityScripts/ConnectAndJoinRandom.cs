@@ -12,8 +12,6 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 	[Tooltip("每间房间的最大玩家数量")]
 	public byte maxPlayersPerRoom = 2;
 
-	/// <summary>Connect automatically? If false you can set this to true later on or call ConnectUsingSettings in your own scripts.</summary>
-    public bool AutoConnect = true;
 
 	public string Version = "1.0";
 
@@ -27,7 +25,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 		
 
 	public void Connect(){
-		if (AutoConnect && !PhotonNetwork.connected)
+		if (!PhotonNetwork.connected)
 		{
 			Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 

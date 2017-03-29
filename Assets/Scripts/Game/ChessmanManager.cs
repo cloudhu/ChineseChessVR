@@ -270,8 +270,6 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			GameObject ChessMan = GameObject.Instantiate(prefabs, new Vector3(chessman[i]._x, 1f, chessman[i]._z), Quaternion.identity) as GameObject;
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
-
-			//ChessMan.AddComponent<BoxCollider>();  
 		}  
 	}
 
