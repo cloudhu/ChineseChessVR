@@ -1,4 +1,4 @@
-# Strange-MMO-VR
+# ChineseChessVR
 Basics：
 
 0x00 开发者们
