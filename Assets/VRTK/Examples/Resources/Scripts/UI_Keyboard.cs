@@ -5,7 +5,7 @@
 
     public class UI_Keyboard : MonoBehaviour
     {
-        private InputField input;
+        public InputField input;
 
         public void ClickKey(string character)
         {
@@ -28,7 +28,8 @@
 
         private void Start()
         {
-            input = GetComponentInChildren<InputField>();
+			if (input==null)
+			input = GetComponentInChildren<InputField>();
         }
     }
 }
