@@ -205,10 +205,10 @@ public class BoardManager : MonoBehaviour {
         {
             if (!points[i].isOccupied)
             {
-                float _x = points[i].transform.localPosition.x;
-                float fromX = ChessmanManager.chessman[id]._x;
+                float _x = points[i].transform.localPosition.x;	//节点位置x		
+                float fromX = ChessmanManager.chessman[id]._x;	//棋子位置x
 
-                if (_x > (fromX-9f) && _x < (fromX+12f))
+                if (_x > (fromX-12f) && _x < (fromX+12f))
                 {
                     float _z = points[i].transform.localPosition.z;
                     float fromZ= ChessmanManager.chessman[id]._z;

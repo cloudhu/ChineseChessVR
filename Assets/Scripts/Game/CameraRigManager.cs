@@ -114,7 +114,6 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 		{
 			GameObject _uiGo = Instantiate(this.PlayerUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
 			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
-			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 		}
 	}
 	

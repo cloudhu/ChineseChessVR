@@ -130,12 +130,7 @@ public class PositionManager : MonoBehaviour {
         }
 
 
-        if (Mathf.Abs(_x-x)!=step) //判断x轴移动步长
-        {
-            return false;
-        }
-        _x = Mathf.Abs(_z - z);  //判断z轴移动步长
-        if (_x != step)
+		if (Mathf.Abs(_x-x)!=step && Mathf.Abs(_z - z)!= step) //判断移动步长
         {
             return false;
         }
@@ -365,7 +360,7 @@ public class PositionManager : MonoBehaviour {
                     }
                 }
             }
-            return true;
+      
         }
         if (_xStep == step && _zStep / step==muti)
         {
@@ -389,7 +384,6 @@ public class PositionManager : MonoBehaviour {
                     }
                 }
             }
-            return true;
         }
 
 

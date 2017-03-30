@@ -23,7 +23,6 @@ GameObject:
   - component: {fileID: 23410925544041500}
   - component: {fileID: 114564300944544432}
   - component: {fileID: 135373946497134686}
-  - component: {fileID: 195031450919438788}
   m_Layer: 0
   m_Name: Red_Elephant
   m_TagString: Untagged
@@ -131,23 +130,3 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!195 &195031450919438788
-NavMeshAgent:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1220993885607794}
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Speed: 0.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 90
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 1
-  m_BaseOffset: 0.5
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
