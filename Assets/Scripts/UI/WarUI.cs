@@ -100,8 +100,6 @@ public class WarUI : MonoBehaviour {
 
     Transform _targetTransform;
 
-    //Renderer _targetRenderer;
-
     Vector3 _targetPosition;
 
     #endregion
@@ -123,10 +121,11 @@ public class WarUI : MonoBehaviour {
             return;
         }
 
-        if(NetworkTurn.Instance._selectedId== int.Parse(transform.parent.name))
-        {
-            UpdateText("Selected");
-        }
+		if (NetworkTurn.Instance._selectedId == int.Parse (transform.parent.name)) {	//如果选中棋子则更新UI文本显示
+			UpdateText ("Selected");
+		} else {
+			UpdateText ("Select");
+		}
 
 
     }
@@ -135,6 +134,9 @@ public class WarUI : MonoBehaviour {
 
     #region Public Methods	//公共方法区域
 
+	/// <summary>
+	/// 尝试去选择棋子,或者取消选择.
+	/// </summary>
     public void TrySelectChessman()
     {
         Debug.Log("WarUI:Called TrySelectChessman()");
@@ -171,11 +173,12 @@ public class WarUI : MonoBehaviour {
                     break;
             }
         }
-
-
-
+			
     }
 
+	/// <summary>
+	/// 重置UI.
+	/// </summary>
     public void ResetUI()
     {
         SetContainer();
@@ -185,6 +188,10 @@ public class WarUI : MonoBehaviour {
 
     }
 
+	/// <summary>
+	/// 更新文本.
+	/// </summary>
+	/// <param name="newText">New text.</param>
     public void UpdateText(string newText)
     {
         displayText = newText;

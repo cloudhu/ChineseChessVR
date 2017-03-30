@@ -143,7 +143,7 @@ public class BoardPoint : MonoBehaviour {
         if (beams==null)
         {
 			beams = GameObject.Instantiate(beamsPreb,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			beams.transform.localPosition = new Vector3(transform.position.x,1f,transform.position.z);
+			beams.transform.localPosition = new Vector3(0,1f,0);
         }
         else
         {
@@ -156,7 +156,8 @@ public class BoardPoint : MonoBehaviour {
         if (warUI==null)
         {
 			warUI = GameObject.Instantiate(warUiPre,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			warUI.transform.localPosition = new Vector3(transform.position.x,2f,transform.position.z);
+			warUI.transform.localPosition = new Vector3(0,2f,0);
+			warUI.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
         }
         else
         {
@@ -168,7 +169,7 @@ public class BoardPoint : MonoBehaviour {
         if (pointer == null)
         {
 			pointer = GameObject.Instantiate(warPointer,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			pointer.transform.localPosition = new Vector3(transform.position.x, 1f, transform.position.z);
+			pointer.transform.localPosition = new Vector3(0, 1f, 0);
         }
         else
         {
