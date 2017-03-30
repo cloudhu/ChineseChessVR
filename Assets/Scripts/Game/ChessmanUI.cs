@@ -95,15 +95,8 @@ public class ChessmanUI : MonoBehaviour {
 
 	#region Private Variables   //私有变量区域
 
-	ChessmanController _target;	//目标棋子
-
-	float _characterControllerHeight = 0f;	//高度
-
-	Transform _targetTransform;	
-
-	//Renderer _targetRenderer;
-
-	Vector3 _targetPosition;
+	GameObject _target;
+	ChessmanController manager;
 
 	#endregion
 	
@@ -111,6 +104,9 @@ public class ChessmanUI : MonoBehaviour {
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
+		_target = transform.parent.gameObject;
+		manager = _target.GetComponent<ChessmanController> ();
+		UpdateText (ChessmanManager.chessman[int.Parse(_target.name)]._type.ToString());
 		ResetUI();
 	}
 	
@@ -120,15 +116,10 @@ public class ChessmanUI : MonoBehaviour {
 			Destroy(this.gameObject);
 			return;
 		}
-        //保持UI看向本地玩家
-        if (CameraRigManager.LocalPlayerInstance != null)
-        {
-            transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-        }
 
         // Reflect the Player Health
         if (PlayerHealthSlider != null) {
-			PlayerHealthSlider.value = _target.Health;
+			PlayerHealthSlider.value = manager.Health;
 		}
 	}
 
@@ -142,9 +133,6 @@ public class ChessmanUI : MonoBehaviour {
 		SetText("UITextFront");
 		SetText("UITextReverse");
 
-		if (PlayerHealthSlider != null) {
-			PlayerHealthSlider.value = _target.Health;
-		}
 	}
 
 	public void UpdateText(string newText)
@@ -152,28 +140,7 @@ public class ChessmanUI : MonoBehaviour {
 		displayText = newText;
 		ResetUI();
 	}
-
-	/// <summary>
-	/// 指派目标.
-	/// </summary>
-	/// <param name="target">Target.</param>
-	public void SetTarget(ChessmanController target){
-
-		if (target == null) {
-			Debug.LogError("<Color=Red><b>Missing</b></Color> PlayMakerManager target for PlayerUI.SetTarget.",this);
-			return;
-		}
-
-		// Cache references for efficiency because we are going to reuse them.
-		_target = target;
-		_targetTransform = _target.GetComponent<Transform>();
-        //_targetRenderer = _target.GetComponent<Renderer>();
-        
-		UpdateText (ChessmanManager.chessman[int.Parse(_target.name)]._type.ToString());
-
-
-	}
-
+		
 
 	#endregion
 

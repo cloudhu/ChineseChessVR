@@ -103,7 +103,7 @@ public class WarUI : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-		_target = _target.gameObject;
+		_target = transform.parent.gameObject;
         ResetUI();
     }
 
