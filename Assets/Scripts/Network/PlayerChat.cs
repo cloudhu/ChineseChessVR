@@ -184,7 +184,6 @@ public class PlayerChat : MonoBehaviour,IChatClientListener {
 
 		bool _AppIdPresent = string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID);
 
-		Connect ();
 		if (string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID))
 		{
 			Debug.LogError("你需要在PhotonServerSettings文件中设置聊天AppID.");

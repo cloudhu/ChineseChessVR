@@ -85,13 +85,13 @@ public class PunLauncher  : Photon.PunBehaviour {
         public Loader loaderAnime;
         #endregion
 
-    #region Private Variables   //私有变量区域
-    /// <summary>
-    /// 跟踪当前进程。因为连接是异步的，且是基于来自Photon的几个回调，
-    /// 我们需要跟踪这一点，以在我们收到Photon回调时适当地调整该行为。
-    /// 这通常是用于OnConnectedToMaster()回调。
-    /// </summary>
-    bool isConnecting;
+	    #region Private Variables   //私有变量区域
+	    /// <summary>
+	    /// 跟踪当前进程。因为连接是异步的，且是基于来自Photon的几个回调，
+	    /// 我们需要跟踪这一点，以在我们收到Photon回调时适当地调整该行为。
+	    /// 这通常是用于OnConnectedToMaster()回调。
+	    /// </summary>
+	    bool isConnecting;
 
 		#endregion
 
@@ -115,11 +115,11 @@ public class PunLauncher  : Photon.PunBehaviour {
 				Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
 				PhotonNetwork.ConnectUsingSettings(Version);
-            if (loaderAnime != null)
-            {
-                loaderAnime.StartLoaderAnimation();
-            }
-        }
+	            if (loaderAnime != null)
+	            {
+	                loaderAnime.StartLoaderAnimation();
+	            }
+        	}
 		}
 
 		#endregion
@@ -142,21 +142,21 @@ public class PunLauncher  : Photon.PunBehaviour {
 		{
 			Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
 			PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
-        loaderAnime.StopLoaderAnimation();
-    }
+        	loaderAnime.StopLoaderAnimation();
+    	}
 
 		// the following methods are implemented to give you some context. re-implement them as needed.
 
 		public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
 		{
 			Debug.LogError("Cause: " + cause);
-        loaderAnime.StopLoaderAnimation();
-    }
-
-    public override void OnJoinedRoom()
-    {
-        loaderAnime.StopLoaderAnimation();
-    }
+        	loaderAnime.StopLoaderAnimation();
+   		 }
+		
+	    public override void OnJoinedRoom()
+	    {
+	        loaderAnime.StopLoaderAnimation();
+	    }
 
         #endregion
 
