@@ -157,7 +157,6 @@ public class BoardPoint : MonoBehaviour {
         {
 			warUI = GameObject.Instantiate(warUiPre,Vector3.zero,Quaternion.identity,transform) as GameObject;
 			warUI.transform.localPosition = new Vector3(0,2f,0);
-			warUI.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
         }
         else
         {

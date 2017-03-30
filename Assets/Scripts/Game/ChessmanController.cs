@@ -97,7 +97,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
     #region Private Variables   //私有变量区域
 
-	private NavMeshAgent agent;    //寻路组件
+	//private NavMeshAgent agent;    //寻路组件
 	WarUI war; //战争UI
     #endregion
 
@@ -107,21 +107,19 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
     void Start () {
         selectedId =int.Parse(this.gameObject.name);
 
-		agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之
+		/*agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之
 		if (agent == null)
 		{
 			agent=gameObject.AddComponent<NavMeshAgent>();
 			agent.radius = 0.3f;
 		}
-		agent.enabled = true;
+		agent.enabled = true;*/
 
         //创建棋子UI
 		if (this.ChessmamUiPrefab != null)
 		{
 			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
 			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
-			//_uiGo.transform.SetParent (transform,false);
-			_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 		}
 		else
 		{
@@ -133,8 +131,6 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
         {
             GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform) as GameObject;
             _uiGo.transform.localPosition = new Vector3(0, 2.5f, 0);
-            //_uiGo.transform.SetParent (transform,false);
-            _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
 			war = _uiGo.GetComponent<WarUI> ();
         }
         else
@@ -153,7 +149,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		PlaySound (awakeMusic);
 
 		war.TrySelectChessman ();
-        Debug.Log("StartUsing :Called war.TrySelectChessman ();");
+        //Debug.Log("StartUsing :Called war.TrySelectChessman ();");
 	}
 
 	public override void StopUsing(GameObject usingObject)
@@ -167,18 +163,18 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 	/// </summary>
 	/// <param name="targetPosition">目标位置.</param>
 	public void SetTarget(Vector3 targetPosition){
-		
-		agent.SetDestination (targetPosition);
-		if (Vector3.Distance(this.transform.position, targetPosition) < 0f)
+		iTween.MoveTo (gameObject, targetPosition, 3f);
+		//agent.SetDestination (targetPosition);
+		if (Vector3.Distance(this.transform.position, targetPosition) <= 0f)
 		{
-			agent.Stop();
+			//agent.Stop();
 			ChessmanManager.chessman[selectedId]._x = targetPosition.x;
 			ChessmanManager.chessman[selectedId]._z = targetPosition.z;
 		}
 		else
 		{
 			PlaySound(walkAS);
-			agent.Resume();
+			//agent.Resume();
 		}
 	}
 
@@ -253,7 +249,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 	void SwitchDead()
 	{
 		//ani.SetBool("isDead", true);
-		agent.enabled = false;//停止寻路
+		//agent.enabled = false;//停止寻路
 
 	}
 

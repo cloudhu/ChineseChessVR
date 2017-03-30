@@ -56,8 +56,8 @@
 // </summary>
 // <author>胡良云（CloudHu）</author>
 //中文注释：胡良云（CloudHu） 3/29/2017
-
 // --------------------------------------------------------------------------------------------------------------------
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -97,6 +97,7 @@ public class pointer : VRTK_InteractableObject
     #endregion
 
     #region Public Methods	//公共方法区域
+
     public override void StartUsing(GameObject usingObject)
     {
         base.StartUsing(usingObject);
@@ -105,7 +106,7 @@ public class pointer : VRTK_InteractableObject
 			return;
 		}
         war.GetComponent<WarUI>().TrySelectChessman();
-        Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
+        //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }
 
     public override void StopUsing(GameObject usingObject)

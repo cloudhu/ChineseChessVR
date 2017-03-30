@@ -95,6 +95,7 @@ public class VRPlayerUI : MonoBehaviour {
 
 
 	#region Private Variables   //私有变量区域
+
 	private Canvas canvas;
 
 	[SerializeField]
@@ -113,15 +114,10 @@ public class VRPlayerUI : MonoBehaviour {
 	private Text bufferLagText;
 
 	private bool showSpeakerLag;
-	CameraRigManager _target;	//目标棋子
 
-	float _characterControllerHeight = 0f;	//高度
+	GameObject _target;	 //目标
 
-	Transform _targetTransform;	
-
-	Renderer _targetRenderer;
-
-	Vector3 _targetPosition;
+	CameraRigManager manager;
 
 	#endregion
 
@@ -130,6 +126,14 @@ public class VRPlayerUI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		canvas = GetComponent<Canvas>();
+		_target = transform.parent.gameObject;
+
+		recorder = _target.GetComponent<PhotonVoiceRecorder> ();
+		speaker = _target.GetComponent<PhotonVoiceSpeaker> ();
+		object playerType;
+		manager = _target.GetComponent<CameraRigManager> ();
+		manager.photonView.owner.CustomProperties.TryGetValue ("playerType", out playerType);
+		UpdateText (playerType.ToString()+" ： "+manager.photonView.owner.NickName);
 		ResetUI();
 	}
 
@@ -146,7 +150,7 @@ public class VRPlayerUI : MonoBehaviour {
 		bufferLagText.text = string.Format("{0}", speaker.CurrentBufferLag);
 		// Reflect the Player Health
 		if (PlayerHealthSlider != null) {
-			PlayerHealthSlider.value = _target.Health;
+			PlayerHealthSlider.value = manager.Health;
 		}
 	}
 		
@@ -161,7 +165,7 @@ public class VRPlayerUI : MonoBehaviour {
 		SetText("UITextReverse");
 
 		if (PlayerHealthSlider != null) {
-			PlayerHealthSlider.value = _target.Health;
+			PlayerHealthSlider.value = manager.Health;
 		}
 	}
 
@@ -170,30 +174,7 @@ public class VRPlayerUI : MonoBehaviour {
 		displayText = newText;
 		ResetUI();
 	}
-
-	/// <summary>
-	/// 指派目标.
-	/// </summary>
-	/// <param name="target">Target.</param>
-	public void SetTarget(CameraRigManager target){
-
-		if (target == null) {
-			Debug.LogError("<Color=Red><b>Missing</b></Color> PlayMakerManager target for PlayerUI.SetTarget.",this);
-			return;
-		}
-
-		// Cache references for efficiency because we are going to reuse them.
-		_target = target;
-		_targetTransform = _target.GetComponent<Transform>();
-		_targetRenderer = _target.GetComponent<Renderer>();
-		recorder = _target.GetComponent<PhotonVoiceRecorder> ();
-		speaker = _target.GetComponent<PhotonVoiceSpeaker> ();
-		object playerType;
-		_target.photonView.owner.CustomProperties.TryGetValue ("playerType", out playerType);
-		UpdateText (playerType.ToString()+" ： "+_target.photonView.owner.NickName);
-
-	}
-
+		
 
 	#endregion
 

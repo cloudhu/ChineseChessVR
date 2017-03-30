@@ -94,13 +94,7 @@ public class WarUI : MonoBehaviour {
 
     #region Private Variables   //私有变量区域
 
-    ChessmanController _target; //目标棋子
-
-    float _characterControllerHeight = 0f;  //高度
-
-    Transform _targetTransform;
-
-    Vector3 _targetPosition;
+	GameObject _target;
 
     #endregion
 
@@ -109,6 +103,7 @@ public class WarUI : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+		_target = _target.gameObject;
         ResetUI();
     }
 
@@ -121,7 +116,7 @@ public class WarUI : MonoBehaviour {
             return;
         }
 
-		if (NetworkTurn.Instance._selectedId == int.Parse (transform.parent.name)) {	//如果选中棋子则更新UI文本显示
+		if (NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
 			UpdateText ("Selected");
 		} else {
 			UpdateText ("Select");
@@ -139,17 +134,17 @@ public class WarUI : MonoBehaviour {
 	/// </summary>
     public void TrySelectChessman()
     {
-        Debug.Log("WarUI:Called TrySelectChessman()");
+        //Debug.Log("WarUI:Called TrySelectChessman()");
         string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
-        if (transform.parent.GetComponent<ChessmanController>())    //如果是棋子
+		if (_target.GetComponent<ChessmanController>())    //如果有这个组件就是棋子
         {
             switch (tmpText)
             {
                 case "Select":
-                    NetworkTurn.Instance.OnSelectChessman(int.Parse(transform.parent.name), transform.parent.localPosition.x, transform.parent.localPosition.z);
+				NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
                     break;
                 case "Selected":
-                    NetworkTurn.Instance.OnCancelSelected(int.Parse(transform.parent.name));
+                    NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
                     UpdateText("Select");
                     break;
                 default:
@@ -161,12 +156,12 @@ public class WarUI : MonoBehaviour {
             switch (tmpText)
             {
                 case "Select":
-                    NetworkTurn.Instance.OnSelectChessman(-1, transform.parent.localPosition.x, transform.parent.localPosition.z);
-					transform.parent.GetComponent<BoardPoint>().Occupied();
+					NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z);
+					_target.GetComponent<BoardPoint>().Occupied();
                     break;
 				case "Selected":
 					NetworkTurn.Instance.OnCancelSelected (-1);
-					transform.parent.GetComponent<BoardPoint> ().isOccupied = false;
+					_target.GetComponent<BoardPoint> ().isOccupied = false;
                     UpdateText("Select");
                     break;
                 default:
@@ -197,25 +192,8 @@ public class WarUI : MonoBehaviour {
         displayText = newText;
         ResetUI();
     }
+		
 
-    /// <summary>
-    /// 指派目标.
-    /// </summary>
-    /// <param name="target">Target.</param>
-    public void SetTarget(ChessmanController target)
-    {
-
-        if (target == null)
-        {
-            Debug.LogError("<Color=Red><b>Missing</b></Color> PlayMakerManager target for PlayerUI.SetTarget.", this);
-            return;
-        }
-
-        // Cache references for efficiency because we are going to reuse them.
-        _target = target;
-        _targetTransform = _target.GetComponent<Transform>();
-
-    }
 
 
     #endregion

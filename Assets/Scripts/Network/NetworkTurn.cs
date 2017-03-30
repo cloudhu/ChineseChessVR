@@ -690,6 +690,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
         Vector3 oldPosition = new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z);
+		HidePath ();
 		ShowPath (oldPosition,position);
 		GameStatusText.text = "MoveError:"+chessman.name+"不能移动到目标位置:"+position;
     }
