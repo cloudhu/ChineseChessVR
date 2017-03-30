@@ -328,23 +328,41 @@ public class PositionManager : MonoBehaviour {
         * 2.可以将马走日分解为：先一步直走（或一横）再一步斜走 
         * 3.如果在要去的方向，第一步直行处（或者横行）有别的棋子挡住，则不许走过去（俗称：蹩马腿） 
         */
-        float _x,_z,muti=2f,plus=step;
+        float _x,_z,muti=2*step,plus=step;
         _x = ChessmanManager.chessman[selectedId]._x;
         _z = ChessmanManager.chessman[selectedId]._z;
-        if (_x*x<0) //如果马过河，步长增加
+
+        if (_x==x || _z==z) //马走日，所以排除直线
         {
-            muti = step;
-            plus = 2*step;
+            return false;
         }
+
+
         float _xStep = Mathf.Abs(_x - x);  //判断x轴移动步长
         float _zStep = Mathf.Abs(_z - z);  //判断z轴移动步长
-        if (_xStep / step==muti && _zStep == step)   //利用步长判断是否走日字
+        if (_x * x < 0) //如果马过河，步长增加
+        {
+            muti = 3 * step;
+            plus = 2 * step;
+
+        }
+        if (_xStep==_zStep) //x轴和z轴步长相等说明不是马走日，排除
+        {
+            return false;
+        }
+
+        if (_zStep>muti || _xStep>muti) //马的距离不能大于步长
+        {
+            return false;
+        }
+
+        if (_xStep ==muti && _zStep == step)   //利用步长判断是否走日字
         {
             if (_x < x)
             {
                 for (int i = 0; i < 32; i++)
                 {   
-                    if (ChessmanManager.chessman[i]._z==z && ChessmanManager.chessman[i]._x==(_x+plus)) //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._z==_z && ChessmanManager.chessman[i]._x==(_x+plus)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -354,7 +372,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._z == z && ChessmanManager.chessman[i]._x == (_x - plus))   //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x == (_x - plus))   //判断是否绊马腿
                     {
                         return false;
                     }
@@ -362,13 +380,13 @@ public class PositionManager : MonoBehaviour {
             }
       
         }
-        if (_xStep == step && _zStep / step==muti)
+        if (_xStep == step && _zStep==muti)
         {
             if (_z < z)
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._x == x && ChessmanManager.chessman[i]._z == (_z + step)) //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z + step)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -378,7 +396,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._x == x && ChessmanManager.chessman[i]._z == (_z - step)) //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z - step)) //判断是否绊马腿
                     {
                         return false;
                     }

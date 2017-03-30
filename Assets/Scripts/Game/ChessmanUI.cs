@@ -117,6 +117,12 @@ public class ChessmanUI : MonoBehaviour {
 			return;
 		}
 
+        //保持UI看向本地玩家
+        if (CameraRigManager.LocalPlayerInstance != null)
+        {
+            transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+        }
+
         // Reflect the Player Health
         if (PlayerHealthSlider != null) {
 			PlayerHealthSlider.value = manager.Health;

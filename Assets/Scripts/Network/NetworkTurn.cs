@@ -209,7 +209,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private Sprite SpriteDraw;
 
-	[Tooltip("断连面板")]
+    [Tooltip("下一回合")]
+    [SerializeField]
+    private Sprite Next;
+
+    [Tooltip("断连面板")]
 	[SerializeField]
 	private RectTransform DisconnectedPanel;
 
@@ -266,15 +270,34 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     public void Judge(){
 		
-		result = ResultType.Draw;
-		if (ChessmanManager.chessman[0]._dead && localPlayerType==ChessPlayerType.Black) {
-			result = ResultType.LocalLoss;
-			PlayLoseMusic ();
+		if ( localPlayerType==ChessPlayerType.Red) {
+            if (ChessmanManager.chessman[0]._dead)  //红方：帅死则输，将死则赢
+            {
+                result = ResultType.LocalLoss;
+                PlayLoseMusic();
+            }
+            if (ChessmanManager.chessman[16]._dead)
+            {
+                result = ResultType.LocalWin;
+                PlayWinMusic();
+            }
+			
 		}
-		if (ChessmanManager.chessman[16]._dead && localPlayerType==ChessPlayerType.Red) {
-			result = ResultType.LocalWin;
-			PlayWinMusic ();
-		}
+
+        if (localPlayerType == ChessPlayerType.Black)
+        {
+            if (ChessmanManager.chessman[16]._dead)
+            {
+                result = ResultType.LocalLoss;
+                PlayLoseMusic();
+            }
+            if (ChessmanManager.chessman[0]._dead)
+            {
+                result = ResultType.LocalWin;
+                PlayWinMusic();
+            }
+
+        }
 
 	}
 
@@ -553,17 +576,26 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public IEnumerator ShowResultsBeginNextTurnCoroutine()
 	{
 		ButtonCanvasGroup.interactable = false;	//禁用按钮交互
-		IsShowingResults = true; 
-		// yield return new WaitForSeconds(1.5f);
+		IsShowingResults = true;
+        // yield return new WaitForSeconds(1.5f);
 
-		if (this.result == ResultType.Draw)	//根据结果展示不同的图片
-		{
-			this.WinOrLossImage.sprite = this.SpriteDraw;
-		}
-		else
-		{
-			this.WinOrLossImage.sprite = this.result == ResultType.LocalWin ? this.SpriteWin : SpriteLose;
-		}
+        switch (result) //根据结果展示不同的图片
+        {
+            case ResultType.None:
+                break;
+            case ResultType.Draw:
+                this.WinOrLossImage.sprite = this.SpriteDraw;
+                break;
+            case ResultType.LocalWin:
+                this.WinOrLossImage.sprite = this.SpriteWin;
+                break;
+            case ResultType.LocalLoss:
+                this.WinOrLossImage.sprite = this.SpriteLose;
+                break;
+            default:
+                break;
+        }
+
 		this.WinOrLossImage.gameObject.SetActive(true);
 
 		yield return new WaitForSeconds(2.0f);
@@ -817,9 +849,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="targetPosition">目标位置</param>  
     void MoveStone(int moveId, Vector3 targetPosition)
     {
-        GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
+        Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
 		boardManager.hidePossibleWay ();
-		chessman.transform.GetComponent<ChessmanController>().SetTarget(targetPosition);
+		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
      
         _isRedTurn = !_isRedTurn;
     }

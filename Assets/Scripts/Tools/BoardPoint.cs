@@ -75,9 +75,6 @@ public class BoardPoint : MonoBehaviour {
     [Tooltip("是否被占用")]
     public bool isOccupied;
 
-    [Tooltip("是红方")]
-    public bool isRed;
-
     [Tooltip("光圈预设，用于提示玩家")]
     public GameObject beamsPreb;
 
@@ -165,6 +162,7 @@ public class BoardPoint : MonoBehaviour {
                 warUI.SetActive(true);
             }
         }
+
         if (pointer == null)
         {
 			pointer = GameObject.Instantiate(warPointer,Vector3.zero,Quaternion.identity,transform) as GameObject;

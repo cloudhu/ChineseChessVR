@@ -1170,7 +1170,7 @@ GameObject:
   - component: {fileID: 4224200674127294}
   m_Layer: 0
   m_Name: ChineseChess
-  m_TagString: Untagged
+  m_TagString: TeleportIgnore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
@@ -5669,7 +5669,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1275894197270964}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.46, z: 1.73}
+  m_LocalPosition: {x: 0, y: 0.95, z: 1.73}
   m_LocalScale: {x: 0.08, y: 0.08, z: 0.08}
   m_Children:
   - {fileID: 4816912080925614}
@@ -22091,6 +22091,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114012680045721360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22106,6 +22107,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114016364715751624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22121,6 +22123,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114026680321447202
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22136,6 +22139,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114029937748585530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22181,6 +22185,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114066070162310042
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22196,6 +22201,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114083348462399386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22211,6 +22217,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114085011477014670
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22226,6 +22233,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114104306754064740
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22241,6 +22249,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114108676858942614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22256,6 +22265,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114127090577261946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22271,6 +22281,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114128719710639118
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22286,6 +22297,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114139162431036276
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22301,6 +22313,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114141960828343402
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22316,6 +22329,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114145719613871674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22331,6 +22345,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114148103775838310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22346,6 +22361,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114161581789353668
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22361,6 +22377,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114243330194328272
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22376,6 +22393,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114259495279331060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22391,6 +22409,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114274243511506796
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22406,6 +22425,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114274987026948662
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22421,6 +22441,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114276149960057044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22436,6 +22457,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114278820464333844
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22451,6 +22473,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114297248789016466
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22466,6 +22489,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114311614821868634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22481,6 +22505,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114316917568017744
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22496,6 +22521,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114321152065328194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22511,6 +22537,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114330323467172266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22526,6 +22553,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114335756557083658
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22541,6 +22569,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114343317897447324
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22556,6 +22585,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114345675935765868
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22571,6 +22601,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114355294770356242
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22586,6 +22617,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114389726132186964
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22601,6 +22633,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114390719512455870
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22616,6 +22649,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114401727706800276
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22631,6 +22665,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114425455768777480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22646,6 +22681,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114449472615494976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22661,6 +22697,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114457941385497548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22676,6 +22713,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114468316597053498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22691,6 +22729,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114472211957359242
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22793,6 +22832,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  hidePoints: []
 --- !u!114 &114481367147484406
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22808,6 +22848,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114481797902582550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22823,6 +22864,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114493360429433652
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22838,6 +22880,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114494582664306026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22853,6 +22896,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114503217350208484
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22868,6 +22912,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114507080055441278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22883,6 +22928,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114512992490280152
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22898,6 +22944,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114513736682075960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22913,6 +22960,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114518503488358040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22928,6 +22976,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114535493236917690
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22943,6 +22992,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114556031700818704
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22958,6 +23008,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114556347662750232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22973,6 +23024,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114617302944448490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -22988,6 +23040,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114627722970090292
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23003,6 +23056,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114627739804632016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23018,6 +23072,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114649949905218464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23033,6 +23088,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114678776760504944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23048,6 +23104,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114679295352125518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23063,6 +23120,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114701467559744826
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23078,6 +23136,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114706638153357258
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23093,6 +23152,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114708833679875608
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23108,6 +23168,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114743043150381674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23123,6 +23184,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114743868714959906
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23138,6 +23200,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114785740418354332
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23153,6 +23216,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114787193904865384
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23168,6 +23232,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114796006481129216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23183,6 +23248,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114799205455555340
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23198,6 +23264,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114801035309542626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23213,6 +23280,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114809421971429510
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23228,6 +23296,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114812685270151824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23243,6 +23312,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114813233695536972
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23258,6 +23328,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114817247381617254
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23273,6 +23344,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114824906656097558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23288,6 +23360,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114824969408768202
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23303,6 +23376,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114835045004503618
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23318,6 +23392,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114841919621404094
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23333,6 +23408,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114844947324362094
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23348,6 +23424,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114861401216404142
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23363,6 +23440,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114888336039307790
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23378,6 +23456,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114888386585780834
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23393,6 +23472,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114889360260115920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23408,6 +23488,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114894962892456058
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23423,6 +23504,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114903325309320204
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23438,6 +23520,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114905878272511070
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23453,6 +23536,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114928415920673212
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23468,6 +23552,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114943725983854072
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23483,6 +23568,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114945730615890390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23498,6 +23584,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114976965474876108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23513,6 +23600,7 @@ MonoBehaviour:
   isRed: 1
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114985486044279634
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23528,6 +23616,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114992463466756046
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23543,6 +23632,7 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
 --- !u!114 &114992592835492172
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -23558,3 +23648,4 @@ MonoBehaviour:
   isRed: 0
   beamsPreb: {fileID: 1261469008981168, guid: 494eda8e29b5d0b49a0c237a4b67439e, type: 2}
   warUiPre: {fileID: 1216773831294890, guid: 9cf3d66083fecca4f8fcad261bbbf9b0, type: 2}
+  warPointer: {fileID: 1012148141635502, guid: 49ef5c1fa9295474ea07406b1a5e45c7, type: 2}
