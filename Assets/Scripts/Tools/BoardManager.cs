@@ -71,8 +71,11 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
+	[Tooltip("棋盘上的90个坐标点")]
+    public BoardPoint[] points=new BoardPoint[90]; 
 
-    public BoardPoint[] points=new BoardPoint[90];
+	[Tooltip("展示后需要隐藏的坐标点")]
+	public List<BoardPoint> hidePoints = new List<BoardPoint> (11);
     #endregion
 
 
@@ -129,19 +132,22 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
+	/// <summary>
+	/// 在选择好目标后调用,将可能的位置隐藏.
+	/// </summary>
+	public void hidePossibleWay(){
+	
+		foreach (var item in hidePoints) {
+			item.HidePointer ();
+		}
+		hidePoints.Clear ();
+	}
 
 
     #endregion
 
     #region Private Methods  //辅助方法
 
-    void SortArray()
-    {
-        for (int i = 0; i < 15; i++)
-        {
-
-        }
-    }
 
     void ShowKingWay(int id)
     {
@@ -152,6 +158,7 @@ public class BoardManager : MonoBehaviour {
                 if (PositionManager.canMoveKing(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
                 {
                     points[i].ShowBeams();
+					hidePoints.Add (points[i]);
                 }
             }
         }
@@ -166,6 +173,7 @@ public class BoardManager : MonoBehaviour {
                 if (PositionManager.canMoveGuard(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
                 {
                     points[i].ShowBeams();
+					hidePoints.Add (points[i]);
                 }
 
             }
@@ -182,6 +190,7 @@ public class BoardManager : MonoBehaviour {
                 if (PositionManager.canMoveElephant(id, points[i].transform.localPosition.x, points[i].transform.localPosition.z, -1))
                 {
                     points[i].ShowBeams();
+					hidePoints.Add (points[i]);
                 }
 
             }
@@ -208,6 +217,7 @@ public class BoardManager : MonoBehaviour {
                         if (PositionManager.canMoveHorse(id, _x, _z, -1))
                         {
                             points[i].ShowBeams();
+							hidePoints.Add (points[i]);
                         }
 
                     }
@@ -229,6 +239,7 @@ public class BoardManager : MonoBehaviour {
                     if (PositionManager.canMoveRook(id, _x, _z, -1))
                     {
                         points[i].ShowBeams();
+						hidePoints.Add (points[i]);
                     }
                 }
             }
@@ -248,6 +259,7 @@ public class BoardManager : MonoBehaviour {
                     if (PositionManager.canMoveCannon(id, _x, _z, -1))
                     {
                         points[i].ShowBeams();
+						hidePoints.Add (points[i]);
                     }
                 }
             }
@@ -272,6 +284,7 @@ public class BoardManager : MonoBehaviour {
                         if (PositionManager.canMovePawn(id, _x, _z, -1))
                         {
                             points[i].ShowBeams();
+							hidePoints.Add (points[i]);
                         }
                     }
                 }

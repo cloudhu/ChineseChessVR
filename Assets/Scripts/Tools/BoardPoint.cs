@@ -124,6 +124,16 @@ public class BoardPoint : MonoBehaviour {
         isOccupied = true;
     }
 
+	public void HidePointer(){
+		if (isOccupied) //如果这个位置已被占用，则返回
+		{
+			return;
+		}
+		warUI.SetActive(false);
+		beams.SetActive(false);
+		pointer.SetActive(false);
+	}
+
     public void ShowBeams()
     {
         if (isOccupied) //如果这个位置已被占用，则返回
@@ -132,8 +142,8 @@ public class BoardPoint : MonoBehaviour {
         }
         if (beams==null)
         {
-            beams = GameObject.Instantiate(beamsPreb, transform, false) as GameObject;
-			beams.transform.localPosition = new Vector3(transform.localPosition.x,1f,transform.localPosition.z);
+			beams = GameObject.Instantiate(beamsPreb,Vector3.zero,Quaternion.identity,transform) as GameObject;
+			beams.transform.localPosition = new Vector3(transform.position.x,1f,transform.position.z);
         }
         else
         {
@@ -145,8 +155,8 @@ public class BoardPoint : MonoBehaviour {
 
         if (warUI==null)
         {
-            warUI = GameObject.Instantiate(warUiPre, transform, false) as GameObject;
-            warUI.transform.localPosition = new Vector3(transform.localPosition.x,2f,transform.localPosition.z);
+			warUI = GameObject.Instantiate(warUiPre,Vector3.zero,Quaternion.identity,transform) as GameObject;
+			warUI.transform.localPosition = new Vector3(transform.position.x,2f,transform.position.z);
         }
         else
         {
@@ -157,8 +167,8 @@ public class BoardPoint : MonoBehaviour {
         }
         if (pointer == null)
         {
-            pointer = GameObject.Instantiate(warPointer, transform, false) as GameObject;
-            pointer.transform.localPosition = new Vector3(transform.localPosition.x, 1f, transform.localPosition.z);
+			pointer = GameObject.Instantiate(warPointer,Vector3.zero,Quaternion.identity,transform) as GameObject;
+			pointer.transform.localPosition = new Vector3(transform.position.x, 1f, transform.position.z);
         }
         else
         {

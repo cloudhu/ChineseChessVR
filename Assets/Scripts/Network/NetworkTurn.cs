@@ -816,6 +816,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     void MoveStone(int moveId, Vector3 targetPosition)
     {
         GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
+		boardManager.hidePossibleWay ();
 		chessman.transform.GetComponent<ChessmanController>().SetTarget(targetPosition);
      
         _isRedTurn = !_isRedTurn;
