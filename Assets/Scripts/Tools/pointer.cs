@@ -101,6 +101,9 @@ public class pointer : VRTK_InteractableObject
     {
         base.StartUsing(usingObject);
         GameObject war= transform.parent.FindChild("WarUI(Clone)").gameObject;
+		if (war==null) {
+			return;
+		}
         war.GetComponent<WarUI>().TrySelectChessman();
         Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }

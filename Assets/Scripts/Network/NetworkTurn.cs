@@ -723,6 +723,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         _selectedId = selectId;
         PlaySelectSound();
 		HidePath ();
+		boardManager.hidePossibleWay ();
         boardManager.showPossibleWay(selectId);
         
     }

@@ -75,7 +75,7 @@ public class BoardManager : MonoBehaviour {
     public BoardPoint[] points=new BoardPoint[90]; 
 
 	[Tooltip("展示后需要隐藏的坐标点")]
-	public List<BoardPoint> hidePoints = new List<BoardPoint> (11);
+	public List<BoardPoint> hidePoints = new List<BoardPoint> ();
     #endregion
 
 
