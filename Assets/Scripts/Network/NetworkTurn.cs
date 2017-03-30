@@ -532,7 +532,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		{
 			this.turnManager.BeginTurn();
 		}
-	}
+        if (_isRedTurn)
+        {
+            GameStatusText.text = "请红方走棋！";
+        }else
+            GameStatusText.text = "请黑方走棋！";
+    }
 
 
     /// <summary>
@@ -819,12 +824,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// </summary>  
     void ShowPath(Vector3 oldPosition, Vector3 newPosition)
     {
-        Selected.transform.position = newPosition;
+        Selected.transform.localPosition = newPosition;
 		if (!Selected.activeSelf) {
 			Selected.SetActive(true);
 		}
         
-        Path.transform.position = oldPosition;
+        Path.transform.localPosition = oldPosition;
 		if (!Path.activeSelf) {
 			Path.SetActive(true);
 		}
@@ -837,8 +842,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// </summary>  
     void HidePath()
     {
-        Selected.SetActive(false);
-        Path.SetActive(false);
+        if (Selected.activeSelf)
+        {
+            Selected.SetActive(false);
+            Path.SetActive(false);
+        }
+
     }
 
 

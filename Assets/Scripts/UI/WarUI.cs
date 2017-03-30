@@ -116,7 +116,7 @@ public class WarUI : MonoBehaviour {
             return;
         }
 
-		if (NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
+		if (_target.GetComponent<ChessmanController>() && NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
 			UpdateText ("Selected");
 		} else {
 			UpdateText ("Select");
