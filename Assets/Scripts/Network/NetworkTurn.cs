@@ -375,7 +375,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnTurnBegins() turn: "+ turn);
 
-
+		localSelection = false;
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
 
 
@@ -486,10 +486,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		if (!photonPlayer.IsLocal)
 		{
-            step tmpStep = new step();
-
+			step tmpStep = new step();
             tmpStep = (step)move;
-
             MoveStone(tmpStep.moveId, tmpStep.killId, new Vector3(tmpStep.xTo, 1f, tmpStep.zTo));
         }
 
@@ -861,7 +859,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
 		boardManager.hidePossibleWay ();
 		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
-     
         _isRedTurn = !_isRedTurn;
     }
 

@@ -325,26 +325,6 @@ public class PlayerChat : MonoBehaviour,IChatClientListener {
 
 		Debug.Log("OnSubscribed: " + string.Join(", ", channels));
 
-		/*
-        // select first subscribed channel in alphabetical order
-		if (this.chatClient.PublicChannels.Count > 0)
-		{
-			var l = new List<string>(this.chatClient.PublicChannels.Keys);
-			l.Sort();
-			string selected = l[0];
-			if (this.channelToggles.ContainsKey(selected))
-			{
-				ShowChannel(selected);
-				foreach (var c in this.channelToggles)
-				{
-					c.Value.isOn = false;
-				}
-				this.channelToggles[selected].isOn = true;
-				AddMessageToSelectedChannel(WelcomeText);
-			}
-		}
-		*/
-
 		// 切换到最新创建的频道
 		ShowChannel(channels[0]);
 	}

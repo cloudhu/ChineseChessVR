@@ -7444,7 +7444,8 @@ MonoBehaviour:
   TitleText: {fileID: 222730894}
   DescriptionText: {fileID: 67265452}
   OpenSceneButton: {fileID: 1787721934}
-  OpenWebLinkButton: {fileID: 0}
+  OpenTutorialLinkButton: {fileID: 193153675}
+  OpenDocLinkButton: {fileID: 1181794899}
 --- !u!4 &1695202267
 Transform:
   m_ObjectHideFlags: 0
