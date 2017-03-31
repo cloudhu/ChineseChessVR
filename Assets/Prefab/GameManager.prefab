@@ -2179,7 +2179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1392562548422038
 GameObject:
   m_ObjectHideFlags: 1
@@ -7669,7 +7669,7 @@ MonoBehaviour:
   HistoryLengthToFetch: 0
   ChatPanel: {fileID: 224471909903384630}
   InputFieldChat: {fileID: 114252873218693666}
-  CurrentChannelText: {fileID: 114597916945842066}
+  CurrentChannelText: {fileID: 114308722667892764}
   ChannelToggleToInstantiate: {fileID: 114127496749765928}
   FriendListUiItemtoInstantiate: {fileID: 1029550170892988}
   ShowState: 1
