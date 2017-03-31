@@ -72,7 +72,7 @@ public class BoardManager : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
 	[Tooltip("棋盘上的90个坐标点")]
-    public BoardPoint[] points=new BoardPoint[90]; 
+    public static BoardPoint[] points=new BoardPoint[90]; 
 
 	[Tooltip("展示后需要隐藏的坐标点")]
 	public List<BoardPoint> hidePoints = new List<BoardPoint> ();
@@ -92,13 +92,27 @@ public class BoardManager : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
     #endregion
 
     #region Public Methods	//公共方法区域
+
+    /// <summary>
+    /// 棋子离开该位置，取消该位置的占用
+    /// </summary>
+    public void leavePoint(float fromX,float fromZ)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (points[i].isOccupied)
+            {
+                if (points[i].transform.localPosition.x==fromX && points[i].transform.localPosition.z==fromZ)
+                {
+                    points[i].isOccupied = false;
+                    return;
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// 分别展示各个棋子可行的路线

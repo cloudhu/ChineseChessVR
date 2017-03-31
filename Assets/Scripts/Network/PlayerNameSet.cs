@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=BoardPoint.cs company=League of HTC Vive Developers>
+// <copyright file=PlayerNameSet.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,129 +55,66 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/25/2017
+//中文注释：胡良云（CloudHu） 3/31/2017
 
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 /// <summary>
-/// FileName: BoardPoint.cs
+/// FileName: PlayerNameSet.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
 /// Description: 
-/// DateTime: 3/25/2017
+/// DateTime: 3/31/2017
 /// </summary>
-public class BoardPoint : MonoBehaviour {
+public class PlayerNameSet : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
 
-    [Tooltip("是否被占用")]
-    public bool isOccupied;
-
-    [Tooltip("光圈预设，用于提示玩家")]
-    public GameObject beamsPreb;
-
-    [Tooltip("战斗UI预设")]
-    public GameObject warUiPre;
-
-    [Tooltip("战斗光标")]
-    public GameObject warPointer;
 
     #endregion
 
 
     #region Private Variables   //私有变量区域
 
-    GameObject beams,warUI,pointer;
+    private InputField _inputField;
 
-	#endregion
-	
-	
-	#region MonoBehaviour CallBacks //回调函数区域
+    // Store the PlayerPref Key to avoid typos
+    static string playerNamePrefKey = "PlayerName";
+    #endregion
 
-	#endregion
-	
-	#region Public Methods	//公共方法区域
-	
-    public void Occupied()
-    {
-        if (beams==null)
-        {
-            beams= transform.FindChild("Beams(Clone)").gameObject;
 
-        }
-        if (warUI==null)
+    #region MonoBehaviour CallBacks //回调函数区域
+    // Use this for initialization
+    void Start () {
+        string defaultName = "";
+        _inputField = this.GetComponent<InputField>();
+
+        if (_inputField != null)
         {
-            warUI= transform.FindChild("WarUI(Clone)").gameObject;
+            if (PlayerPrefs.HasKey(playerNamePrefKey))
+            {
+                defaultName = PlayerPrefs.GetString(playerNamePrefKey);
+                _inputField.text = defaultName;
+            }
         }
-        if (pointer == null)
-        {
-            pointer = transform.FindChild("PointerPrefab(Clone)").gameObject;
-        }
-        warUI.SetActive(false);
-        beams.SetActive(false);
-        pointer.SetActive(false);
-        BoardManager.points[int.Parse(gameObject.name)].isOccupied = true;
-        isOccupied = true;
+
+        PhotonNetwork.playerName = defaultName;
     }
+    #endregion
 
-	public void HidePointer(){
-		if (isOccupied) //如果这个位置已被占用，则返回
-		{
-			return;
-		}
-		warUI.SetActive(false);
-		beams.SetActive(false);
-		pointer.SetActive(false);
-	}
+    #region Public Methods	//公共方法区域
 
-    public void ShowBeams()
+    public void SetPlayerName()
     {
-        if (isOccupied) //如果这个位置已被占用，则返回
-        {
-            return;
-        }
-        if (beams==null)
-        {
-			beams = GameObject.Instantiate(beamsPreb,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			beams.transform.localPosition = new Vector3(0,1f,0);
-        }
-        else
-        {
-            if (!beams.activeSelf)
-            {
-                beams.SetActive(true);
-            }
-        }
+        // #Important
+        PhotonNetwork.playerName = this._inputField.text.Trim(); // force a trailing space string in case value is an empty string, else playerName would not be updated.
 
-        if (warUI==null)
-        {
-			warUI = GameObject.Instantiate(warUiPre,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			warUI.transform.localPosition = new Vector3(0,3f,0);
-        }
-        else
-        {
-            if (!warUI.activeSelf)
-            {
-                warUI.SetActive(true);
-            }
-        }
-
-        if (pointer == null)
-        {
-			pointer = GameObject.Instantiate(warPointer,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			pointer.transform.localPosition = new Vector3(0, 1f, 0);
-        }
-        else
-        {
-            if (!pointer.activeSelf)
-            {
-                pointer.SetActive(true);
-            }
-        }
+        PlayerPrefs.SetString(playerNamePrefKey, this._inputField.text.Trim());
     }
-	
-	#endregion
-	
+    #endregion
+
 }

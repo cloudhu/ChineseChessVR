@@ -899,6 +899,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
+        boardManager.leavePoint(fromX, fromZ);
 		/*step tmpStep = new step();	// !!Photon不能序列化这些消息,改用字符串
 		//当前棋子的位置
 		tmpStep.moveId = selectedId;
