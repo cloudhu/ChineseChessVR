@@ -455,7 +455,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		case "悔棋Yes":
 			if (!photonPlayer.IsLocal) {
 				if (localSelection) {
-					BackOne ();
+					if (_steps.Count== 0)	//如果保存的步数是0,则无棋可悔
+						return;
+					this.turnManager.SendMove("BackOne", false);
 				}
 				else
 					GameStatusText.text = "悔棋失败";
@@ -465,6 +467,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			if (!photonPlayer.IsLocal) {
 					GameStatusText.text = "悔棋失败";
 			}
+			break;
+		case "BackOne":
+			BackOne ();
 			break;
 		default:
 			break;
@@ -486,9 +491,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		if (!photonPlayer.IsLocal)
 		{
-			step tmpStep = new step();
-            tmpStep = (step)move;
-            MoveStone(tmpStep.moveId, tmpStep.killId, new Vector3(tmpStep.xTo, 1f, tmpStep.zTo));
+
+			string tmpStr = move.ToString (); //selectedId.ToString() +" "+ killId.ToString()+" "+fromX.ToString()+" "+fromZ.ToString()+" "+toX.ToString()+" "+toZ.ToString();
+			string[] strArr=tmpStr.Split(char.Parse("s"));
+			MoveStone (int.Parse(strArr[0]),int.Parse(strArr[1]),new Vector3(float.Parse(strArr[4]),1f,float.Parse(strArr[5])));
+            //MoveStone(tmpStep.moveId, tmpStep.killId, new Vector3(tmpStep.xTo, 1f, tmpStep.zTo));
         }
 
 	}
@@ -558,7 +565,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), targetPosition);
 
-        MoveStone(moveId, targetPosition);
+        MoveChessman(moveId, targetPosition);
 
         PlayMusic(moveMusic);
 
@@ -854,7 +861,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 移动棋子到目标位置  
     /// </summary>  
     /// <param name="targetPosition">目标位置</param>  
-    void MoveStone(int moveId, Vector3 targetPosition)
+    void MoveChessman(int moveId, Vector3 targetPosition)
     {
         Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
 		boardManager.hidePossibleWay ();
@@ -868,9 +875,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="_step"></param>  
     void Back(step _step)
     {
-        ReliveChess(_step.killId);
-        MoveStone(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
-        this.turnManager.SendMove(_step, true);
+		if (_step.killId != -1) {
+			ReliveChess (_step.killId);
+		}
+        MoveChessman(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
+
+       // this.turnManager.SendMove(_step, true);
         HidePath();
         if (_selectedId != -1)
         {      
@@ -887,18 +897,19 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="toZ">目标To z.</param>
 	void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
 	{
-		step tmpStep = new step();
-		//当前棋子的位置
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
-
+		/*step tmpStep = new step();	// !!Photon不能序列化这些消息,改用字符串
+		//当前棋子的位置
 		tmpStep.moveId = selectedId;
 		tmpStep.killId = killId;
 		tmpStep.xFrom = fromX;
 		tmpStep.zFrom = fromZ;
 		tmpStep.xTo = toX;
 		tmpStep.zTo = toZ;
-		this.turnManager.SendMove(tmpStep, true);
+		this.turnManager.SendMove(tmpStep, true);*/
+		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
+		this.turnManager.SendMove(tmpStr, true);
 	}
 
     /// <summary>

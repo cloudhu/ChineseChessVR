@@ -807,6 +807,10 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 1390412927647402, guid: ce4c3128ae39c974b8910a97757c020f, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce4c3128ae39c974b8910a97757c020f, type: 2}
   m_IsPrefabParent: 0
@@ -1170,7 +1174,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22412712, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 62.5
+      value: 174
       objectReference: {fileID: 0}
     - target: {fileID: 22412712, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
       propertyPath: m_SizeDelta.y
@@ -1178,7 +1182,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22482598, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 62.5
+      value: 174
       objectReference: {fileID: 0}
     - target: {fileID: 22482598, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
       propertyPath: m_SizeDelta.y
@@ -1199,6 +1203,22 @@ Prefab:
     - target: {fileID: 11464476, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
       propertyPath: fontSize
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 11411478, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
+      propertyPath: m_Text
+      value: "Previous Position | \u8001\u4F4D\u7F6E"
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416536, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
+      propertyPath: m_Text
+      value: "Previous Position | \u8001\u4F4D\u7F6E"
+      objectReference: {fileID: 0}
+    - target: {fileID: 22406066, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 183.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11464476, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}
+      propertyPath: containerSize.x
+      value: 185.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9ab61c80dfd411f4c86b8553b0c42cf1, type: 2}

@@ -62,7 +62,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
-using UnityEngine.AI;
 
 
 /// <summary>
@@ -107,8 +106,8 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
     void Start () {
         selectedId =int.Parse(this.gameObject.name);
 
-		/*agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之
-		if (agent == null)
+		/*agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之  ！！用iTween代替寻路
+		if (agent == null)	
 		{
 			agent=gameObject.AddComponent<NavMeshAgent>();
 			agent.radius = 0.3f;
