@@ -251,11 +251,8 @@ namespace ExitGames.Demos.DemoPunVoice {
             }
             else if (PhotonNetwork.connectionStateDetailed == ClientState.Disconnected ||
                 PhotonNetwork.connectionStateDetailed == ClientState.PeerCreated) {
-#if UNITY_5_3
                 PhotonNetwork.ConnectUsingSettings(string.Format("1.{0}", UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex));
-#else
-                PhotonNetwork.ConnectUsingSettings(string.Format("1.{0}", Application.loadedLevel));
-#endif
+
              }
         }
 

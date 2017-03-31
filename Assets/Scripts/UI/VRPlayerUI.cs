@@ -96,8 +96,6 @@ public class VRPlayerUI : MonoBehaviour {
 
 	#region Private Variables   //私有变量区域
 
-	private Canvas canvas;
-
 	[SerializeField]
 	private PhotonVoiceRecorder recorder;
 
@@ -125,7 +123,6 @@ public class VRPlayerUI : MonoBehaviour {
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
-		canvas = GetComponent<Canvas>();
 		_target = transform.parent.gameObject;
 
 		recorder = _target.GetComponent<PhotonVoiceRecorder> ();

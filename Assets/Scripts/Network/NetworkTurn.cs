@@ -782,7 +782,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         ChessmanManager.chessman[id]._dead = true;
         Transform chessman=chessManManager.transform.FindChild(id.ToString());
-        transform.gameObject.SetActive(false);
+        chessman.gameObject.SetActive(false);
     }
 
     /// <summary>  

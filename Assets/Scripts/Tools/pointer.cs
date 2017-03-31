@@ -85,15 +85,7 @@ public class pointer : VRTK_InteractableObject
 	
 	
 	#region MonoBehaviour CallBacks //回调函数区域
-	// Use this for initialization
-	void Start () {
-        
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
     #endregion
 
     #region Public Methods	//公共方法区域

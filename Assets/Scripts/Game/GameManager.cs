@@ -134,8 +134,8 @@ public class GameManager : Photon.MonoBehaviour {
 
             // 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
             GameObject Head = PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-            GameObject RHand = PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-           GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
+            PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0);
+            PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0);
 			if (CharacterInstantiated != null) {
 				CharacterInstantiated(Head);
 			}
