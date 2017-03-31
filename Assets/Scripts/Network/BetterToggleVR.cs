@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=GameManager.cs company=League of HTC Vive Developers>
+// <copyright file=BetterToggleVR.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -55,118 +55,64 @@
 //  Chinese Chess VR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/28/2017
+//中文注释：胡良云（CloudHu） 3/31/2017
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
-/// FileName: GameManager.cs
+/// FileName: BetterToggleVR.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
 /// Description: 
-/// DateTime: 3/28/2017
+/// DateTime: 3/31/2017
 /// </summary>
-public class GameManager : Photon.MonoBehaviour {
+[RequireComponent(typeof(Toggle))]
+[DisallowMultipleComponent]
+public class BetterToggleVR : MonoBehaviour {
 	
-	#region Public Variables
+	#region Public Variables  //公共变量区域
+	public delegate void OnToggle(Toggle toggle);
 
-	static public GameManager Instance;
-
-
-	[Tooltip("玩家头盔预设")]
-	public GameObject HeadPrefab;
-	[Tooltip("玩家双手预设")]
-	public GameObject LHandPrefab;
-	[Tooltip("玩家双手预设")]
-	public GameObject RHandPrefab;
-
-	public Transform head;
-	public Transform leftHand;
-	public Transform rightHand;
-
-	public delegate void OnCharacterInstantiated(GameObject character);
-
-	public static event OnCharacterInstantiated CharacterInstantiated;
-
+	public static event OnToggle ToggleValueChanged;
+	
 	#endregion
 
-	#region Private Variables
 
-	private GameObject instance;
-
+	#region Private Variables   //私有变量区域
+	
+	private Toggle toggle;
 	#endregion
-
-	#region MonoBehaviour CallBacks
-
-	/// <summary>
-	/// MonoBehaviour method called on GameObject by Unity during initialization phase.
-	/// </summary>
-	void Start()
-	{
-		Instance = this;
+	
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
+		toggle = GetComponent<Toggle>();
+		toggle.onValueChanged.AddListener(delegate { OnToggleValueChanged(); });
 	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+	#endregion
+	
+	#region Public Methods	//公共方法区域
 
-	/// <summary>
-	/// MonoBehaviour method called on GameObject by Unity on every frame.
-	/// </summary>
-	void Update()
-	{
-		// "back" button of phone equals "Escape". quit app if that's pressed
-		if (Input.GetKeyDown(KeyCode.Escape))
-		{
-			QuitApplication();
+	public void OnToggleValueChanged() {
+		if (ToggleValueChanged != null) {
+			ToggleValueChanged(toggle);
 		}
 	}
-
+	
 	#endregion
-
-	#region Photon Messages //Photon消息区域
-
-    public void OnJoinedRoom()
-    {
-        if (CameraRigManager.LocalPlayerInstance == null && HeadPrefab!=null)
-        {
-            Debug.Log("We are Instantiating LocalPlayer from " + SceneManagerHelper.ActiveSceneName);
-
-            // 我们在房间内.为本地玩家生成一个角色（这里是CameraRig）. 通过使用PhotonNetwork.Instantiate来再整个网络上同步
-            GameObject Head = PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-            GameObject RHand = PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-           GameObject LHand = PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
-			if (CharacterInstantiated != null) {
-				CharacterInstantiated(Head);
-			}
-        }
-        else
-        {
-
-            Debug.Log("Ignoring scene load for " + SceneManagerHelper.ActiveSceneName);
-        }
-    }
-
+	
+	#region Private Methods	//私有方法区域
+	
+	
 	#endregion
-
-	#region Public Methods
-
-	public void LeaveRoom()
-	{
-		PhotonNetwork.LeaveRoom();
-	}
-
-	public void QuitApplication()
-	{
-		Application.Quit();
-	}
-
-	#endregion
-
-	#region Private Methods
-
-
-
-	#endregion
-
 }

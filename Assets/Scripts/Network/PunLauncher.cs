@@ -61,10 +61,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement; 
 
-using Random = UnityEngine.Random;
 /// <summary>
 /// FileName: PunLauncher.cs
 /// Author: 胡良云（CloudHu）
@@ -72,7 +69,7 @@ using Random = UnityEngine.Random;
 /// Description: 
 /// DateTime: 3/28/2017
 /// </summary>
-public class PunLauncher  : Photon.PunBehaviour {
+public class PunLauncher  : Photon.MonoBehaviour {
 
 		#region Public Variables  //公共变量区域
 
@@ -86,12 +83,6 @@ public class PunLauncher  : Photon.PunBehaviour {
         #endregion
 
 	    #region Private Variables   //私有变量区域
-	    /// <summary>
-	    /// 跟踪当前进程。因为连接是异步的，且是基于来自Photon的几个回调，
-	    /// 我们需要跟踪这一点，以在我们收到Photon回调时适当地调整该行为。
-	    /// 这通常是用于OnConnectedToMaster()回调。
-	    /// </summary>
-	    bool isConnecting;
 
 		#endregion
 
@@ -153,7 +144,7 @@ public class PunLauncher  : Photon.PunBehaviour {
         	loaderAnime.StopLoaderAnimation();
    		 }
 		
-	    public override void OnJoinedRoom()
+	    public void OnJoinedRoom()
 	    {
 	        loaderAnime.StopLoaderAnimation();
 	    }
