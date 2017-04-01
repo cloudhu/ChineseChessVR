@@ -499,36 +499,45 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnTurnFinished: " + photonPlayer + " turn: " + turn + " action: " + move);
 		string tmpStr = move.ToString ();
-		switch (tmpStr) {
-		case "RedTimeOut":
-			Tip.UpdateText ("红方超时,判输！","0");
-			break;
-		case "BlackTimeOut":
-			Tip.UpdateText ("黑方超时,判输！","0");
-			break;
-		case "BlackDefeat":
-			Tip.UpdateText ("黑方认输！","0");
-			if (localPlayerType==ChessPlayerType.Red) {
-				result = ResultType.LocalWin;
-			}
-			break;
-		case "RedDefeat":
-			Tip.UpdateText ("红方认输！","0");
-			if (localPlayerType==ChessPlayerType.Black) {
-				result = ResultType.LocalWin;
-			}
-			break;
-		case "Draw":
-			result = ResultType.Draw;
-			break;
-		default:
-			if (!photonPlayer.IsLocal)
-			{
-				string[] strArr=tmpStr.Split(char.Parse("s"));
-				MoveStone (int.Parse(strArr[0]),int.Parse(strArr[1]),new Vector3(float.Parse(strArr[4]),1f,float.Parse(strArr[5])));
-			}
-			break;
-		}
+        if (tmpStr.Contains("s"))
+        {
+            if (!photonPlayer.IsLocal)
+            {
+                string[] strArr = tmpStr.Split(char.Parse("s"));
+                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])));
+            }
+        }
+        else
+        {
+            switch (tmpStr)
+            {
+                case "RedTimeOut":
+                    Tip.UpdateText("红方超时,判输！", "0");
+                    break;
+                case "BlackTimeOut":
+                    Tip.UpdateText("黑方超时,判输！", "0");
+                    break;
+                case "BlackDefeat":
+                    Tip.UpdateText("黑方认输！", "0");
+                    if (localPlayerType == ChessPlayerType.Red)
+                    {
+                        result = ResultType.LocalWin;
+                    }
+                    break;
+                case "RedDefeat":
+                    Tip.UpdateText("红方认输！", "0");
+                    if (localPlayerType == ChessPlayerType.Black)
+                    {
+                        result = ResultType.LocalWin;
+                    }
+                    break;
+                case "Draw":
+                    result = ResultType.Draw;
+                    break;
+                default:
+                    break;
+            }
+        }  
 			
 	}
 
@@ -629,13 +638,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
                 this.WinOrLossImage.sprite = this.SpriteLose;
                 break;
             default:
-				this.StartTurn();
+				
                 break;
         }
 
 		this.WinOrLossImage.gameObject.SetActive(true);
 		yield return new WaitForSeconds(2.0f);
-	}
+        this.StartTurn();
+    }
 
 	/// <summary>
 	/// 结束游戏
