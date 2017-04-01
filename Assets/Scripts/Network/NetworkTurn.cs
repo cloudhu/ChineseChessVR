@@ -78,7 +78,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	#region Public Variables  //公共变量区域
 	[Tooltip("棋局一回合的时间")]
 	public float TurnTime=120f;
-
+    public AudioSource source;
     public enum ChessPlayerType	//棋手类型
     {
         Red,    //红方
@@ -146,7 +146,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     // 追踪显示结果的时机来处理游戏逻辑.
     private bool IsShowingResults;
-	private AudioSource source;
+	
 
 	[Tooltip("聊天UI视图")]
 	[SerializeField]
