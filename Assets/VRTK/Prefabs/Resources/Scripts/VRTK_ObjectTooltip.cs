@@ -33,8 +33,6 @@ namespace VRTK
         public Color containerColor = Color.black;
         [Tooltip("The colour to use for the line drawn between the tooltip and the destination transform.")]
         public Color lineColor = Color.black;
-		[Tooltip("UI Slider to display Player's Health")]
-		public Slider PlayerHealthSlider;
 		[Tooltip("Pixel offset from the player target")]
 		public Vector3 ScreenOffset = new Vector3(0f,30f,0f);
 
@@ -43,33 +41,33 @@ namespace VRTK
 		private LineRenderer line;
 		#endregion
 
-        /// <summary>
-        /// The ResetTooltip method resets the tooltip back to its initial state.
-        /// </summary>
-        public void ResetTooltip()
-        {
-            SetContainer();
-            SetText("UITextFront");
-            SetText("UITextReverse");
-            SetLine();
-            if (drawLineTo == null && transform.parent != null)
-            {
-                drawLineTo = transform.parent;
-            }
-        }
 
-        /// <summary>
-        /// The UpdateText method allows the tooltip text to be updated at runtime.
-        /// </summary>
-        /// <param name="newText">A string containing the text to update the tooltip to display.</param>
-        public void UpdateText(string newText)
-        {
-            displayText = newText;
-            ResetTooltip();
-        }
 
 		#region Public Methods
+		/// <summary>
+		/// The ResetTooltip method resets the tooltip back to its initial state.
+		/// </summary>
+		public void ResetTooltip()
+		{
+			SetContainer();
+			SetText("UITextFront");
+			SetText("UITextReverse");
+			SetLine();
+			if (drawLineTo == null && transform.parent != null)
+			{
+				drawLineTo = transform.parent;
+			}
+		}
 
+		/// <summary>
+		/// The UpdateText method allows the tooltip text to be updated at runtime.
+		/// </summary>
+		/// <param name="newText">A string containing the text to update the tooltip to display.</param>
+		public void UpdateText(string newText)
+		{
+			displayText = newText;
+			ResetTooltip();
+		}
 
 		#endregion
 
@@ -81,7 +79,11 @@ namespace VRTK
         protected virtual void Update()
         {
             DrawLine();
-
+			//保持UI看向本地玩家
+			if (CameraRigManager.LocalPlayerInstance != null)
+			{
+				transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+			}
         }
 			
 

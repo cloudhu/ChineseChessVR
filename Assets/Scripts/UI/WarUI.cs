@@ -116,11 +116,18 @@ public class WarUI : MonoBehaviour {
             return;
         }
 
-		if (_target.GetComponent<ChessmanController>() && NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
-			UpdateText ("Selected");
-		} else {
-            if (_target.GetComponent<ChessmanController>())
-            {
+		//保持UI看向本地玩家
+		if (CameraRigManager.LocalPlayerInstance != null)
+		{
+			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+		}
+
+		if (_target.GetComponent<ChessmanController>())
+		{
+			if (NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
+				UpdateText ("Selected");
+			} else {
+
                 UpdateText("Select");
             }
 			

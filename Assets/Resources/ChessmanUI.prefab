@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 114110117727127012}
   m_Layer: 2
   m_Name: ChessmanUI
-  m_TagString: Untagged
+  m_TagString: ExcludeTeleport
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

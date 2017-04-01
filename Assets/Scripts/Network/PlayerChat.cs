@@ -181,8 +181,7 @@ public class PlayerChat : MonoBehaviour,IChatClientListener {
 		{
 			UserName = "user" + Environment.TickCount%99; //随便编一个用户名,这里确保其唯一性
 		}
-
-		bool _AppIdPresent = string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID);
+			
 
 		if (string.IsNullOrEmpty(PhotonNetwork.PhotonServerSettings.ChatAppID))
 		{

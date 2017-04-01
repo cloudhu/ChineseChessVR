@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 135946314314981080}
   m_Layer: 0
   m_Name: Black_Guard
-  m_TagString: Untagged
+  m_TagString: ExcludeTeleport
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -42,7 +42,7 @@ public class PunTurnManager : PunBehaviour
 	/// <summary>
 	/// The duration of the turn in seconds.
 	/// </summary>
-    public float TurnDuration = 20f;
+    public float TurnDuration = 120f;
 
 	/// <summary>
 	/// Gets the elapsed time in the current turn in seconds
@@ -70,7 +70,7 @@ public class PunTurnManager : PunBehaviour
 	/// <value><c>true</c> if this turn is completed by all; otherwise, <c>false</c>.</value>
     public bool IsCompletedByAll
     {
-        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == PhotonNetwork.room.PlayerCount; }
+        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == 1; }
     }
 
 	/// <summary>
@@ -228,7 +228,7 @@ public class PunTurnManager : PunBehaviour
                 {
                     this.finishedPlayers.Add(sender);
 
-                        this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
+                    this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
 
                 }
 

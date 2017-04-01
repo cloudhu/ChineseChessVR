@@ -64,6 +64,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
+using VRTK;
 
 /// <summary>
 /// FileName: NetworkTurn.cs
@@ -75,8 +76,10 @@ using System.Collections;
 public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	
 	#region Public Variables  //公共变量区域
+	[Tooltip("棋局一回合的时间")]
+	public float TurnTime=120f;
 
-    public enum ChessPlayerType
+    public enum ChessPlayerType	//棋手类型
     {
         Red,    //红方
         Black,  //黑方
@@ -94,7 +97,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[Tooltip("是否是红子的回合,默认红子先行")]
 	public bool _isRedTurn=true;
 
-	public struct step
+	public struct step	//每步棋的结构
 	{
 		public int moveId;
 		public int killId;
@@ -113,19 +116,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			zTo = _zTo;
 		}
 	}
-
-	[Tooltip("本地选择")]
-	public bool localSelection;
-
-	[Tooltip("本地选择")]
-	public bool remoteSelection;
-
+		
 	[Tooltip("保存每一步走棋")]
 	public List<step> _steps = new List<step> ();
 
 	[Tooltip("选中的音效,胜利，失败的音乐")]
-	public AudioSource selectClap,winMusic,loseMusic;
-	public AudioSource moveMusic,welcomMusic,DrawMusic,hurryUp;
+	public AudioClip selectClap,winMusic,loseMusic;
+	public AudioClip moveMusic,welcomMusic,DrawMusic,hurryUp,JoinClip,LeaveClip;
 
 	[Tooltip("德邦总管")]
 	public ChessmanManager chessManManager;
@@ -136,14 +133,16 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     [Tooltip("棋盘总管")]
     public BoardManager boardManager;
 
-	public AudioClip JoinClip;
-	public AudioClip LeaveClip;
-
     static public NetworkTurn Instance;
     #endregion
 
 
     #region Private Variables   //私有变量区域
+
+	//本地玩家选择
+	private bool localSelection;
+	//远程玩家选择
+	private bool remoteSelection;
 
     // 追踪显示结果的时机来处理游戏逻辑.
     private bool IsShowingResults;
@@ -193,6 +192,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     [SerializeField]
     private Text GameStatusText;
 
+	[Tooltip("游戏提示信息")]
+	[SerializeField]
+	private Tips Tip;
+
     [Tooltip("输赢图片")]
 	[SerializeField]
 	private Image WinOrLossImage;
@@ -236,7 +239,99 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		LocalWin,	//赢
 		LocalLoss	//输
 	}
+	#region Mono Callbacks //Unity的回调函数
 
+	public void Start()
+	{
+		this.turnManager = this.gameObject.AddComponent<PunTurnManager>();	//添加组件并赋值
+		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
+		this.turnManager.TurnDuration = TurnTime;		//初始化回合持续时间
+		if (this.source == null) this.source = FindObjectOfType<AudioSource>();
+		Instance = this;
+
+		RefreshUIViews();	//刷新UI视图
+	}
+
+	public void Update()
+	{
+		// 检查我们是否脱离了环境.
+		if (this.DisconnectedPanel ==null)
+		{
+			Destroy(this.gameObject);
+		}
+
+
+		if ( ! PhotonNetwork.inRoom)	//不在房间则退出更新
+		{
+			return;
+		}
+
+		// 如果PUN已连接或正在连接则禁用"reconnect panel"（重连面板）
+		if (PhotonNetwork.connected && this.DisconnectedPanel.gameObject.GetActive())
+		{
+			this.DisconnectedPanel.gameObject.SetActive(false);
+		}
+
+		if (!PhotonNetwork.connected && !PhotonNetwork.connecting && !this.DisconnectedPanel.gameObject.GetActive())
+		{
+			this.DisconnectedPanel.gameObject.SetActive(true);
+		}
+
+
+		if (PhotonNetwork.room.PlayerCount>1)
+		{
+			if (this.turnManager.IsOver)
+			{
+				return;	//回合结束
+			}
+
+			if (this.TurnText != null)
+			{
+				this.TurnText.text = (this.turnManager.Turn*0.5f).ToString();	//更新回合数
+			}
+
+			if (this.turnManager.Turn > 0 && this.TimeText != null && ! IsShowingResults)
+			{
+				float leftTime = this.turnManager.RemainingSecondsInTurn;
+
+
+				TimerFillImage.anchorMax = new Vector2(1f- leftTime/TurnTime,1f);
+
+				if (leftTime==0) {	//超时判负
+					if (localPlayerType==ChessPlayerType.Red) {
+						result = ResultType.LocalLoss;
+					}
+					if (localPlayerType==ChessPlayerType.Black) {
+						result = ResultType.LocalWin;
+					}
+					if (_isRedTurn) {
+						//红方超时，判输
+						this.turnManager.SendMove ("RedTimeOut",true);
+						return;
+					} else {
+						//黑方超时，判输
+						this.turnManager.SendMove ("BlackTimeOut",true);
+						return;
+					}
+				}
+				if (_isRedTurn) {
+					Tip.UpdateText ("红方剩余时间：" +leftTime.ToString("F1") +"秒", "1");
+					this.TimeText.text = "红方本回合剩余时间："+leftTime.ToString("F1") + " 秒";	//更新回合剩余时间
+				} else {
+					this.TimeText.text = "黑方本回合剩余时间："+leftTime.ToString("F1") + " 秒";	//更新回合剩余时间
+					Tip.UpdateText ("黑方剩余时间：" +leftTime.ToString("F1") +"秒", "1");
+				}
+			}
+
+
+		}
+
+		this.UpdatePlayerTexts();	//更新玩家文本信息
+
+
+	}
+
+	#endregion
 
     #region Public Methods	//公共方法区域
 
@@ -268,101 +363,40 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         }
     }
 
+	/// <summary>
+	/// 判断输赢.
+	/// </summary>
     public void Judge(){
 		
-		if ( localPlayerType==ChessPlayerType.Red) {
-            if (ChessmanManager.chessman[0]._dead)  //红方：帅死则输，将死则赢
-            {
-                result = ResultType.LocalLoss;
-                PlayLoseMusic();
-            }
-            if (ChessmanManager.chessman[16]._dead)
-            {
-                result = ResultType.LocalWin;
-                PlayWinMusic();
-            }
-			
-		}
-
-        if (localPlayerType == ChessPlayerType.Black)
+        if (ChessmanManager.chessman[0]._dead)  //红方：帅死则输，将死则赢
         {
-            if (ChessmanManager.chessman[16]._dead)
-            {
-                result = ResultType.LocalLoss;
-                PlayLoseMusic();
-            }
-            if (ChessmanManager.chessman[0]._dead)
-            {
-                result = ResultType.LocalWin;
-                PlayWinMusic();
-            }
-
+			if (localPlayerType == ChessPlayerType.Red) {
+				result = ResultType.LocalLoss;
+				PlayMusic (loseMusic);
+			}
+			if (localPlayerType == ChessPlayerType.Black) {
+				result = ResultType.LocalWin;
+				PlayMusic(winMusic);
+			}
         }
 
+        if (ChessmanManager.chessman[16]._dead)
+        {
+			if (localPlayerType == ChessPlayerType.Black) {
+				result = ResultType.LocalLoss;
+				PlayMusic (loseMusic);
+			}
+			if (localPlayerType == ChessPlayerType.Red) {
+				result = ResultType.LocalWin;
+				PlayMusic(winMusic);
+			}
+        }
+			
+
 	}
 
-	public void Start()
-	{
-		this.turnManager = this.gameObject.AddComponent<PunTurnManager>();	//添加组件并赋值
-		this.turnManager.TurnManagerListener = this;	//为监听器赋值,从而触发下面的回调函数来完成游戏逻辑
-		this.turnManager.TurnDuration = 120f;		//初始化回合持续时间
-        Instance = this;
-		//OnJoinedRoom ();
-        RefreshUIViews();	//刷新UI视图
-	}
-
-	public void Update()
-	{
-		// 检查我们是否脱离了环境.
-		if (this.DisconnectedPanel ==null)
-		{
-			Destroy(this.gameObject);
-		}
-	
-
-		if ( ! PhotonNetwork.inRoom)	//不在房间则退出
-		{
-			return;
-		}
-
-		// 如果PUN已连接或正在连接则禁用"reconnect panel"（重连面板）
-		if (PhotonNetwork.connected && this.DisconnectedPanel.gameObject.GetActive())
-		{
-			this.DisconnectedPanel.gameObject.SetActive(false);
-		}
-		if (!PhotonNetwork.connected && !PhotonNetwork.connecting && !this.DisconnectedPanel.gameObject.GetActive())
-		{
-			this.DisconnectedPanel.gameObject.SetActive(true);
-		}
 
 
-		if (PhotonNetwork.room.PlayerCount>1)
-		{
-			if (this.turnManager.IsOver)
-			{
-				return;	//回合结束
-			}
-
-			if (this.TurnText != null)
-			{
-				this.TurnText.text = this.turnManager.Turn.ToString();	//更新回合数
-			}
-
-			if (this.turnManager.Turn > 0 && this.TimeText != null && ! IsShowingResults)
-			{
-
-				this.TimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + " 秒";	//更新回合剩余时间
-
-				TimerFillImage.anchorMax = new Vector2(1f- this.turnManager.RemainingSecondsInTurn/this.turnManager.TurnDuration,1f);
-			}
-
-
-		}
-
-		this.UpdatePlayerTexts();	//更新玩家文本信息
-
-
-	}
 	#endregion
 
 	#region TurnManager Callbacks	//回调区域
@@ -377,8 +411,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		localSelection = false;
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
-
-
 		IsShowingResults = false;	//不展示结果
 		ButtonCanvasGroup.interactable = true;	//可以与按钮交互
 	}
@@ -399,7 +431,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 
 	/// <summary>
-	/// 当玩家移动时调用(但是没有完成该回合)
+	/// 当玩家有动作时调用(但是没有完成该回合)
 	/// </summary>
 	/// <param name="player">玩家引用</param>
 	/// <param name="turn">回合索引</param>
@@ -410,66 +442,44 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		Debug.Log("OnPlayerMove: " + photonPlayer + " turn: " + turn + " action: " + move);
 		string strMove = move.ToString ();
 		switch (strMove) {
-
-		case "Hurry":
+		case "Hurry":	//催棋
 			PlayMusic(hurryUp);
 			break;
 		case "Restart":
-			PopRequest ("重新开始对局");
+			if (!photonPlayer.IsLocal)
+				PopRequest ("重新开始对局");
+			else
+				localSelection = true;
 			break;
 		case "Draw":
-			PopRequest ("和棋");
+			if (!photonPlayer.IsLocal)
+				PopRequest ("和棋");
+			else
+				localSelection = true;
 			break;
 		case "Back":
-			PopRequest ("悔棋");
+			if (!photonPlayer.IsLocal)
+				PopRequest ("悔棋");
+			else
+				localSelection = true;
 			break;
 		case "重新开始对局Yes":
-			if (!photonPlayer.IsLocal) {
-				if (localSelection)
-					Restart ();
-				else
-					GameStatusText.text = "重新开局失败";
-			}
+			Restart ();
 			break;
 		case "重新开始对局No":
-			if (!photonPlayer.IsLocal) {
-					GameStatusText.text = "重新开局失败";
-			}
+			GameStatusText.text = "重新开局失败";
 			break;
 		case "和棋Yes":
-			if (!photonPlayer.IsLocal) {
-				if (localSelection) {
-					result = ResultType.Draw;
-					OnEndTurn ();
-					Restart ();
-				}
-				else
-					GameStatusText.text = "和棋失败";
-			}
+			turnManager.SendMove ("Draw", true);
 			break;
 		case "和棋No":
-			if (!photonPlayer.IsLocal) {
-					GameStatusText.text = "和棋失败";
-			}
+			GameStatusText.text = "和棋失败";
 			break;
 		case "悔棋Yes":
-			if (!photonPlayer.IsLocal) {
-				if (localSelection) {
-					if (_steps.Count== 0)	//如果保存的步数是0,则无棋可悔
-						return;
-					this.turnManager.SendMove("BackOne", false);
-				}
-				else
-					GameStatusText.text = "悔棋失败";
-			}
+			BackOne ();
 			break;
 		case "悔棋No":
-			if (!photonPlayer.IsLocal) {
-					GameStatusText.text = "悔棋失败";
-			}
-			break;
-		case "BackOne":
-			BackOne ();
+			GameStatusText.text = "悔棋失败";
 			break;
 		default:
 			break;
@@ -488,16 +498,38 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnPlayerFinished(PhotonPlayer photonPlayer, int turn, object move)
 	{
 		Debug.Log("OnTurnFinished: " + photonPlayer + " turn: " + turn + " action: " + move);
-
-		if (!photonPlayer.IsLocal)
-		{
-
-			string tmpStr = move.ToString (); //selectedId.ToString() +" "+ killId.ToString()+" "+fromX.ToString()+" "+fromZ.ToString()+" "+toX.ToString()+" "+toZ.ToString();
-			string[] strArr=tmpStr.Split(char.Parse("s"));
-			MoveStone (int.Parse(strArr[0]),int.Parse(strArr[1]),new Vector3(float.Parse(strArr[4]),1f,float.Parse(strArr[5])));
-            //MoveStone(tmpStep.moveId, tmpStep.killId, new Vector3(tmpStep.xTo, 1f, tmpStep.zTo));
-        }
-
+		string tmpStr = move.ToString ();
+		switch (tmpStr) {
+		case "RedTimeOut":
+			Tip.UpdateText ("红方超时,判输！","0");
+			break;
+		case "BlackTimeOut":
+			Tip.UpdateText ("黑方超时,判输！","0");
+			break;
+		case "BlackDefeat":
+			Tip.UpdateText ("黑方认输！","0");
+			if (localPlayerType==ChessPlayerType.Red) {
+				result = ResultType.LocalWin;
+			}
+			break;
+		case "RedDefeat":
+			Tip.UpdateText ("红方认输！","0");
+			if (localPlayerType==ChessPlayerType.Black) {
+				result = ResultType.LocalWin;
+			}
+			break;
+		case "Draw":
+			result = ResultType.Draw;
+			break;
+		default:
+			if (!photonPlayer.IsLocal)
+			{
+				string[] strArr=tmpStr.Split(char.Parse("s"));
+				MoveStone (int.Parse(strArr[0]),int.Parse(strArr[1]),new Vector3(float.Parse(strArr[4]),1f,float.Parse(strArr[5])));
+			}
+			break;
+		}
+			
 	}
 
 
@@ -537,11 +569,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		{
 			this.turnManager.BeginTurn();
 		}
-        if (_isRedTurn)
-        {
-            GameStatusText.text = "请红方走棋！";
-        }else
-            GameStatusText.text = "请黑方走棋！";
+
+		if (_isRedTurn) {
+			GameStatusText.text = "请红方走棋！触摸棋子按下扳机即可 (*^__^*)";
+		} else {
+			GameStatusText.text = "请黑方走棋！触摸棋子按下扳机即可 (*^__^*)";
+		}
     }
 
 
@@ -553,26 +586,19 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="targetPosition">目标位置</param>
     public void MoveStone(int moveId, int killId, Vector3 targetPosition)
     {
-        // 1.若移动到的位置上有棋子，将其吃掉  
-        // 2.将移动棋子的路径显示出来  
-        // 3.将棋子移动到目标位置  
-        // 4.播放音效  
-        // 5.判断是否符合胜利或者失败的条件  
-
+        
+        // 0.保存记录到列表
         SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
-
+		// 1.若移动到的位置上有棋子，将其吃掉  
         KillChessman(killId);
-
+		// 2.将移动棋子的路径显示出来  
         ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), targetPosition);
-
+		// 3.将棋子移动到目标位置  
         MoveChessman(moveId, targetPosition);
-
-        PlayMusic(moveMusic);
-
     }
 
     /// <summary>
-    /// 回合结束
+    /// 回合结束时调用
     /// </summary>
     public void OnEndTurn()
 	{
@@ -603,14 +629,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
                 this.WinOrLossImage.sprite = this.SpriteLose;
                 break;
             default:
+				this.StartTurn();
                 break;
         }
 
 		this.WinOrLossImage.gameObject.SetActive(true);
-
 		yield return new WaitForSeconds(2.0f);
-
-		this.StartTurn();
 	}
 
 	/// <summary>
@@ -619,6 +643,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void EndGame()
 	{
 		Debug.Log("EndGame");
+		Application.Quit ();
 	}
 
     /// <summary>  
@@ -639,40 +664,15 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// 播放指定音效.
     /// </summary>
     /// <param name="targetAudio">目标音效</param>
-    public void PlayMusic(AudioSource targetAudio)
+    public void PlayMusic(AudioClip targetAudio)
     {
-        if (targetAudio != null && !targetAudio.isPlaying)
+		
+		if (targetAudio != null && !source.isPlaying)
         {
-            targetAudio.Play();
+			this.source.PlayOneShot(targetAudio);
         }
     }
 
-    /// <summary>
-    /// 播放选择音效.
-    /// </summary>
-    public void PlaySelectSound(){
-		if (selectClap!=null && !selectClap.isPlaying) {
-			selectClap.Play ();
-		}
-	}
-
-	/// <summary>
-	/// 播放胜利音乐.
-	/// </summary>
-	public void PlayWinMusic(){
-		if (winMusic!=null && !winMusic.isPlaying) {
-			winMusic.Play ();
-		}
-	}
-
-	/// <summary>
-	/// 播放失败音乐.
-	/// </summary>
-	public void PlayLoseMusic(){
-		if (loseMusic!=null &&!loseMusic.isPlaying) {
-			loseMusic.Play ();
-		}
-	}
 
     #endregion
 
@@ -686,6 +686,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         PhotonPlayer remote = PhotonNetwork.player.GetNext();
         PhotonPlayer local = PhotonNetwork.player;
+
+		Tip.UpdateText (GameStatusText.text,"0");
 
         if (remote != null)
         {
@@ -764,7 +766,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (!CanSelect(selectId)) return;
         _selectedId = selectId;
-        PlaySelectSound();
+		PlayMusic(selectClap);
 		HidePath ();
 		boardManager.hidePossibleWay ();
         boardManager.showPossibleWay(selectId);
@@ -900,17 +902,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
         boardManager.leavePoint(fromX, fromZ);
-		/*step tmpStep = new step();	// !!Photon不能序列化这些消息,改用字符串
-		//当前棋子的位置
-		tmpStep.moveId = selectedId;
-		tmpStep.killId = killId;
-		tmpStep.xFrom = fromX;
-		tmpStep.zFrom = fromZ;
-		tmpStep.xTo = toX;
-		tmpStep.zTo = toZ;
-		this.turnManager.SendMove(tmpStep, true);*/
 		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
-		this.turnManager.SendMove(tmpStr, true);
+		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
 	}
 
     /// <summary>
@@ -965,12 +958,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     #region Handling Of Buttons	//处理按钮
 
-	/// <summary>
-	/// 催棋.
-	/// </summary>
-	public void OnHurry(){
-		this.turnManager.SendMove("Hurry", false);
+	public void SendMassage(string massage){
+		this.turnManager.SendMove(massage, false);
 	}
+
 
 	/// <summary>
 	/// 同意.
@@ -995,32 +986,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	public void OnDefeat(){
 		result = ResultType.LocalLoss;
-		OnEndTurn ();
-		Restart ();
-	}
-
-	/// <summary>
-	/// 请求和棋.
-	/// </summary>
-	public void	OnAskForDraw(){
-		this.turnManager.SendMove("Draw", false);
-	}
-
-	/// <summary>
-	/// 请求重开.
-	/// </summary>
-	public void	OnAskForRestart(){
-		this.turnManager.SendMove("Restart", false);
-	}
-
-	/// <summary>
-	/// 请求悔棋.
-	/// </summary>
-	public void	OnAskForBack(){
-		this.turnManager.SendMove("Back", false);
+		if (localPlayerType==ChessPlayerType.Black) {
+			this.turnManager.SendMove("BlackDefeat", true);
+		}
+		if (localPlayerType==ChessPlayerType.Red) {
+			this.turnManager.SendMove("RedDefeat", true);
+		}
 	}
 		
-
     public void OnCancelSelected(int targetId)
     {
         if (_selectedId==targetId)
@@ -1125,9 +1098,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public override void OnLeftRoom()
     {
         Debug.Log("OnLeftRoom()");
-
-
-
+		PlayMusic (LeaveClip);
         RefreshUIViews();
     }
 
@@ -1166,7 +1137,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             {
                 
                 // 当房间内有两个玩家,则开始首回合
-				
                 this.StartTurn();
 
             }
@@ -1211,11 +1181,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 				this.StartTurn();
 			}
 		}
-		if (this.JoinClip != null)
-		{
-			if (this.source == null) this.source = FindObjectOfType<AudioSource>();
-			this.source.PlayOneShot(this.JoinClip);
-		}
+		PlayMusic (JoinClip);
 	}
 
 	/// <summary>
@@ -1225,11 +1191,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="otherPlayer">Other player.</param>
 	public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
 	{
-		if (this.LeaveClip != null)
-		{
-			if (this.source == null) this.source = FindObjectOfType<AudioSource>();
-			this.source.PlayOneShot(this.LeaveClip);
-		}
+		PlayMusic (LeaveClip);
 		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
 		GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
 	}
