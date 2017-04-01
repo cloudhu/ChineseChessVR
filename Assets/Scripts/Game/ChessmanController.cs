@@ -168,17 +168,17 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		ht.Add ("speed", 0.8f);
 		iTween.MoveTo (gameObject, ht);
 		//agent.SetDestination (targetPosition);
-		if (Vector3.Distance(this.transform.position, targetPosition) <= 0f)
-		{
+		//if (Vector3.Distance(this.transform.position, targetPosition) <= 0f)
+		//{
 			//agent.Stop();
 			ChessmanManager.chessman[selectedId]._x = targetPosition.x;
 			ChessmanManager.chessman[selectedId]._z = targetPosition.z;
-		}
-		else
-		{
+		//}
+		//else
+		//{
 			PlaySound(walkAS);
 			//agent.Resume();
-		}
+		//}
 	}
 
 
