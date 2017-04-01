@@ -165,7 +165,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		Hashtable ht = new Hashtable ();
 		ht.Add ("position", targetPosition);
 		ht.Add ("islocal",true);
-		ht.Add ("speed", 0.8f);
+		ht.Add ("speed", 1.0f);
 		iTween.MoveTo (gameObject, ht);
 		//agent.SetDestination (targetPosition);
 		//if (Vector3.Distance(this.transform.position, targetPosition) <= 0f)

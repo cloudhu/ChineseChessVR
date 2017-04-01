@@ -239,7 +239,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     public bool IsUsingNameServer { get; protected internal set; }
 
     /// <summary>Name Server Host Name for Photon Cloud. Without port and without any prefix.</summary>
-    public const string NameServerHost = "ns.exitgames.com";
+    public const string NameServerHost = "ns-cn.exitgames.com";
 
     /// <summary>Name Server for HTTP connections to the Photon Cloud. Includes prefix and port.</summary>
     public const string NameServerHttp = "http://ns.exitgamescloud.com:80/photon/n";
