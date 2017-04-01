@@ -107,7 +107,8 @@ public class Tips : MonoBehaviour {
 	protected virtual void Start()
 	{
 		ResetTooltip("0");
-	}
+        ResetTooltip("1");
+    }
 
 	protected virtual void Update()
 	{
