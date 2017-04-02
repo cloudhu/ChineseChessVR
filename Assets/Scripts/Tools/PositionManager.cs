@@ -111,31 +111,22 @@ public class PositionManager : MonoBehaviour {
 		2.移动的步长为一格，一格的距离为3
 		3.将帅不能在一条直线上面对面（中间无棋子遮挡）,如一方占据中路三线中的一线,在无遮挡的情况下,另一方必须回避该线,否则会被对方秒杀
 		*/
-        float _x = Mathf.Abs(x);    //九宫限制x
-        if (_x < 9f || _x > 15f)
-        {
-            return false;
-        }
 
-        if (z < 9f || z > 15f)      //九宫限制z
-        {
-            return false;
-        }
+       //九宫限制已经在BoardManager中做了，这里不再重复
 
-        _x = ChessmanManager.chessman[selectedId]._x;
+        float _x = ChessmanManager.chessman[selectedId]._x;
         float _z = ChessmanManager.chessman[selectedId]._z;
         if (_x!=x && _z!=z) //九宫内直线运动
         {
             return false;
         }
 
-
 		if (Mathf.Abs(_x-x)!=step && Mathf.Abs(_z - z)!= step) //判断移动步长
         {
             return false;
         }
 
-        int enemyId=0;
+        int enemyId=0;  //敌方的将帅
         if (selectedId==0)
         {
             enemyId = 16;
@@ -176,18 +167,10 @@ public class PositionManager : MonoBehaviour {
          * 1.目标位置在九宫格内 
          * 2.只许沿着九宫中的斜线行走一步（方格的对角线） 
         */
-        float _x = Mathf.Abs(x);    //九宫限制x
-        if (_x < 9f || _x > 15f)
-        {
-            return false;
-        }
 
-        if (z < 9f || z > 15f)      //九宫限制z
-        {
-            return false;
-        }
+        //九宫限制已经在BoardManager中做了，这里不再重复
 
-        _x = Mathf.Abs(ChessmanManager.chessman[selectedId]._x - x);  //判断x轴移动步长
+        float _x = Mathf.Abs(ChessmanManager.chessman[selectedId]._x - x);  //判断x轴移动步长
         float _z = Mathf.Abs(ChessmanManager.chessman[selectedId]._z - z);  //判断z轴移动步长
         if (_x != step || _z != step) return false;  //x轴和z轴的步长都等于3则是延九宫格斜线运动
 
@@ -224,8 +207,8 @@ public class PositionManager : MonoBehaviour {
         float _z = Mathf.Abs(ChessmanManager.chessman[selectedId]._z - z);  //判断z轴移动步长
         if (_x != 2*step || _z != 2*step) return false;  //x轴和z轴的步长都等于3则是延九宫格斜线运动
 
-        _x = (ChessmanManager.chessman[selectedId]._x + x) / 2; //得出象眼的位置
-        _z = (ChessmanManager.chessman[selectedId]._z + z) / 2;
+        _x = (ChessmanManager.chessman[selectedId]._x + x) *0.5f; //得出象眼的位置
+        _z = (ChessmanManager.chessman[selectedId]._z + z) *0.5f;
 
         for (int i = 4; i < 32; i++)
         {
@@ -262,14 +245,14 @@ public class PositionManager : MonoBehaviour {
 
         //设置車到目标位置之间的区间，如果区间内有棋子，则无法到达目标位置
         float min = _z,max=z;  
-        if (_z>z)
-        {
-            min = z;
-            max = _z;
-        }
 
         if(_x == x)
         {
+            if (_z > z)
+            {
+                min = z;
+                max = _z;
+            }
             for (int i = 0; i < 32; i++)
             {
                 if (ChessmanManager.chessman[i]._x==x)
@@ -282,20 +265,18 @@ public class PositionManager : MonoBehaviour {
             }
 
         }
-
-        if (_x > x)
-        {
-            min = x;
-            max = _x;
-        }
         else
         {
-            min = _x;
-            max = x;
-        }
-
-        if (_z == z)
-        {
+            if (_x > x)
+            {
+                min = x;
+                max = _x;
+            }
+            else
+            {
+                min = _x;
+                max = x;
+            }
             for (int i = 0; i < 32; i++)
             {
                 if (ChessmanManager.chessman[i]._z == z)
@@ -308,7 +289,6 @@ public class PositionManager : MonoBehaviour {
             }
 
         }
-
 
         return true;
     }
@@ -328,41 +308,30 @@ public class PositionManager : MonoBehaviour {
         * 2.可以将马走日分解为：先一步直走（或一横）再一步斜走 
         * 3.如果在要去的方向，第一步直行处（或者横行）有别的棋子挡住，则不许走过去（俗称：蹩马腿） 
         */
-        float _x,_z,muti=2*step,plus=step;
-        _x = ChessmanManager.chessman[selectedId]._x;
-        _z = ChessmanManager.chessman[selectedId]._z;
+
+        float _x = ChessmanManager.chessman[selectedId]._x;
+        float _z = ChessmanManager.chessman[selectedId]._z;
 
         if (_x==x || _z==z) //马走日，所以排除直线
         {
             return false;
         }
 
-
         float _xStep = Mathf.Abs(_x - x);  //判断x轴移动步长
         float _zStep = Mathf.Abs(_z - z);  //判断z轴移动步长
-        if (_x * x < 0) //如果马过河，步长增加
-        {
-            muti = 3 * step;
-            plus = 2 * step;
 
-        }
-        if (_xStep==_zStep) //x轴和z轴步长相等说明不是马走日，排除
+        if ((_xStep+_zStep)!=3*step) //日字步长为3倍基数步长
         {
             return false;
         }
 
-        if (_zStep>muti || _xStep>muti) //马的距离不能大于步长
-        {
-            return false;
-        }
-
-        if (_xStep ==muti && _zStep == step)   //利用步长判断是否走日字
+        if (_xStep ==2*step && _zStep == step)   //利用步长判断是否走日字
         {
             if (_x < x)
             {
                 for (int i = 0; i < 32; i++)
                 {   
-                    if (ChessmanManager.chessman[i]._z==_z && ChessmanManager.chessman[i]._x==(_x+plus)) //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._z==_z && ChessmanManager.chessman[i]._x==(_x+step)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -372,7 +341,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x == (_x - plus))   //判断是否绊马腿
+                    if (ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x == (_x - step))   //判断是否绊马腿
                     {
                         return false;
                     }
@@ -380,7 +349,7 @@ public class PositionManager : MonoBehaviour {
             }
       
         }
-        if (_xStep == step && _zStep==muti)
+        else
         {
             if (_z < z)
             {
@@ -426,22 +395,22 @@ public class PositionManager : MonoBehaviour {
         float _x = ChessmanManager.chessman[selectedId]._x;
         float _z = ChessmanManager.chessman[selectedId]._z;
 
-        if (_x != x && _z != z)
+        if (_x != x && _z != z) //直线移动
         {
             return false;
         }
 
         //设置炮到目标位置之间的区间，如果区间内有棋子，则无法到达目标位置
         float min = _z, max = z;
-        if (_z > z)
-        {
-            min = z;
-            max = _z;
-        }
 
         int obstructs=0;    //炮与目标之间的棋子数量
         if (_x == x)
         {
+            if (_z > z)
+            {
+                min = z;
+                max = _z;
+            }
             for (int i = 0; i < 32; i++)
             {
                 if (ChessmanManager.chessman[i]._x == x)
@@ -454,20 +423,18 @@ public class PositionManager : MonoBehaviour {
             }
 
         }
-
-        if (_x > x)
-        {
-            min = x;
-            max = _x;
-        }
         else
         {
-            min = _x;
-            max = x;
-        }
-
-        if (_z == z)
-        {
+            if (_x > x)
+            {
+                min = x;
+                max = _x;
+            }
+            else
+            {
+                min = _x;
+                max = x;
+            }
             for (int i = 0; i < 32; i++)
             {
                 if (ChessmanManager.chessman[i]._z == z)
@@ -486,7 +453,7 @@ public class PositionManager : MonoBehaviour {
             return true;
         }
 
-        if (obstructs != 0) return false;
+        if (obstructs != 0) return false; //如果没有摧毁对象，则不能有障碍物
 
         return true;
     }
@@ -509,9 +476,17 @@ public class PositionManager : MonoBehaviour {
 
         float _x = ChessmanManager.chessman[selectedId]._x;
         float _z = ChessmanManager.chessman[selectedId]._z;
-        float pawnStep = step;
+        float _xStep = Mathf.Abs(_x - x);  //判断x轴移动步长
+        float _zStep = Mathf.Abs(_z - z);  //判断z轴移动步长
 
-
+        if (_x != x && _z != z) //直线移动
+        {
+            return false;
+        }
+        if (_xStep!=step && _zStep!=step)
+        {
+            return false;
+        }
 
         if (selectedId<16)  //红色阵营
         {
@@ -519,37 +494,6 @@ public class PositionManager : MonoBehaviour {
             if (_x>0)
             {
                 if (_z != z) return false;  //过河前不能横着走
-                
-                if (_x*x<0) //过河的时候步长增加
-                {
-                    pawnStep = 2 * step;
-                }
-
-                if (Mathf.Abs(_x-x)==pawnStep)  //一次一步
-                {
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-             
-                if (x==_x)
-                {
-                    if (Mathf.Abs(_z - z) == pawnStep)  //一次一步
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                if (z==_z)
-                {
-                    if (Mathf.Abs(_x - x) == pawnStep)  //一次一步
-                    {
-                        return true;
-                    }
-                    return false;
-                }
             }
         }
         else
@@ -559,34 +503,6 @@ public class PositionManager : MonoBehaviour {
             {
                 if (_z != z) return false;  //过河前不能横着走
                 
-                if (_x * x < 0)
-                {
-                    pawnStep = 2 * step;
-                }
-                if (Mathf.Abs(_x - x) == pawnStep)  //一次一步
-                {
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-                if (x == _x)
-                {
-                    if (Mathf.Abs(_z - z) == pawnStep)  //一次一步
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                if (z == _z)
-                {
-                    if (Mathf.Abs(_x - x) == pawnStep)  //一次一步
-                    {
-                        return true;
-                    }
-                    return false;
-                }
             }
         }
 

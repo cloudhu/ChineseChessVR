@@ -80,26 +80,18 @@ public class Tips : MonoBehaviour {
 	public int fontSize = 14;
 	[Tooltip("The size of the tooltip container where `x = width` and `y = height`.")]
 	public Vector2 containerSize = new Vector2(0.1f, 0.03f);
-	[Tooltip("An optional transform of where to start drawing the line from. If one is not provided the centre of the tooltip is used for the initial line position.")]
-	public Transform drawLineFrom;
-	[Tooltip("A transform of another object in the scene that a line will be drawn from the tooltip to, this helps denote what the tooltip is in relation to. If no transform is provided and the tooltip is a child of another object, then the parent object's transform will be used as this destination position.")]
-	public Transform drawLineTo;
-	[Tooltip("The width of the line drawn between the tooltip and the destination transform.")]
-	public float lineWidth = 0.001f;
+
 	[Tooltip("The colour to use for the text on the tooltip.")]
 	public Color fontColor = Color.black;
 	[Tooltip("The colour to use for the background container of the tooltip.")]
 	public Color containerColor = Color.black;
-	[Tooltip("The colour to use for the line drawn between the tooltip and the destination transform.")]
-	public Color lineColor = Color.black;
 	[Tooltip("Pixel offset from the player target")]
 	public Vector3 ScreenOffset = new Vector3(0f,30f,0f);
 	#endregion
 
 
 	#region Private Variables   //私有变量区域
-	
-	private LineRenderer line;
+
 	#endregion
 	
 	
@@ -112,7 +104,6 @@ public class Tips : MonoBehaviour {
 
 	protected virtual void Update()
 	{
-		DrawLine();
 		//保持UI看向本地玩家
 		if (CameraRigManager.LocalPlayerInstance != null)
 		{
@@ -131,11 +122,6 @@ public class Tips : MonoBehaviour {
 		SetContainer(index);
 		SetText("UITextFront"+index);
 		SetText("UITextReverse"+index);
-		SetLine();
-		if (drawLineTo == null && transform.parent != null)
-		{
-			drawLineTo = transform.parent;
-		}
 	}
 
 	/// <summary>
@@ -168,33 +154,5 @@ public class Tips : MonoBehaviour {
 		tmpText.fontSize = fontSize;
 	}
 
-	private void SetLine()
-	{
-		line = transform.FindChild("Line").GetComponent<LineRenderer>();
-		line.material = Resources.Load("TooltipLine") as Material;
-		line.material.color = lineColor;
-		#if UNITY_5_5_OR_NEWER
-		line.startColor = lineColor;
-		line.endColor = lineColor;
-		line.startWidth = lineWidth;
-		line.endWidth = lineWidth;
-		#else
-		line.SetColors(lineColor, lineColor);
-		line.SetWidth(lineWidth, lineWidth);
-		#endif
-		if (drawLineFrom == null)
-		{
-			drawLineFrom = transform;
-		}
-	}
-
-	private void DrawLine()
-	{
-		if (drawLineTo)
-		{
-			line.SetPosition(0, drawLineFrom.position);
-			line.SetPosition(1, drawLineTo.position);
-		}
-	}
 	#endregion
 }

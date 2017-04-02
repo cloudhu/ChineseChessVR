@@ -6236,7 +6236,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1558292560335162}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 2.74}
+  m_LocalPosition: {x: 0, y: 2, z: 2.42}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4636615467871774}
@@ -8972,24 +8972,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnTime: 120
+  source: {fileID: 0}
   localPlayerType: 2
   _selectedId: -1
   _isRedTurn: 1
-  localSelection: 0
-  remoteSelection: 0
-  selectClap: {fileID: 0}
+  selectClap: {fileID: 8300000, guid: f60c28e299c51fd47b838b76f2f9ec17, type: 3}
   winMusic: {fileID: 0}
   loseMusic: {fileID: 0}
   moveMusic: {fileID: 0}
   welcomMusic: {fileID: 0}
   DrawMusic: {fileID: 0}
   hurryUp: {fileID: 0}
+  JoinClip: {fileID: 8300000, guid: dd2973535af1c6a4a9c18e0973520b42, type: 3}
+  LeaveClip: {fileID: 8300000, guid: f60c28e299c51fd47b838b76f2f9ec17, type: 3}
   chessManManager: {fileID: 0}
   Selected: {fileID: 0}
   Path: {fileID: 0}
   boardManager: {fileID: 0}
-  JoinClip: {fileID: 8300000, guid: dd2973535af1c6a4a9c18e0973520b42, type: 3}
-  LeaveClip: {fileID: 8300000, guid: f60c28e299c51fd47b838b76f2f9ec17, type: 3}
   ChatUiView: {fileID: 224820386380410600}
   VoiceUiView: {fileID: 224960147299868520}
   ConnectUiView: {fileID: 224709429357685916}
@@ -10937,7 +10936,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: ' '
 --- !u!114 &114244874304640368
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14303,12 +14302,8 @@ MonoBehaviour:
   displayText: 
   fontSize: 18
   containerSize: {x: 300, y: 200}
-  drawLineFrom: {fileID: 4913656732048040}
-  drawLineTo: {fileID: 4636615467871774}
-  lineWidth: 0.001
   fontColor: {r: 0, g: 0, b: 0, a: 1}
   containerColor: {r: 0.89705884, g: 0.8245026, b: 0.8245026, a: 1}
-  lineColor: {r: 0, g: 0, b: 0, a: 1}
   ScreenOffset: {x: 0, y: 30, z: 0}
 --- !u!114 &114416870215229268
 MonoBehaviour:
@@ -16811,7 +16806,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: ' '
 --- !u!114 &114566489284348918
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18808,7 +18803,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1182206870758896}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -18841,7 +18836,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1139533584941540}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -31706,13 +31701,13 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1251535460508842}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224243287101056184}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}

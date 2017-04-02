@@ -124,25 +124,26 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
 			//每个点上的棋子的类型  
 			ChessmanPos[] pos = {  
-				new ChessmanPos(15f,12f,Chessman.TYPE.KING),  
-				new ChessmanPos(15f,15f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(15f,9f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(15f,18f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(15f,6f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(15f,21f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(15f,3f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(15f,24f,Chessman.TYPE.ROOK),  
-				new ChessmanPos(15f,0f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(13.5f,12f,Chessman.TYPE.KING),  
+				new ChessmanPos(13.5f,15f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(13.5f,9f,Chessman.TYPE.GUARD),  
+				new ChessmanPos(13.5f,18f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(13.5f,6f,Chessman.TYPE.ELEPHANT),  
+				new ChessmanPos(13.5f,21f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(13.5f,3f,Chessman.TYPE.HORSE),  
+				new ChessmanPos(13.5f,24f,Chessman.TYPE.ROOK),  
+				new ChessmanPos(13.5f,0f,Chessman.TYPE.ROOK),  
 
-				new ChessmanPos(9f,21f,Chessman.TYPE.CANNON),  
-				new ChessmanPos(9f,3f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(7.5f,21f,Chessman.TYPE.CANNON),  
+				new ChessmanPos(7.5f,3f,Chessman.TYPE.CANNON),  
 
-				new ChessmanPos(6f,24f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(6f,18f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(6f,12f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(6f,6f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(6f,0f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(4.5f,24f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(4.5f,18f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(4.5f,12f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(4.5f,6f,Chessman.TYPE.PAWN),  
+				new ChessmanPos(4.5f,0f,Chessman.TYPE.PAWN),  
 			};  
+            //红方阵营和黑方对称
 			if (id < 16)  
 			{  
 				_x = pos[id].x;  

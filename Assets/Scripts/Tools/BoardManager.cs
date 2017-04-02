@@ -165,7 +165,7 @@ public class BoardManager : MonoBehaviour {
 
     void ShowKingWay(int id)
     {
-        for (int i = 12; i < 31; i++)
+        for (int i = 12; i < 31; i++) //九宫限制
         {
             if (!points[i].isOccupied)
             {
@@ -180,7 +180,7 @@ public class BoardManager : MonoBehaviour {
 
     void ShowGuardWay(int id)
     {
-        for (int i = 12; i < 31; i++)
+        for (int i = 12; i < 31; i++)   //九宫限制
         {
             if (!points[i].isOccupied)
             {
@@ -197,7 +197,7 @@ public class BoardManager : MonoBehaviour {
     void ShowElephantWay(int id)
     {
 
-        for (int i = 0; i < 14; i++)
+        for (int i = 0; i < 14; i++)    //相的位置只有14种可能
         {
             if (!points[i].isOccupied)
             {
@@ -222,7 +222,7 @@ public class BoardManager : MonoBehaviour {
                 float _x = points[i].transform.localPosition.x;	//节点位置x		
                 float fromX = ChessmanManager.chessman[id]._x;	//棋子位置x
 
-                if (_x > (fromX-12f) && _x < (fromX+12f))
+                if (_x > (fromX-9f) && _x < (fromX+9f))
                 {
                     float _z = points[i].transform.localPosition.z;
                     float fromZ= ChessmanManager.chessman[id]._z;
@@ -289,7 +289,7 @@ public class BoardManager : MonoBehaviour {
                 float _x = points[i].transform.localPosition.x;
                 
                 float fromX = ChessmanManager.chessman[id]._x;
-                if (_x<(fromX+9f) && _x > (fromX - 9f))
+                if (_x<(fromX+6f) && _x > (fromX - 6f))
                 {
                     float _z = points[i].transform.localPosition.z;
                     float fromZ = ChessmanManager.chessman[id]._z;
