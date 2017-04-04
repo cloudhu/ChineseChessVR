@@ -1204,6 +1204,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		PlayMusic (LeaveClip);
 		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
 		GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
+        result = ResultType.LocalWin;
+        UpdateScores();
+        Restart();
 	}
     #endregion
 
