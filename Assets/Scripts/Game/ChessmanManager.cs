@@ -264,9 +264,10 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		{  
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
 			//Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-			GameObject ChessMan = GameObject.Instantiate(prefabs, new Vector3(chessman[i]._x, 1f, chessman[i]._z), Quaternion.identity) as GameObject;
+			GameObject ChessMan = GameObject.Instantiate(prefabs ) as GameObject;
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
+			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 1f, chessman [i]._z);
 		}  
 	}
 

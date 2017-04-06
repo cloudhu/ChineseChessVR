@@ -71,22 +71,19 @@ using VRTK;
 /// Description: 负责控制棋子的行为
 /// DateTime: 3/24/2017
 /// </summary>
-public class ChessmanController : VRTK_InteractableObject, IPunObservable {
+public class ChessmanController : VRTK_InteractableObject {
 
 
 
     #region Public Variables  //公共变量区域
-    [Tooltip("棋子唤醒时的音效")]
-    public AudioSource awakeMusic,walkAS;
+    [Tooltip("棋子的音效")]
+    public AudioClip awakeMusic,ArrivalAC,RunAC,DieAC;
 
     [Tooltip("UI游戏对象预设")]
 	public GameObject ChessmamUiPrefab;
 
     [Tooltip("战斗UI游戏对象预设")]
     public GameObject warUiPrefab;
-
-    [Tooltip("玩家当前的体力值")]
-	public float Health = 1f;
 
     [Tooltip("选中棋子的id")]
     public int selectedId;
@@ -95,7 +92,8 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 
 
     #region Private Variables   //私有变量区域
-
+	AudioSource As;
+	Animator ani;
 	//private NavMeshAgent agent;    //寻路组件
 	WarUI war; //战争UI
     #endregion
@@ -105,7 +103,8 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
     // Use this for initialization
     void Start () {
         selectedId =int.Parse(this.gameObject.name);
-
+		ani = transform.GetComponent<Animator> ();
+		if (this.As == null) this.As = FindObjectOfType<AudioSource>();
 		/*agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之  ！！用iTween代替寻路
 		if (agent == null)	
 		{
@@ -118,7 +117,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		if (this.ChessmamUiPrefab != null)
 		{
 			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			_uiGo.transform.localPosition = new Vector3 (0, 1f, 0);
+			_uiGo.transform.localPosition = new Vector3 (0, transform.position.y+1f, 0);
 		}
 		else
 		{
@@ -129,7 +128,7 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
         if (this.warUiPrefab != null)
         {
             GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform) as GameObject;
-            _uiGo.transform.localPosition = new Vector3(0, 2.5f, 0);
+			_uiGo.transform.localPosition = new Vector3(0, transform.position.y+2.5f, 0);
 			war = _uiGo.GetComponent<WarUI> ();
         }
         else
@@ -138,16 +137,16 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
         }
 
     }
-
+		
     #endregion
 
     #region Public Methods	//公共方法区域
     public override void StartUsing(GameObject usingObject)
 	{
 		base.StartUsing(usingObject);
-		PlaySound (awakeMusic);
-
 		war.TrySelectChessman ();
+		PlaySound (awakeMusic);
+		ani.SetTrigger ("TH Sword Jump");
         //Debug.Log("StartUsing :Called war.TrySelectChessman ();");
 	}
 
@@ -164,76 +163,60 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 	public void SetTarget(Vector3 targetPosition){
 		Hashtable ht = new Hashtable ();
 		ht.Add ("position", targetPosition);
+		ht.Add ("orienttopath", true);
+		ht.Add ("onstart", "Move");
+		ht.Add ("oncomplete","Stop");
 		ht.Add ("islocal",true);
-		ht.Add ("speed", 1.0f);
+		ht.Add ("time", 5.0f);
 		iTween.MoveTo (gameObject, ht);
-		//agent.SetDestination (targetPosition);
-		//if (Vector3.Distance(this.transform.position, targetPosition) <= 0f)
-		//{
-			//agent.Stop();
-			ChessmanManager.chessman[selectedId]._x = targetPosition.x;
-			ChessmanManager.chessman[selectedId]._z = targetPosition.z;
-		//}
-		//else
-		//{
-			PlaySound(walkAS);
-			//agent.Resume();
-		//}
+
+
+		ChessmanManager.chessman[selectedId]._x = targetPosition.x;
+		ChessmanManager.chessman[selectedId]._z = targetPosition.z;
 	}
 
-
-	#endregion
-
-	#region IPunObservable implementation
-
-	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	/// <summary>
+	/// 切换死亡
+	/// </summary>
+	public void SwitchDead()
 	{
-		if (stream.isWriting)
-		{
-			// 我们是本地玩家，则把数据发送给远程玩家
-			// stream.SendNext(this.IsFiring);
-			stream.SendNext(this.Health);
-		}
-		else
-		{
-			//网络玩家则接收数据
-			//  this.IsFiring = (bool)stream.ReceiveNext();
-			this.Health = (float)stream.ReceiveNext();
-		}
+		HitHapticPulse (2);
+		ani.SetTrigger ("TH Sword Die");
 	}
-
 	#endregion
+
 
 	#region Private Methods //私有方法
+
+	void Move(){
+		ani.SetBool ("TH Sword Run",true);
+		PlaySound (RunAC);
+	}
+
+	void Stop(){
+		ani.SetBool ("TH Sword Run",false);
+		PlaySound (ArrivalAC);
+	}
+		
+	void PureDead(){
+		gameObject.SetActive (false);
+	}
 
 	/// <summary>
 	/// 播放音效
 	/// </summary>
 	/// <param name="ac">声音</param>
-	void PlaySound(AudioSource As)
+	void PlaySound(AudioClip Ac)
 	{
-		if (As!=null && !As.isPlaying)
+
+		if (Ac!=null && !As.isPlaying)
 		{
-			As.Play();
+			As.PlayOneShot (Ac);
 		}
 
 	}
-	/// <summary>
-	/// 减血
-	/// </summary>
-	/// <param name="_damageAmount">伤害值</param>
-	void ApplyDamage(float _damageAmount)
-	{
-		float t = Health - _damageAmount;
-		if (t > 0)//如果健康值不低于0则造成伤害
-			Health = t;
-		else //反之则切换到死亡，并且震动下手柄提醒玩家已经消灭敌人
-		{
-			Health = 0;
-			SwitchDead();
-			HitHapticPulse(1000);
-		}
-	}
+		
+
 	/// <summary>
 	/// 震动
 	/// </summary>
@@ -244,16 +227,6 @@ public class ChessmanController : VRTK_InteractableObject, IPunObservable {
 		var deviceIndex1 = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
 		SteamVR_Controller.Input(deviceIndex).TriggerHapticPulse(duration);
 		SteamVR_Controller.Input(deviceIndex1).TriggerHapticPulse(duration);
-	}
-
-	/// <summary>
-	/// 切换死亡
-	/// </summary>
-	void SwitchDead()
-	{
-		//ani.SetBool("isDead", true);
-		//agent.enabled = false;//停止寻路
-
 	}
 
 	#endregion

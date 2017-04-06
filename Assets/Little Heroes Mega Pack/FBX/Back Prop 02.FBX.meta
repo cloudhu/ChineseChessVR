@@ -1,0 +1,179 @@
+fileFormatVersion: 2
+guid: ff204885b03a08d4cbc612fe4bd8afa5
+timeCreated: 1476694056
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Back Prop 02
+    100004: Rig
+    100006: RigL1Arm1
+    100008: RigL1Arm2
+    100010: RigL2Arm1
+    100012: RigL2Arm2
+    100014: RigL3Arm1
+    100016: RigL3Arm2
+    100018: RigL4Arm1
+    100020: RigL4Arm2
+    100022: RigMain
+    100024: RigR1Arm1
+    100026: RigR1Arm2
+    100028: RigR2Arm1
+    100030: RigR2Arm2
+    100032: RigR3Arm1
+    100034: RigR3Arm2
+    100036: RigR4Arm1
+    100038: RigR4Arm2
+    400000: //RootNode
+    400002: Back Prop 02
+    400004: Rig
+    400006: RigL1Arm1
+    400008: RigL1Arm2
+    400010: RigL2Arm1
+    400012: RigL2Arm2
+    400014: RigL3Arm1
+    400016: RigL3Arm2
+    400018: RigL4Arm1
+    400020: RigL4Arm2
+    400022: RigMain
+    400024: RigR1Arm1
+    400026: RigR1Arm2
+    400028: RigR2Arm1
+    400030: RigR2Arm2
+    400032: RigR3Arm1
+    400034: RigR3Arm2
+    400036: RigR4Arm1
+    400038: RigR4Arm2
+    4300000: Back Prop 02
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Back Prop 02
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 80
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Back Prop 02
+        weight: 1
+      - path: Rig
+        weight: 1
+      - path: RigMain
+        weight: 1
+      - path: RigMain/RigL1Arm1
+        weight: 1
+      - path: RigMain/RigL1Arm1/RigL1Arm2
+        weight: 1
+      - path: RigMain/RigL2Arm1
+        weight: 1
+      - path: RigMain/RigL2Arm1/RigL2Arm2
+        weight: 1
+      - path: RigMain/RigL3Arm1
+        weight: 1
+      - path: RigMain/RigL3Arm1/RigL3Arm2
+        weight: 1
+      - path: RigMain/RigL4Arm1
+        weight: 1
+      - path: RigMain/RigL4Arm1/RigL4Arm2
+        weight: 1
+      - path: RigMain/RigR1Arm1
+        weight: 1
+      - path: RigMain/RigR1Arm1/RigR1Arm2
+        weight: 1
+      - path: RigMain/RigR2Arm1
+        weight: 1
+      - path: RigMain/RigR2Arm1/RigR2Arm2
+        weight: 1
+      - path: RigMain/RigR3Arm1
+        weight: 1
+      - path: RigMain/RigR3Arm1/RigR3Arm2
+        weight: 1
+      - path: RigMain/RigR4Arm1
+        weight: 1
+      - path: RigMain/RigR4Arm1/RigR4Arm2
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

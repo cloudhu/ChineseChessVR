@@ -1,0 +1,267 @@
+fileFormatVersion: 2
+guid: d7a588a28ab3f3d4ba5c3f50796e13e1
+timeCreated: 1479195292
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Dummy Prop Back
+    100004: Rig
+    100006: RigLBtmWing1
+    100008: RigLBtmWing2
+    100010: RigLBtmWing3
+    100012: RigLBtmWing4
+    100014: RigLBtmWing5
+    100016: RigLBtmWing6
+    100018: RigLMidWing1
+    100020: RigLMidWing2
+    100022: RigLMidWing3
+    100024: RigLMidWing4
+    100026: RigLMidWing5
+    100028: RigLMidWing6
+    100030: RigLUpWing1
+    100032: RigLUpWing2
+    100034: RigLUpWing3
+    100036: RigLUpWing4
+    100038: RigLUpWing5
+    100040: RigLUpWing6
+    100042: RigMain
+    100044: RigRBtmWing1
+    100046: RigRBtmWing2
+    100048: RigRBtmWing3
+    100050: RigRBtmWing4
+    100052: RigRBtmWing5
+    100054: RigRBtmWing6
+    100056: RigRMidWing1
+    100058: RigRMidWing2
+    100060: RigRMidWing3
+    100062: RigRMidWing4
+    100064: RigRMidWing5
+    100066: RigRMidWing6
+    100068: RigRUpWing1
+    100070: RigRUpWing2
+    100072: RigRUpWing3
+    100074: RigRUpWing4
+    100076: RigRUpWing5
+    100078: RigRUpWing6
+    100080: Wings 11
+    400000: //RootNode
+    400002: Dummy Prop Back
+    400004: Rig
+    400006: RigLBtmWing1
+    400008: RigLBtmWing2
+    400010: RigLBtmWing3
+    400012: RigLBtmWing4
+    400014: RigLBtmWing5
+    400016: RigLBtmWing6
+    400018: RigLMidWing1
+    400020: RigLMidWing2
+    400022: RigLMidWing3
+    400024: RigLMidWing4
+    400026: RigLMidWing5
+    400028: RigLMidWing6
+    400030: RigLUpWing1
+    400032: RigLUpWing2
+    400034: RigLUpWing3
+    400036: RigLUpWing4
+    400038: RigLUpWing5
+    400040: RigLUpWing6
+    400042: RigMain
+    400044: RigRBtmWing1
+    400046: RigRBtmWing2
+    400048: RigRBtmWing3
+    400050: RigRBtmWing4
+    400052: RigRBtmWing5
+    400054: RigRBtmWing6
+    400056: RigRMidWing1
+    400058: RigRMidWing2
+    400060: RigRMidWing3
+    400062: RigRMidWing4
+    400064: RigRMidWing5
+    400066: RigRMidWing6
+    400068: RigRUpWing1
+    400070: RigRUpWing2
+    400072: RigRUpWing3
+    400074: RigRUpWing4
+    400076: RigRUpWing5
+    400078: RigRUpWing6
+    400080: Wings 11
+    2300000: //RootNode
+    2300002: Wings 11
+    3300000: //RootNode
+    3300002: Wings 11
+    4300000: Wings 11
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Wings 11
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 40
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Dummy Prop Back
+        weight: 1
+      - path: Rig
+        weight: 1
+      - path: RigMain
+        weight: 1
+      - path: RigMain/RigLBtmWing1
+        weight: 1
+      - path: RigMain/RigLBtmWing1/RigLBtmWing2
+        weight: 1
+      - path: RigMain/RigLBtmWing1/RigLBtmWing2/RigLBtmWing3
+        weight: 1
+      - path: RigMain/RigLBtmWing1/RigLBtmWing2/RigLBtmWing3/RigLBtmWing4
+        weight: 1
+      - path: RigMain/RigLBtmWing1/RigLBtmWing2/RigLBtmWing3/RigLBtmWing4/RigLBtmWing5
+        weight: 1
+      - path: RigMain/RigLBtmWing1/RigLBtmWing2/RigLBtmWing3/RigLBtmWing4/RigLBtmWing5/RigLBtmWing6
+        weight: 1
+      - path: RigMain/RigLMidWing1
+        weight: 1
+      - path: RigMain/RigLMidWing1/RigLMidWing2
+        weight: 1
+      - path: RigMain/RigLMidWing1/RigLMidWing2/RigLMidWing3
+        weight: 1
+      - path: RigMain/RigLMidWing1/RigLMidWing2/RigLMidWing3/RigLMidWing4
+        weight: 1
+      - path: RigMain/RigLMidWing1/RigLMidWing2/RigLMidWing3/RigLMidWing4/RigLMidWing5
+        weight: 1
+      - path: RigMain/RigLMidWing1/RigLMidWing2/RigLMidWing3/RigLMidWing4/RigLMidWing5/RigLMidWing6
+        weight: 1
+      - path: RigMain/RigLUpWing1
+        weight: 1
+      - path: RigMain/RigLUpWing1/RigLUpWing2
+        weight: 1
+      - path: RigMain/RigLUpWing1/RigLUpWing2/RigLUpWing3
+        weight: 1
+      - path: RigMain/RigLUpWing1/RigLUpWing2/RigLUpWing3/RigLUpWing4
+        weight: 1
+      - path: RigMain/RigLUpWing1/RigLUpWing2/RigLUpWing3/RigLUpWing4/RigLUpWing5
+        weight: 1
+      - path: RigMain/RigLUpWing1/RigLUpWing2/RigLUpWing3/RigLUpWing4/RigLUpWing5/RigLUpWing6
+        weight: 1
+      - path: RigMain/RigRBtmWing1
+        weight: 1
+      - path: RigMain/RigRBtmWing1/RigRBtmWing2
+        weight: 1
+      - path: RigMain/RigRBtmWing1/RigRBtmWing2/RigRBtmWing3
+        weight: 1
+      - path: RigMain/RigRBtmWing1/RigRBtmWing2/RigRBtmWing3/RigRBtmWing4
+        weight: 1
+      - path: RigMain/RigRBtmWing1/RigRBtmWing2/RigRBtmWing3/RigRBtmWing4/RigRBtmWing5
+        weight: 1
+      - path: RigMain/RigRBtmWing1/RigRBtmWing2/RigRBtmWing3/RigRBtmWing4/RigRBtmWing5/RigRBtmWing6
+        weight: 1
+      - path: RigMain/RigRMidWing1
+        weight: 1
+      - path: RigMain/RigRMidWing1/RigRMidWing2
+        weight: 1
+      - path: RigMain/RigRMidWing1/RigRMidWing2/RigRMidWing3
+        weight: 1
+      - path: RigMain/RigRMidWing1/RigRMidWing2/RigRMidWing3/RigRMidWing4
+        weight: 1
+      - path: RigMain/RigRMidWing1/RigRMidWing2/RigRMidWing3/RigRMidWing4/RigRMidWing5
+        weight: 1
+      - path: RigMain/RigRMidWing1/RigRMidWing2/RigRMidWing3/RigRMidWing4/RigRMidWing5/RigRMidWing6
+        weight: 1
+      - path: RigMain/RigRUpWing1
+        weight: 1
+      - path: RigMain/RigRUpWing1/RigRUpWing2
+        weight: 1
+      - path: RigMain/RigRUpWing1/RigRUpWing2/RigRUpWing3
+        weight: 1
+      - path: RigMain/RigRUpWing1/RigRUpWing2/RigRUpWing3/RigRUpWing4
+        weight: 1
+      - path: RigMain/RigRUpWing1/RigRUpWing2/RigRUpWing3/RigRUpWing4/RigRUpWing5
+        weight: 1
+      - path: RigMain/RigRUpWing1/RigRUpWing2/RigRUpWing3/RigRUpWing4/RigRUpWing5/RigRUpWing6
+        weight: 1
+      - path: Wings 11
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

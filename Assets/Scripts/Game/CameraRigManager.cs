@@ -80,7 +80,7 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
     public static GameObject LocalPlayerInstance;
 
 	[Tooltip("玩家当前的体力值")]
-	public float Health = 1f;
+	public float Health = 32f;
 
 	[Tooltip("位置索引:1是头；2是左手；3是右手")]
 	public int index = 1;	
@@ -148,7 +148,11 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 
     #region Public Methods	//公共方法区域
 
-
+	public void	ApplyDamage(){
+		if (Health>0) {
+			--Health;
+		}
+	}
     #endregion
     #region IPunObservable implementation
 

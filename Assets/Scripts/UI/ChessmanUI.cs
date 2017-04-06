@@ -85,8 +85,7 @@ public class ChessmanUI : MonoBehaviour {
 	public Vector2 containerSize = new Vector2(0.1f, 0.03f);
 	[Tooltip("字体框背景色.")]
 	public Color containerColor = Color.black;
-	[Tooltip("生命值")]
-	public Slider PlayerHealthSlider;
+
 	[Tooltip("和目标之间的偏移值")]
 	public Vector3 ScreenOffset = new Vector3(0f,5f,0f);
 	
@@ -122,11 +121,7 @@ public class ChessmanUI : MonoBehaviour {
         {
             transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
         }
-
-        // Reflect the Player Health
-        if (PlayerHealthSlider != null) {
-			PlayerHealthSlider.value = manager.Health;
-		}
+			
 	}
 
 	#endregion

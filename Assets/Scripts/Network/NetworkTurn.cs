@@ -121,8 +121,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public List<step> _steps = new List<step> ();
 
 	[Tooltip("选中的音效,胜利，失败的音乐")]
-	public AudioClip selectClap,winMusic,loseMusic;
-	public AudioClip moveMusic,welcomMusic,DrawMusic,hurryUp,JoinClip,LeaveClip;
+	public AudioClip selectClap,winMusic,loseMusic,welcomMusic,DrawMusic,hurryUp,JoinClip,LeaveClip;
 
 	[Tooltip("德邦总管")]
 	public ChessmanManager chessManManager;
@@ -776,7 +775,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (!CanSelect(selectId)) return;
         _selectedId = selectId;
-		PlayMusic(selectClap);
+
 		HidePath ();
 		boardManager.hidePossibleWay ();
         boardManager.showPossibleWay(selectId);
@@ -792,9 +791,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         if (id == -1) return;
 
+		CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
         ChessmanManager.chessman[id]._dead = true;
         Transform chessman=chessManManager.transform.FindChild(id.ToString());
-        chessman.gameObject.SetActive(false);
+		chessman.GetComponent<ChessmanController> ().SwitchDead ();
     }
 
     /// <summary>  
@@ -970,6 +970,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	public void SendMassage(string massage){
 		this.turnManager.SendMove(massage, false);
+		PlayMusic(selectClap);
 	}
 
 
@@ -980,6 +981,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnAgree(Text t){
 		localSelection = true;
 		this.turnManager.SendMove(t.text+"Yes", false);
+		PlayMusic(selectClap);
 	}
 
 	/// <summary>
@@ -989,6 +991,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnDisagree(Text t){
 		localSelection = false;
 		this.turnManager.SendMove(t.text+"No", false);
+		PlayMusic(selectClap);
 	}
 
 	/// <summary>
@@ -996,6 +999,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	public void OnDefeat(){
 		result = ResultType.LocalLoss;
+		PlayMusic(selectClap);
 		if (localPlayerType==ChessPlayerType.Black) {
 			this.turnManager.SendMove("BlackDefeat", true);
 		}
@@ -1031,6 +1035,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// </summary>
     public void OnClickConnect()
 	{
+		PlayMusic(selectClap);
 		PhotonNetwork.ConnectUsingSettings(null);
 		PhotonHandler.StopFallbackSendAckThread();  // 这在案例中被用于后台超时!
 	}
@@ -1040,6 +1045,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	public void OnClickReConnectAndRejoin()
 	{
+		PlayMusic(selectClap);
 		PhotonNetwork.ReconnectAndRejoin();
 		PhotonHandler.StopFallbackSendAckThread();  // this is used in the demo to timeout in background!
 	}
@@ -1148,7 +1154,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
                 
                 // 当房间内有两个玩家,则开始首回合
                 this.StartTurn();
-
+				PlayMusic (welcomMusic);
             }
         }
 

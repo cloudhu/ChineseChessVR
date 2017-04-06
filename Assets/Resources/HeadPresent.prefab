@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUiPrefab: {fileID: 1192586611239726, guid: 11839973042609f4fb31f76bfdaf1312,
     type: 2}
-  Health: 100
+  Health: 32
   index: 1
 --- !u!114 &114806785983958018
 MonoBehaviour:
