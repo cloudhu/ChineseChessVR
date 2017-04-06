@@ -37,7 +37,7 @@ namespace VRTK
     ///
     /// `VRTK/Examples/013_Controller_UsingAndGrabbingMultipleObjects` shows multiple objects that can be grabbed by holding the buttons or grabbed by toggling the button click and also has objects that can have their Using state toggled to show how multiple items can be turned on at the same time.
     /// </example>
-	public class VRTK_InteractableObject : Photon.PunBehaviour
+    public class VRTK_InteractableObject : MonoBehaviour
     {
         /// <summary>
         /// Allowed controller type.
