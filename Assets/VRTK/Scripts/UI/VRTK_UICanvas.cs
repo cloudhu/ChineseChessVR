@@ -34,10 +34,7 @@ namespace VRTK
         private void Start()
         {
             //保持UI看向本地玩家
-            if (CameraRigManager.LocalPlayerInstance != null)
-            {
-                transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-            }
+			transform.LookAt(Camera.main.transform);
         }
 
         protected virtual void OnDisable()

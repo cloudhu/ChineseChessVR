@@ -66,89 +66,106 @@ using UnityEngine;
 /// FileName: PunLauncher.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
+/// Description: PUN登录
 /// DateTime: 3/28/2017
 /// </summary>
 public class PunLauncher  : Photon.MonoBehaviour {
 
-		#region Public Variables  //公共变量区域
+	#region Public Variables  //公共变量区域
 
-		[Tooltip("每间房间的最大玩家数量")]
-		public byte maxPlayersPerRoom = 2;
+	[Tooltip("每间房间的最大玩家数量")]
+	public byte maxPlayersPerRoom = 2;
+	[Tooltip("AudioSource")]
+	public AudioSource source;
+	[Tooltip("选择音效")]
+	public AudioClip selectClap;
+	[Tooltip("版本")]
+	public string Version = "1.0";
 
-		public string Version = "1.0";
+    [Tooltip("UI加载动画")]
+    public Loader loaderAnime;
+    #endregion
 
-        [Tooltip("The UI Loader Anime")]
-        public Loader loaderAnime;
-        #endregion
+    #region Private Variables   //私有变量区域
 
-	    #region Private Variables   //私有变量区域
+	#endregion
 
-		#endregion
+	#region MonoBehaviour CallBacks //回调函数区域
 
-		#region MonoBehaviour CallBacks //回调函数区域
+	public virtual void Start()
+	{
+		PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
+		PhotonNetwork.automaticallySyncScene = true;
+	}
 
-		public virtual void Start()
+	#endregion
+
+
+	#region Public Methods //公共方法
+
+
+	public void Connect(){
+		if (!PhotonNetwork.connected)
 		{
-			PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
-			PhotonNetwork.automaticallySyncScene = true;
-		}
+			Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
-		#endregion
-
-
-		#region Public Methods //公共方法
-
-
-		public void Connect(){
-			if (!PhotonNetwork.connected)
-			{
-				Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
-
-				PhotonNetwork.ConnectUsingSettings(Version);
-	            if (loaderAnime != null)
-	            {
-	                loaderAnime.StartLoaderAnimation();
-	            }
-        	}
-		}
-
-		#endregion
-
-
-		#region Photon.PunBehaviour CallBacks   //PUN回调区域
-		public virtual void OnConnectedToMaster()
-		{
-			Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-			PhotonNetwork.JoinRandomRoom();
-		}
-
-		public virtual void OnJoinedLobby()
-		{
-			Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
-			PhotonNetwork.JoinRandomRoom();
-		}
-
-		public virtual void OnPhotonRandomJoinFailed()
-		{
-			Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
-			PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
-        	loaderAnime.StopLoaderAnimation();
+			PhotonNetwork.ConnectUsingSettings(Version);
+            if (loaderAnime != null)
+            {
+                loaderAnime.StartLoaderAnimation();
+				PlayMusic (selectClap);
+            }
     	}
+	}
 
-		// the following methods are implemented to give you some context. re-implement them as needed.
+	#endregion
 
-		public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
-		{
-			Debug.LogError("Cause: " + cause);
-        	loaderAnime.StopLoaderAnimation();
-   		 }
-		
-	    public void OnJoinedRoom()
-	    {
-	        loaderAnime.StopLoaderAnimation();
-	    }
 
-        #endregion
+	#region Photon.PunBehaviour CallBacks   //PUN回调区域
+	public virtual void OnConnectedToMaster()
+	{
+		Debug.Log("OnConnectedToMaster() was called by PUN. Now this client is connected and could join a room. Calling: PhotonNetwork.JoinRandomRoom();");
+		PhotonNetwork.JoinRandomRoom();
+	}
 
+	public virtual void OnJoinedLobby()
+	{
+		Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList(). This script now calls: PhotonNetwork.JoinRandomRoom();");
+		PhotonNetwork.JoinRandomRoom();
+	}
+
+	public virtual void OnPhotonRandomJoinFailed()
+	{
+		Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
+		PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
+    	loaderAnime.StopLoaderAnimation();
+	}
+
+	// the following methods are implemented to give you some context. re-implement them as needed.
+
+	public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
+	{
+		Debug.LogError("Cause: " + cause);
+    	loaderAnime.StopLoaderAnimation();
+	 }
+	
+    public void OnJoinedRoom()
+    {
+        loaderAnime.StopLoaderAnimation();
     }
+
+    #endregion
+
+	/// <summary>
+	/// 播放指定音效.
+	/// </summary>
+	/// <param name="targetAudio">目标音效</param>
+	void PlayMusic(AudioClip targetAudio)
+	{
+
+		if (targetAudio != null && !source.isPlaying)
+		{
+			this.source.PlayOneShot(targetAudio);
+		}
+	}
+}

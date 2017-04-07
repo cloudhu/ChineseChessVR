@@ -669,24 +669,25 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     
 
-    /// <summary>
-    /// 播放指定音效.
-    /// </summary>
-    /// <param name="targetAudio">目标音效</param>
-    public void PlayMusic(AudioClip targetAudio)
-    {
-		
-		if (targetAudio != null && !source.isPlaying)
-        {
-			this.source.PlayOneShot(targetAudio);
-        }
-    }
+
 
 
     #endregion
 
     #region Private Methods //私有方法
 
+	/// <summary>
+	/// 播放指定音效.
+	/// </summary>
+	/// <param name="targetAudio">目标音效</param>
+	void PlayMusic(AudioClip targetAudio)
+	{
+
+		if (targetAudio != null && !source.isPlaying)
+		{
+			this.source.PlayOneShot(targetAudio);
+		}
+	}
 
     /// <summary>
     /// 更新玩家文本信息
