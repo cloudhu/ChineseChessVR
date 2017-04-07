@@ -440,48 +440,62 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnPlayerMove: " + photonPlayer + " turn: " + turn + " action: " + move);
 		string strMove = move.ToString ();
-		switch (strMove) {
-		case "Hurry":	//催棋
-			PlayMusic(hurryUp);
-			break;
-		case "Restart":
-			if (!photonPlayer.IsLocal)
-				PopRequest ("重新开始对局");
-			else
-				localSelection = true;
-			break;
-		case "Draw":
-			if (!photonPlayer.IsLocal)
-				PopRequest ("和棋");
-			else
-				localSelection = true;
-			break;
-		case "Back":
-			if (!photonPlayer.IsLocal)
-				PopRequest ("悔棋");
-			else
-				localSelection = true;
-			break;
-		case "重新开始对局Yes":
-			Restart ();
-			break;
-		case "重新开始对局No":
-			GameStatusText.text = "重新开局失败";
-			break;
-		case "和棋Yes":
-			turnManager.SendMove ("Draw", true);
-			break;
-		case "和棋No":
-			GameStatusText.text = "和棋失败";
-			break;
-		case "悔棋Yes":
-			BackOne ();
-			break;
-		case "悔棋No":
-			GameStatusText.text = "悔棋失败";
-			break;
-		default:
-			break;
+		if (strMove.StartsWith ("+C")) {
+			
+			if (!photonPlayer.IsLocal) {
+				string[] strArr = strMove.Split (char.Parse (" "));
+				if (strArr [0] == "+ConfirmedSelect") {
+				
+					ConfirmedSelect (int.Parse (strArr [1]));
+
+				} else {
+					CancelSelected (int.Parse (strArr [1]));
+				}
+			}
+		} else {
+			switch (strMove) {
+			case "Hurry":	//催棋
+				PlayMusic (hurryUp);
+				break;
+			case "Restart":
+				if (!photonPlayer.IsLocal)
+					PopRequest ("重新开始对局");
+				else
+					localSelection = true;
+				break;
+			case "Draw":
+				if (!photonPlayer.IsLocal)
+					PopRequest ("和棋");
+				else
+					localSelection = true;
+				break;
+			case "Back":
+				if (!photonPlayer.IsLocal)
+					PopRequest ("悔棋");
+				else
+					localSelection = true;
+				break;
+			case "重新开始对局Yes":
+				Restart ();
+				break;
+			case "重新开始对局No":
+				GameStatusText.text = "重新开局失败";
+				break;
+			case "和棋Yes":
+				turnManager.SendMove ("Draw", true);
+				break;
+			case "和棋No":
+				GameStatusText.text = "和棋失败";
+				break;
+			case "悔棋Yes":
+				BackOne ();
+				break;
+			case "悔棋No":
+				GameStatusText.text = "悔棋失败";
+				break;
+			default:
+				break;
+			}
 		}
 
 	}
@@ -674,299 +688,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     #endregion
 
-    #region Private Methods //私有方法
-
-	/// <summary>
-	/// 播放指定音效.
-	/// </summary>
-	/// <param name="targetAudio">目标音效</param>
-	void PlayMusic(AudioClip targetAudio)
-	{
-
-		if (targetAudio != null && !source.isPlaying)
-		{
-			this.source.PlayOneShot(targetAudio);
-		}
-	}
-
-    /// <summary>
-    /// 更新玩家文本信息
-    /// </summary>
-    private void UpdatePlayerTexts()
-    {
-        PhotonPlayer remote = PhotonNetwork.player.GetNext();
-        PhotonPlayer local = PhotonNetwork.player;
-
-		Tip.UpdateText (GameStatusText.text,"0");
-
-        if (remote != null)
-        {
-            // 应该是这种格式: "name        00"
-			if (PhotonNetwork.isMasterClient) {
-				this.RemotePlayerText.text = remote.NickName + "—黑方 | Black   " + remote.GetScore ().ToString ("D2");
-			} else {
-				
-				this.RemotePlayerText.text = remote.NickName + "—红方 | Red   " + remote.GetScore ().ToString ("D2");
-			}
-        }
-        else
-        {
-
-            TimerFillImage.anchorMax = new Vector2(0f, 1f);
-            this.TimeText.text = "";
-            this.RemotePlayerText.text = "等待其他玩家        00";
-        }
-
-        if (local != null)
-        {
-            // 应该是这种样式: "YOU   00"
-            if (PhotonNetwork.isMasterClient)
-            {
-				this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
-				//Debug.Log ("MasterClient");
-			}else{
-
-				this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
-			}
-				
-
-            if (localPlayerType == ChessPlayerType.Guest)
-            {
-                this.LocalPlayerText.text = PhotonNetwork.player.Get(2).NickName + ":黑方 | Black   " + PhotonNetwork.player.Get(1).GetScore().ToString("D2");
-				//Debug.Log ("ChessPlayerType.Guest");
-            }
-
-
-        }
-    }
-
-    void MoveError(int moveId, Vector3 position)
-    {
-        GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
-        Vector3 oldPosition = new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z);
-		HidePath ();
-		ShowPath (oldPosition,position);
-		GameStatusText.text = "MoveError:"+chessman.name+"不能移动到目标位置:"+position;
-    }
-
-    void TrySelectChessman(int selectId)
-    {
-        if (selectId==-1)
-        {
-            return;
-        }
-
-        if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
-
-        if (selectId>16)    //黑子无法被红方或红色回合内选定
-        {
-            if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
-            {
-                return;
-            }
-        }
-
-        if (selectId<16)    //红子同样无法被其他阵营选定
-        {
-            if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
-            {
-                return;
-            }
-        }
-
-        if (!CanSelect(selectId)) return;
-        _selectedId = selectId;
-
-		HidePath ();
-		boardManager.hidePossibleWay ();
-        boardManager.showPossibleWay(selectId);
-        
-    }
-
-
-    /// <summary>  
-    /// 设置棋子死亡  
-    /// </summary>  
-    /// <param name="id"></param>  
-    void KillChessman(int id)
-    {
-        if (id == -1) return;
-
-		CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
-        ChessmanManager.chessman[id]._dead = true;
-        Transform chessman=chessManManager.transform.FindChild(id.ToString());
-		chessman.GetComponent<ChessmanController> ().SwitchDead ();
-    }
-
-    /// <summary>  
-    /// 复活棋子  
-    /// </summary>  
-    /// <param name="id"></param>  
-    void ReliveChess(int id)
-    {
-        if (id == -1) return;
-
-        //因GameObject.Find();函数不能找到active==false的物体，故先找到其父物体，再找到其子物体才可以找到active==false的物体  
-        ChessmanManager.chessman[id]._dead = false;
-        GameObject Stone = chessManManager.transform.Find(id.ToString()).gameObject;
-        Stone.SetActive(true);
-    }
-
-    /// <summary>  
-    /// 将移动的棋子ID、吃掉的棋子ID以及棋子从A点的坐标移动到B点的坐标都记录下来  
-    /// </summary>  
-    /// <param name="moveId">选中的棋子ID</param>  
-    /// <param name="killId">击杀的棋子ID</param>  
-    /// <param name="toX">目标X坐标</param>  
-    /// <param name="toZ">目标Z坐标</param>  
-    void SaveStep(int moveId, int killId, float toX, float toZ)
-    {
-        step tmpStep = new step();
-        //当前棋子的位置
-        float fromX = ChessmanManager.chessman[moveId]._x;
-        float fromZ = ChessmanManager.chessman[moveId]._z;
-
-        tmpStep.moveId = moveId;
-        tmpStep.killId = killId;
-        tmpStep.xFrom = fromX;
-        tmpStep.zFrom = fromZ;
-        tmpStep.xTo = toX;
-        tmpStep.zTo = toZ;
-
-        _steps.Add(tmpStep);
-        
-    }
-
-    /// <summary>  
-    /// 设置上一步棋子走过的路径，即将上一步行动的棋子的位置留下标识，并标识该棋子  
-    /// </summary>  
-    void ShowPath(Vector3 oldPosition, Vector3 newPosition)
-    {
-        Selected.transform.localPosition = newPosition;
-		if (!Selected.activeSelf) {
-			Selected.SetActive(true);
-		}
-        
-        Path.transform.localPosition = oldPosition;
-		if (!Path.activeSelf) {
-			Path.SetActive(true);
-		}
-
-    }
-
-
-    /// <summary>  
-    /// 隐藏路径  
-    /// </summary>  
-    void HidePath()
-    {
-        if (Selected.activeSelf)
-        {
-            Selected.SetActive(false);
-            Path.SetActive(false);
-        }
-
-    }
-
-
-
-    /// <summary>  
-    /// 移动棋子到目标位置  
-    /// </summary>  
-    /// <param name="targetPosition">目标位置</param>  
-    void MoveChessman(int moveId, Vector3 targetPosition)
-    {
-        Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
-		boardManager.hidePossibleWay ();
-		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
-        _isRedTurn = !_isRedTurn;
-    }
-
-    /// <summary>  
-    /// 通过记录的步骤结构体来返回上一步  
-    /// </summary>  
-    /// <param name="_step"></param>  
-    void Back(step _step)
-    {
-		if (_step.killId != -1) {
-			ReliveChess (_step.killId);
-		}
-        MoveChessman(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
-
-       // this.turnManager.SendMove(_step, true);
-        HidePath();
-        if (_selectedId != -1)
-        {      
-            _selectedId = -1;
-        }
-    }
-
-	/// <summary>
-	/// 正在移动棋子.
-	/// </summary>
-	/// <param name="selectedId">选择的棋子ID.</param>
-	/// <param name="killId">要击杀的棋子ID.</param>
-	/// <param name="toX">目标To x.</param>
-	/// <param name="toZ">目标To z.</param>
-	void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
-	{
-		float fromX = ChessmanManager.chessman[selectedId]._x;
-		float fromZ = ChessmanManager.chessman[selectedId]._z;
-        boardManager.leavePoint(fromX, fromZ);
-		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
-		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
-	}
-
-    /// <summary>
-    /// 刷新UI视图
-    /// </summary>
-    void RefreshUIViews()
-    {
-        TimerFillImage.anchorMax = new Vector2(0f, 1f);
-
-        GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-		ChatUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-        ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;
-    }
-
-    bool IsRed(int id)
-    {
-        return ChessmanManager.chessman[id]._red;
-    }
-
-    bool IsDead(int id)
-    {
-        if (id == -1) return true;
-        return ChessmanManager.chessman[id]._dead;
-    }
-
-    bool SameColor(int id1, int id2)
-    {
-        if (id1 == -1 || id2 == -1) return false;
-
-        return IsRed(id1) == IsRed(id2);
-    }
-
-	void PopRequest(string title){
-		if (RequestPanel == null && RequestPanel.gameObject.activeSelf) {
-			return;
-		} else {
-			RequestPanel.gameObject.SetActive (true);
-			RequestPanel.transform.FindChild ("Title/Text").GetComponent<Text> ().text=title;
-		}
-
-	}
-
-	void Restart(){
-		if (PhotonNetwork.isMasterClient) {
-			PhotonNetwork.LoadLevel ("ChineseChessVR0");
-		}
-
-	}
-
-    #endregion
-
+    
     #region Handling Of Buttons	//处理按钮
 
 	public void SendMassage(string massage){
@@ -1011,12 +733,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		
     public void OnCancelSelected(int targetId)
     {
-        if (_selectedId==targetId)
-        {
-            _selectedId = -1;
-        }
-        
+		this.turnManager.SendMove("+CancelSelected "+targetId.ToString(), false);
+
+		CancelSelected (targetId);
     }
+		
 
     public void OnSelectChessman(int selectId,float x,float z)
     {
@@ -1217,6 +938,309 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	}
     #endregion
 
+
+	#region Private Methods //私有方法
+
+	/// <summary>
+	/// 播放指定音效.
+	/// </summary>
+	/// <param name="targetAudio">目标音效</param>
+	void PlayMusic(AudioClip targetAudio)
+	{
+
+		if (targetAudio != null && !source.isPlaying)
+		{
+			this.source.PlayOneShot(targetAudio);
+		}
+	}
+
+	/// <summary>
+	/// 更新玩家文本信息
+	/// </summary>
+	private void UpdatePlayerTexts()
+	{
+		PhotonPlayer remote = PhotonNetwork.player.GetNext();
+		PhotonPlayer local = PhotonNetwork.player;
+
+		Tip.UpdateText (GameStatusText.text,"0");
+
+		if (remote != null)
+		{
+			// 应该是这种格式: "name        00"
+			if (PhotonNetwork.isMasterClient) {
+				this.RemotePlayerText.text = remote.NickName + "—黑方 | Black   " + remote.GetScore ().ToString ("D2");
+			} else {
+
+				this.RemotePlayerText.text = remote.NickName + "—红方 | Red   " + remote.GetScore ().ToString ("D2");
+			}
+		}
+		else
+		{
+
+			TimerFillImage.anchorMax = new Vector2(0f, 1f);
+			this.TimeText.text = "";
+			this.RemotePlayerText.text = "等待其他玩家        00";
+		}
+
+		if (local != null)
+		{
+			// 应该是这种样式: "YOU   00"
+			if (PhotonNetwork.isMasterClient)
+			{
+				this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
+				//Debug.Log ("MasterClient");
+			}else{
+
+				this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
+			}
+
+
+			if (localPlayerType == ChessPlayerType.Guest)
+			{
+				this.LocalPlayerText.text = PhotonNetwork.player.Get(2).NickName + ":黑方 | Black   " + PhotonNetwork.player.Get(1).GetScore().ToString("D2");
+				//Debug.Log ("ChessPlayerType.Guest");
+			}
+
+
+		}
+	}
+
+	void MoveError(int moveId, Vector3 position)
+	{
+		GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
+		Vector3 oldPosition = new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z);
+		HidePath ();
+		ShowPath (oldPosition,position);
+		GameStatusText.text = "MoveError:"+chessman.name+"不能移动到目标位置:"+position;
+	}
+
+	void TrySelectChessman(int selectId)
+	{
+		if (selectId==-1)
+		{
+			return;
+		}
+
+		if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
+
+		if (selectId>16)    //黑子无法被红方或红色回合内选定
+		{
+			if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
+			{
+				return;
+			}
+		}
+
+		if (selectId<16)    //红子同样无法被其他阵营选定
+		{
+			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
+			{
+				return;
+			}
+		}
+
+		if (!CanSelect(selectId)) return;
+		this.turnManager.SendMove ("+ConfirmedSelect "+selectId.ToString(),false);
+		ConfirmedSelect (selectId);
+	}
+
+	void ConfirmedSelect(int selectId){
+		_selectedId = selectId;
+
+		HidePath ();
+		boardManager.hidePossibleWay ();
+		boardManager.showPossibleWay(selectId);
+	}
+
+	/// <summary>  
+	/// 设置棋子死亡  
+	/// </summary>  
+	/// <param name="id"></param>  
+	void KillChessman(int id)
+	{
+		if (id == -1) return;
+
+		CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+		ChessmanManager.chessman[id]._dead = true;
+		Transform chessman=chessManManager.transform.FindChild(id.ToString());
+		chessman.GetComponent<ChessmanController> ().SwitchDead ();
+	}
+
+	/// <summary>  
+	/// 复活棋子  
+	/// </summary>  
+	/// <param name="id"></param>  
+	void ReliveChess(int id)
+	{
+		if (id == -1) return;
+
+		//因GameObject.Find();函数不能找到active==false的物体，故先找到其父物体，再找到其子物体才可以找到active==false的物体  
+		ChessmanManager.chessman[id]._dead = false;
+		GameObject Stone = chessManManager.transform.Find(id.ToString()).gameObject;
+		Stone.SetActive(true);
+	}
+
+	/// <summary>  
+	/// 将移动的棋子ID、吃掉的棋子ID以及棋子从A点的坐标移动到B点的坐标都记录下来  
+	/// </summary>  
+	/// <param name="moveId">选中的棋子ID</param>  
+	/// <param name="killId">击杀的棋子ID</param>  
+	/// <param name="toX">目标X坐标</param>  
+	/// <param name="toZ">目标Z坐标</param>  
+	void SaveStep(int moveId, int killId, float toX, float toZ)
+	{
+		step tmpStep = new step();
+		//当前棋子的位置
+		float fromX = ChessmanManager.chessman[moveId]._x;
+		float fromZ = ChessmanManager.chessman[moveId]._z;
+
+		tmpStep.moveId = moveId;
+		tmpStep.killId = killId;
+		tmpStep.xFrom = fromX;
+		tmpStep.zFrom = fromZ;
+		tmpStep.xTo = toX;
+		tmpStep.zTo = toZ;
+
+		_steps.Add(tmpStep);
+
+	}
+
+	/// <summary>  
+	/// 设置上一步棋子走过的路径，即将上一步行动的棋子的位置留下标识，并标识该棋子  
+	/// </summary>  
+	void ShowPath(Vector3 oldPosition, Vector3 newPosition)
+	{
+		Selected.transform.localPosition = newPosition;
+		if (!Selected.activeSelf) {
+			Selected.SetActive(true);
+		}
+
+		Path.transform.localPosition = oldPosition;
+		if (!Path.activeSelf) {
+			Path.SetActive(true);
+		}
+
+	}
+
+
+	/// <summary>  
+	/// 隐藏路径  
+	/// </summary>  
+	void HidePath()
+	{
+		if (Selected.activeSelf)
+		{
+			Selected.SetActive(false);
+			Path.SetActive(false);
+		}
+
+	}
+
+
+
+	/// <summary>  
+	/// 移动棋子到目标位置  
+	/// </summary>  
+	/// <param name="targetPosition">目标位置</param>  
+	void MoveChessman(int moveId, Vector3 targetPosition)
+	{
+		Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
+		boardManager.hidePossibleWay ();
+		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
+		_isRedTurn = !_isRedTurn;
+	}
+
+	/// <summary>  
+	/// 通过记录的步骤结构体来返回上一步  
+	/// </summary>  
+	/// <param name="_step"></param>  
+	void Back(step _step)
+	{
+		if (_step.killId != -1) {
+			ReliveChess (_step.killId);
+		}
+		MoveChessman(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
+
+		// this.turnManager.SendMove(_step, true);
+		HidePath();
+		if (_selectedId != -1)
+		{      
+			_selectedId = -1;
+		}
+	}
+
+	/// <summary>
+	/// 正在移动棋子.
+	/// </summary>
+	/// <param name="selectedId">选择的棋子ID.</param>
+	/// <param name="killId">要击杀的棋子ID.</param>
+	/// <param name="toX">目标To x.</param>
+	/// <param name="toZ">目标To z.</param>
+	void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
+	{
+		float fromX = ChessmanManager.chessman[selectedId]._x;
+		float fromZ = ChessmanManager.chessman[selectedId]._z;
+		boardManager.leavePoint(fromX, fromZ);
+		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
+		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
+	}
+
+	/// <summary>
+	/// 刷新UI视图
+	/// </summary>
+	void RefreshUIViews()
+	{
+		TimerFillImage.anchorMax = new Vector2(0f, 1f);
+
+		GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
+		ChatUiView.gameObject.SetActive(PhotonNetwork.inRoom);
+		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);
+		ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;
+	}
+
+	bool IsRed(int id)
+	{
+		return ChessmanManager.chessman[id]._red;
+	}
+
+	bool IsDead(int id)
+	{
+		if (id == -1) return true;
+		return ChessmanManager.chessman[id]._dead;
+	}
+
+	bool SameColor(int id1, int id2)
+	{
+		if (id1 == -1 || id2 == -1) return false;
+
+		return IsRed(id1) == IsRed(id2);
+	}
+
+	void PopRequest(string title){
+		if (RequestPanel == null && RequestPanel.gameObject.activeSelf) {
+			return;
+		} else {
+			RequestPanel.gameObject.SetActive (true);
+			RequestPanel.transform.FindChild ("Title/Text").GetComponent<Text> ().text=title;
+		}
+
+	}
+
+	void Restart(){
+		if (PhotonNetwork.isMasterClient) {
+			PhotonNetwork.LoadLevel ("ChineseChessVR0");
+		}
+
+	}
+
+	void CancelSelected(int cancelId){
+		if (_selectedId==cancelId)
+		{
+			_selectedId = -1;
+		}
+	}
+
+	#endregion
 
 
 }

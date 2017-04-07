@@ -1,0 +1,21 @@
+Animated Flags
+
+Unluck Animated Mesh
+Mesh Container 		- Contains a link to the Flag models
+Play Speed		- How fast to play the mesh animation
+Update Frequency	- How fast should the the flag be updated (seconds)
+
+
+GUIDE
+
+To change animation models, simply drag Flag model from the Model folder to the Mesh Container FBX property.
+
+
+
+
+Thanks for purchasing this asset, please consider rating or writing a review about it.
+
+
+For more information or support visit:
+Unluck Software
+chemicalbliss.com

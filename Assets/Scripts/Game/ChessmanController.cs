@@ -117,7 +117,7 @@ public class ChessmanController : VRTK_InteractableObject {
 		if (this.ChessmamUiPrefab != null)
 		{
 			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			_uiGo.transform.localPosition = new Vector3 (0, transform.position.y+1f, 0);
+			_uiGo.transform.localPosition = new Vector3 (0, transform.position.y+2f, 0);
 		}
 		else
 		{
@@ -128,7 +128,7 @@ public class ChessmanController : VRTK_InteractableObject {
         if (this.warUiPrefab != null)
         {
             GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform) as GameObject;
-			_uiGo.transform.localPosition = new Vector3(0, transform.position.y+2.5f, 0);
+			_uiGo.transform.localPosition = new Vector3(0, transform.position.y+4.5f, 0);
 			war = _uiGo.GetComponent<WarUI> ();
         }
         else
