@@ -147,10 +147,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     private bool IsShowingResults;
 	
 
-	[Tooltip("聊天UI视图")]
-	[SerializeField]
-	private RectTransform ChatUiView;
-
 	[Tooltip("语音UI视图")]
 	[SerializeField]
 	private RectTransform VoiceUiView;
@@ -1148,6 +1144,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		boardManager.hidePossibleWay ();
 		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
 		_isRedTurn = !_isRedTurn;
+        OnCancelSelected(moveId);
 	}
 
 	/// <summary>  
@@ -1193,7 +1190,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		TimerFillImage.anchorMax = new Vector2(0f, 1f);
 
 		GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-		ChatUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;
 	}

@@ -31,19 +31,17 @@ namespace VRTK
             SetupCanvas();
         }
 
-        private void Start()
-        {
-            //保持UI看向本地玩家
-			transform.LookAt(Camera.main.transform);
-        }
-
-        protected virtual void OnDisable()
+        private void Update()
         {
             //保持UI看向本地玩家
             if (CameraRigManager.LocalPlayerInstance != null)
             {
                 transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
             }
+        }
+
+        protected virtual void OnDisable()
+        {
             RemoveCanvas();
         }
 
@@ -54,11 +52,6 @@ namespace VRTK
 
         protected virtual void OnTriggerEnter(Collider collider)
         {
-            //保持UI看向本地玩家
-            if (CameraRigManager.LocalPlayerInstance != null)
-            {
-                transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-            }
             var colliderCheck = collider.GetComponentInParent<VRTK_PlayerObject>();
             var pointerCheck = collider.GetComponentInParent<VRTK_UIPointer>();
             if (pointerCheck && colliderCheck && colliderCheck.objectType == VRTK_PlayerObject.ObjectTypes.Collider)
@@ -69,11 +62,6 @@ namespace VRTK
 
         protected virtual void OnTriggerExit(Collider collider)
         {
-            //保持UI看向本地玩家
-            if (CameraRigManager.LocalPlayerInstance != null)
-            {
-                transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-            }
             var pointerCheck = collider.GetComponentInParent<VRTK_UIPointer>();
             if (pointerCheck)
             {
@@ -84,12 +72,6 @@ namespace VRTK
         private void SetupCanvas()
         {
             var canvas = GetComponent<Canvas>();
-
-            //保持UI看向本地玩家
-            if (CameraRigManager.LocalPlayerInstance != null)
-            {
-                transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-            }
 
             if (!canvas || canvas.renderMode != RenderMode.WorldSpace)
             {

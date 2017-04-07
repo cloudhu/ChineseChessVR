@@ -143,8 +143,7 @@ public class ChessmanUI : MonoBehaviour {
 		SetContainer();
 		SetText("UITextFront");
 		SetText("UITextReverse");
-
-	}
+    }
 
 	public void UpdateText(string newText)
 	{
