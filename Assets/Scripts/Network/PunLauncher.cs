@@ -84,6 +84,8 @@ public class PunLauncher  : Photon.MonoBehaviour {
 
     [Tooltip("UI加载动画")]
     public Loader loaderAnime;
+    [Tooltip("UI连接对象")]
+    public GameObject ConnectUI;
     #endregion
 
     #region Private Variables   //私有变量区域
@@ -114,6 +116,9 @@ public class PunLauncher  : Photon.MonoBehaviour {
             {
                 loaderAnime.StartLoaderAnimation();
 				PlayMusic (selectClap);
+                ConnectUI.transform.localRotation = new Quaternion(0, 0, 0, 0);
+                ConnectUI.SetActive(false);
+
             }
     	}
 	}

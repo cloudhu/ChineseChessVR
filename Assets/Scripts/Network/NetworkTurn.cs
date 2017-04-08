@@ -151,10 +151,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private RectTransform VoiceUiView;
 
-	[Tooltip("连接UI视图")]
-	[SerializeField]
-	private RectTransform ConnectUiView;
-
 	[Tooltip("游戏UI视图")]
 	[SerializeField]
 	private RectTransform GameUiView;
@@ -373,6 +369,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 				result = ResultType.LocalWin;
 				PlayMusic(winMusic);
 			}
+            GameStatusText.text = "恭喜黑方获胜！Black Win！";
         }
 
         if (ChessmanManager.chessman[16]._dead)
@@ -385,6 +382,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 				result = ResultType.LocalWin;
 				PlayMusic(winMusic);
 			}
+            GameStatusText.text = "恭喜红方获胜！Red Win！";
         }
 			
 
@@ -403,7 +401,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnTurnBegins(int turn)
 	{
 		Debug.Log("OnTurnBegins() turn: "+ turn);
-
+        _selectedId = -1;
 		localSelection = false;
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
 		IsShowingResults = false;	//不展示结果
@@ -604,7 +602,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="targetPosition">目标位置</param>
     public void MoveStone(int moveId, int killId, Vector3 targetPosition)
     {
-        
+        boardManager.leavePoint(ChessmanManager.chessman[moveId]._x, ChessmanManager.chessman[moveId]._z);
+        boardManager.occupyPoint(targetPosition.x, targetPosition.z);
         // 0.保存记录到列表
         SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
 		// 1.若移动到的位置上有棋子，将其吃掉  
@@ -613,6 +612,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), targetPosition);
 		// 3.将棋子移动到目标位置  
         MoveChessman(moveId, targetPosition);
+        
     }
 
     /// <summary>
@@ -676,11 +676,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         _steps.RemoveAt(_steps.Count - 1);
         Back(tmpStep);
     }
-
-    
-
-
-
 
     #endregion
 
@@ -928,8 +923,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		PlayMusic (LeaveClip);
 		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
 		GameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
-        result = ResultType.LocalWin;
-        UpdateScores();
+        if (!otherPlayer.IsLocal)
+        {
+            result = ResultType.LocalWin;
+            UpdateScores();
+        }
         Restart();
 	}
     #endregion
@@ -993,8 +991,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 			if (localPlayerType == ChessPlayerType.Guest)
 			{
-				this.LocalPlayerText.text = PhotonNetwork.player.Get(2).NickName + ":黑方 | Black   " + PhotonNetwork.player.Get(1).GetScore().ToString("D2");
-				//Debug.Log ("ChessPlayerType.Guest");
+
+				Debug.Log ("ChessPlayerType.Guest");
 			}
 
 
@@ -1027,7 +1025,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			}
 		}
 
-		if (selectId<16)    //红子同样无法被其他阵营选定
+		if (selectId<=16)    //红子同样无法被其他阵营选定
 		{
 			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
 			{
@@ -1144,7 +1142,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		boardManager.hidePossibleWay ();
 		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
 		_isRedTurn = !_isRedTurn;
-        OnCancelSelected(moveId);
 	}
 
 	/// <summary>  
@@ -1177,7 +1174,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
-		boardManager.leavePoint(fromX, fromZ);
 		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
 		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
 	}

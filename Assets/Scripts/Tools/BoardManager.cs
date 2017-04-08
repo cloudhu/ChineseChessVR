@@ -108,6 +108,23 @@ public class BoardManager : MonoBehaviour {
                 if (points[i].transform.localPosition.x==fromX && points[i].transform.localPosition.z==fromZ)
                 {
                     points[i].isOccupied = false;
+                    Debug.Log("leavePoint:"+ points[i]);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void occupyPoint(float fromX, float fromZ)
+    {
+        for (int i = 0; i < 90; i++)
+        {
+            if (!points[i].isOccupied)
+            {
+                if (points[i].transform.localPosition.x == fromX && points[i].transform.localPosition.z == fromZ)
+                {
+                    points[i].isOccupied = true;
+                    Debug.Log("occupyPoint:" + points[i]);
                     return;
                 }
             }
