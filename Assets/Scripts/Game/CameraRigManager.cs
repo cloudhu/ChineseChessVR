@@ -150,7 +150,7 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 
 	public void	ApplyDamage(){
 		if (Health>0) {
-			--Health;
+            Health = Health - 1f ;
 		}
 	}
     #endregion

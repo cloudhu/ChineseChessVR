@@ -71,16 +71,16 @@ using UnityEngine;
 public class BoardManager : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
-	[Tooltip("棋盘上的90个坐标点")]
-    public static BoardPoint[] points=new BoardPoint[90]; 
 
-	[Tooltip("展示后需要隐藏的坐标点")]
-	public List<BoardPoint> hidePoints = new List<BoardPoint> ();
     #endregion
 
 
     #region Private Variables   //私有变量区域
 
+    private BoardPoint[] points = new BoardPoint[90]; //棋盘上的90个坐标点
+    private List<BoardPoint> hidePoints = new List<BoardPoint>(); //展示后需要隐藏的坐标点
+    private List<int> occupiedId = new List<int>(); //被占用的棋子ID
+    private List<int> freedId = new List<int>();    //没有被占用的棋子ID
 
     #endregion
 
@@ -89,7 +89,15 @@ public class BoardManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         points = transform.GetComponentsInChildren<BoardPoint>();
-
+        for (int i = 0; i < points.Length; i++)
+        {
+            if (points[i].isOccupied)
+            {
+                occupiedId.Add(i);
+            }
+            else
+                freedId.Add(i);
+        }
 	}
 	
     #endregion
@@ -101,34 +109,34 @@ public class BoardManager : MonoBehaviour {
     /// </summary>
     public void leavePoint(float fromX,float fromZ)
     {
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < occupiedId.Count; i++)
         {
-            if (points[i].isOccupied)
+            int leaveId = occupiedId[i];
+            if (points[leaveId].transform.localPosition.x==fromX && points[leaveId].transform.localPosition.z==fromZ)
             {
-                if (points[i].transform.localPosition.x==fromX && points[i].transform.localPosition.z==fromZ)
-                {
-                    points[i].isOccupied = false;
-                    Debug.Log("leavePoint:"+ points[i]);
-                    return;
-                }
+                points[leaveId].isOccupied = false;
+                occupiedId.RemoveAt(i);
+                freedId.Add(leaveId);
+                //Debug.Log("leavePoint:"+ points[leaveId]);
+                return;
             }
+            
         }
     }
 
-    public void occupyPoint(float fromX, float fromZ)
+    /// <summary>
+    /// 占用对应ID的位置
+    /// </summary>
+    /// <param name="occupyId"></param>
+    public void occupyPoint(int occupyId)
     {
-        for (int i = 0; i < 90; i++)
+        if (occupyId==-1)
         {
-            if (!points[i].isOccupied)
-            {
-                if (points[i].transform.localPosition.x == fromX && points[i].transform.localPosition.z == fromZ)
-                {
-                    points[i].isOccupied = true;
-                    Debug.Log("occupyPoint:" + points[i]);
-                    return;
-                }
-            }
+            return;
         }
+        points[occupyId].isOccupied = true;
+        occupiedId.Add(occupyId);
+        freedId.Remove(occupyId);
     }
 
     /// <summary>
@@ -167,10 +175,14 @@ public class BoardManager : MonoBehaviour {
 	/// 在选择好目标后调用,将可能的位置隐藏.
 	/// </summary>
 	public void hidePossibleWay(){
-	
-		foreach (var item in hidePoints) {
-			item.HidePointer ();
-		}
+        if (hidePoints.Count==0)
+        {
+            return;
+        }
+        for (int i = 0; i < hidePoints.Count; i++)
+        {
+            hidePoints[i].HidePointer();
+        }
 		hidePoints.Clear ();
 	}
 
@@ -232,95 +244,91 @@ public class BoardManager : MonoBehaviour {
 
     void ShowHorseWay(int id)
     {
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < freedId.Count; i++)
         {
-            if (!points[i].isOccupied)
+            int aId = freedId[i];
+            float _x = points[aId].transform.localPosition.x;	//节点位置x		
+            float fromX = ChessmanManager.chessman[id]._x;	//棋子位置x
+
+            if (_x > (fromX-9f) && _x < (fromX+9f))
             {
-                float _x = points[i].transform.localPosition.x;	//节点位置x		
-                float fromX = ChessmanManager.chessman[id]._x;	//棋子位置x
-
-                if (_x > (fromX-9f) && _x < (fromX+9f))
+                float _z = points[aId].transform.localPosition.z;
+                float fromZ= ChessmanManager.chessman[id]._z;
+                if (_z > (fromZ-9f) && _z < (fromZ+9f))
                 {
-                    float _z = points[i].transform.localPosition.z;
-                    float fromZ= ChessmanManager.chessman[id]._z;
-                    if (_z > (fromZ-9f) && _z < (fromZ+9f))
+                    if (PositionManager.canMoveHorse(id, _x, _z, -1))
                     {
-                        if (PositionManager.canMoveHorse(id, _x, _z, -1))
-                        {
-                            points[i].ShowBeams();
-							hidePoints.Add (points[i]);
-                        }
-
+                        points[aId].ShowBeams();
+						hidePoints.Add (points[aId]);
                     }
+
                 }
             }
+            
         }
     }
 
     void ShowRookWay(int id)
     {
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < freedId.Count; i++)
         {
-            if (!points[i].isOccupied)
+            int aId = freedId[i];
+            float _x = points[aId].transform.localPosition.x;
+            float _z = points[aId].transform.localPosition.z;
+            if (_x== ChessmanManager.chessman[id]._x || _z== ChessmanManager.chessman[id]._z)
             {
-                float _x = points[i].transform.localPosition.x;
-                float _z = points[i].transform.localPosition.z;
-                if (_x== ChessmanManager.chessman[id]._x || _z== ChessmanManager.chessman[id]._z)
+                if (PositionManager.canMoveRook(id, _x, _z, -1))
                 {
-                    if (PositionManager.canMoveRook(id, _x, _z, -1))
-                    {
-                        points[i].ShowBeams();
-						hidePoints.Add (points[i]);
-                    }
+                    points[aId].ShowBeams();
+					hidePoints.Add (points[aId]);
                 }
             }
+            
         }
     }
 
     void ShowCannonWay(int id)
     {
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < freedId.Count; i++)
         {
-            if (!points[i].isOccupied)
+            int aId = freedId[i];
+            float _x = points[aId].transform.localPosition.x;
+            float _z = points[aId].transform.localPosition.z;
+            if (_x == ChessmanManager.chessman[id]._x || _z == ChessmanManager.chessman[id]._z)
             {
-                float _x = points[i].transform.localPosition.x;
-                float _z = points[i].transform.localPosition.z;
-                if (_x == ChessmanManager.chessman[id]._x || _z == ChessmanManager.chessman[id]._z)
+                if (PositionManager.canMoveCannon(id, _x, _z, -1))
                 {
-                    if (PositionManager.canMoveCannon(id, _x, _z, -1))
-                    {
-                        points[i].ShowBeams();
-						hidePoints.Add (points[i]);
-                    }
+                    points[aId].ShowBeams();
+					hidePoints.Add (points[aId]);
                 }
             }
+            
         }
     }
 
     void ShowPawnWay(int id)
     {
-        for (int i = 0; i < 90; i++)
+        for (int i = 0; i < freedId.Count; i++)
         {
-            if (!points[i].isOccupied)
-            {
-                float _x = points[i].transform.localPosition.x;
+            int aId = freedId[i];
+            float _x = points[aId].transform.localPosition.x;
                 
-                float fromX = ChessmanManager.chessman[id]._x;
-                if (_x<(fromX+6f) && _x > (fromX - 6f))
+            float fromX = ChessmanManager.chessman[id]._x;
+            if (_x<(fromX+6f) && _x > (fromX - 6f))
+            {
+                float _z = points[aId].transform.localPosition.z;
+                float fromZ = ChessmanManager.chessman[id]._z;
+                if (_z>(fromZ-6f) && _z<(fromZ+6f))
                 {
-                    float _z = points[i].transform.localPosition.z;
-                    float fromZ = ChessmanManager.chessman[id]._z;
-                    if (_z>(fromZ-6f) && _z<(fromZ+6f))
+                    if (PositionManager.canMovePawn(id, _x, _z, -1))
                     {
-                        if (PositionManager.canMovePawn(id, _x, _z, -1))
-                        {
-                            points[i].ShowBeams();
-							hidePoints.Add (points[i]);
-                        }
+                        points[aId].ShowBeams();
+						hidePoints.Add (points[aId]);
                     }
                 }
-
             }
+
+            
         }
     }
 

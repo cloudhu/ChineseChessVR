@@ -332,7 +332,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="killId">击杀棋子ID.</param>
 	/// <param name="x">The x coordinate坐标.</param>
 	/// <param name="z">The z coordinate坐标.</param>
-    public void TryMoveChessman(int killId, float x, float z)
+    public void TryMoveChessman(int killId, float x, float z,int occupyId)
     {
         if (killId != -1 && SameColor(killId, _selectedId))
         {
@@ -344,9 +344,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (ret)
         {
-            MoveStone(_selectedId, killId, new Vector3(x, 1f, z));
-            OnMoveChessman(_selectedId, killId, x, z);
-            _selectedId = -1;
+            MoveStone(_selectedId, killId, new Vector3(x, 1f, z),occupyId);
+            OnMoveChessman(_selectedId, killId, x, z,occupyId);
         }
         else
         {
@@ -511,7 +510,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             if (!photonPlayer.IsLocal)
             {
                 string[] strArr = tmpStr.Split(char.Parse("s"));
-                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])));
+                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])),int.Parse(strArr[6]));
             }
         }
         else
@@ -600,10 +599,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="moveId">选中的棋子</param>
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
-    public void MoveStone(int moveId, int killId, Vector3 targetPosition)
+    public void MoveStone(int moveId, int killId, Vector3 targetPosition,int occupyId)
     {
         boardManager.leavePoint(ChessmanManager.chessman[moveId]._x, ChessmanManager.chessman[moveId]._z);
-        boardManager.occupyPoint(targetPosition.x, targetPosition.z);
+        boardManager.occupyPoint(occupyId);
         // 0.保存记录到列表
         SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
 		// 1.若移动到的位置上有棋子，将其吃掉  
@@ -730,7 +729,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     }
 		
 
-    public void OnSelectChessman(int selectId,float x,float z)
+    public void OnSelectChessman(int selectId,float x,float z,int occupyId)
     {
         if (_selectedId == -1)
         {
@@ -738,7 +737,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         }
         else
         {
-            TryMoveChessman(selectId, x, z);
+            TryMoveChessman(selectId, x, z,occupyId);
         }
         
     }
@@ -1017,15 +1016,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
 
-		if (selectId>16)    //黑子无法被红方或红色回合内选定
+		if (selectId>=16)    //黑子无法被红方或红色回合内选定
 		{
 			if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
 			{
 				return;
 			}
 		}
-
-		if (selectId<=16)    //红子同样无法被其他阵营选定
+		else    //红子同样无法被其他阵营选定
 		{
 			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
 			{
@@ -1170,11 +1168,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="killId">要击杀的棋子ID.</param>
 	/// <param name="toX">目标To x.</param>
 	/// <param name="toZ">目标To z.</param>
-	void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
+	void OnMoveChessman(int selectedId,int killId,float toX,float toZ,int occupyId)
 	{
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
-		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
+		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString() + "s" +occupyId.ToString();
 		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
 	}
 

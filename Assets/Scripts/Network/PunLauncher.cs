@@ -116,7 +116,7 @@ public class PunLauncher  : Photon.MonoBehaviour {
             {
                 loaderAnime.StartLoaderAnimation();
 				PlayMusic (selectClap);
-                ConnectUI.transform.localRotation = new Quaternion(0, 0, 0, 0);
+                //ConnectUI.GetComponent<RectTransform>().localRotation = new Quaternion(0, 0, 0, 0);
                 ConnectUI.SetActive(false);
 
             }

@@ -134,10 +134,10 @@ public class PositionManager : MonoBehaviour {
 
         if (ChessmanManager.chessman[enemyId]._z== z)   //如果将帅在Z轴上相遇，则判断双方中间是否有其他棋子遮挡
         {
-            for (int i = 1; i < 32; i++)
+            for (int i = 1; i < ChessmanManager.chessman.Length; i++)
             {
 
-                if (ChessmanManager.chessman[i]._z == z)  //如果z轴上有棋子，说明有遮挡
+                if ( !ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == z)  //如果z轴上有棋子，说明有遮挡
                 {
                     if (i != 16)  //排除将帅
                     {
@@ -210,9 +210,9 @@ public class PositionManager : MonoBehaviour {
         _x = (ChessmanManager.chessman[selectedId]._x + x) *0.5f; //得出象眼的位置
         _z = (ChessmanManager.chessman[selectedId]._z + z) *0.5f;
 
-        for (int i = 4; i < 32; i++)
+        for (int i = 5; i < ChessmanManager.chessman.Length; i++)
         {
-            if (ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x==_x)  //如果象眼有棋子，则被塞
+            if ( !ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x==_x )  //如果象眼有棋子，则被塞
             {
                 return false;
             }
@@ -253,9 +253,9 @@ public class PositionManager : MonoBehaviour {
                 min = z;
                 max = _z;
             }
-            for (int i = 0; i < 32; i++)
+            for (int i = 0; i < ChessmanManager.chessman.Length; i++)
             {
-                if (ChessmanManager.chessman[i]._x==x)
+                if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._x==x)
                 {
                     if (ChessmanManager.chessman[i]._z>min && ChessmanManager.chessman[i]._z<max)
                     {
@@ -277,9 +277,9 @@ public class PositionManager : MonoBehaviour {
                 min = _x;
                 max = x;
             }
-            for (int i = 0; i < 32; i++)
+            for (int i = 0; i < ChessmanManager.chessman.Length; i++)
             {
-                if (ChessmanManager.chessman[i]._z == z)
+                if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == z)
                 {
                     if (ChessmanManager.chessman[i]._x > min && ChessmanManager.chessman[i]._x < max)
                     {
@@ -331,7 +331,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {   
-                    if (ChessmanManager.chessman[i]._z==_z && ChessmanManager.chessman[i]._x==(_x+step)) //判断是否绊马腿
+                    if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z==_z && ChessmanManager.chessman[i]._x==(_x+step)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -341,7 +341,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x == (_x - step))   //判断是否绊马腿
+                    if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x == (_x - step))   //判断是否绊马腿
                     {
                         return false;
                     }
@@ -355,7 +355,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z + step)) //判断是否绊马腿
+                    if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z + step)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -365,7 +365,7 @@ public class PositionManager : MonoBehaviour {
             {
                 for (int i = 0; i < 32; i++)
                 {
-                    if (ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z - step)) //判断是否绊马腿
+                    if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._x == _x && ChessmanManager.chessman[i]._z == (_z - step)) //判断是否绊马腿
                     {
                         return false;
                     }
@@ -413,7 +413,7 @@ public class PositionManager : MonoBehaviour {
             }
             for (int i = 0; i < 32; i++)
             {
-                if (ChessmanManager.chessman[i]._x == x)
+                if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._x == x)
                 {
                     if (ChessmanManager.chessman[i]._z > min && ChessmanManager.chessman[i]._z < max)
                     {
@@ -437,7 +437,7 @@ public class PositionManager : MonoBehaviour {
             }
             for (int i = 0; i < 32; i++)
             {
-                if (ChessmanManager.chessman[i]._z == z)
+                if (!ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == z)
                 {
                     if (ChessmanManager.chessman[i]._x > min && ChessmanManager.chessman[i]._x < max)
                     {
@@ -512,4 +512,4 @@ public class PositionManager : MonoBehaviour {
 
         #endregion
 
-    }
+}

@@ -130,6 +130,10 @@ public class VRPlayerUI : MonoBehaviour {
 		object playerType;
 		manager = _target.GetComponent<CameraRigManager> ();
 		manager.photonView.owner.CustomProperties.TryGetValue ("playerType", out playerType);
+        if (playerType.ToString()== "红方选手")
+        {
+            fontColor = Color.red;
+        }
 		UpdateText (playerType.ToString()+" ： "+manager.photonView.owner.NickName);
 		ResetUI();
 	}

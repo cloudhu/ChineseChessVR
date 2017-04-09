@@ -269,19 +269,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			ChessMan.transform.SetParent (transform,false);
 			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 1f, chessman [i]._z);
 		}  
-	}
-
-	/// <summary>
-	/// 摧毁所有棋子.
-	/// </summary>
-	public void DestroyAllChessman(){
-		foreach (var item in transform.GetComponentsInChildren<PhotonView>(true)) {
-			GameObject.Destroy (item.gameObject);
-		}
-	}
-
-
-	
+	}	
 	#endregion
 	
 }

@@ -93,7 +93,7 @@ public class pointer : VRTK_InteractableObject
     public override void StartUsing(GameObject usingObject)
     {
         base.StartUsing(usingObject);
-        GameObject war= transform.parent.FindChild("WarUI(Clone)").gameObject;
+        GameObject war= transform.parent.FindChild("WarUI").gameObject;
 		if (war==null) {
 			return;
 		}

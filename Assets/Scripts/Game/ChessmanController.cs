@@ -161,15 +161,15 @@ public class ChessmanController : VRTK_InteractableObject {
 	/// </summary>
 	/// <param name="targetPosition">目标位置.</param>
 	public void SetTarget(Vector3 targetPosition){
+
 		Hashtable ht = new Hashtable ();
 		ht.Add ("position", targetPosition);
-		ht.Add ("orienttopath", true);
+		//ht.Add ("orienttopath", true);
 		ht.Add ("onstart", "Move");
 		ht.Add ("oncomplete","Stop");
 		ht.Add ("islocal",true);
-		ht.Add ("time", 5.0f);
+		ht.Add ("time", 3.0f);
 		iTween.MoveTo (gameObject, ht);
-
 
 		ChessmanManager.chessman[selectedId]._x = targetPosition.x;
 		ChessmanManager.chessman[selectedId]._z = targetPosition.z;
@@ -182,6 +182,7 @@ public class ChessmanController : VRTK_InteractableObject {
 	{
 		HitHapticPulse (2);
 		ani.SetTrigger ("TH Sword Die");
+        PlaySound(DieAC);
 	}
 	#endregion
 

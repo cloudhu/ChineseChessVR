@@ -125,9 +125,13 @@ public class WarUI : MonoBehaviour {
 		if (_target.GetComponent<ChessmanController>())
 		{
 			if (NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
-				UpdateText ("Selected");
-			} else {
-
+				
+                fontColor = Color.yellow;
+                fontSize = 24;
+                UpdateText("Selected");
+            } else {
+                fontColor = Color.blue;
+                fontSize = 16;
                 UpdateText("Select");
             }
 			
@@ -149,22 +153,18 @@ public class WarUI : MonoBehaviour {
         string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
 		if (_target.GetComponent<ChessmanController>())    //如果有这个组件就是棋子
         {
-            switch (tmpText)
+            if (tmpText== "Select")
             {
-                case "Select":
-				    NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
-                    break;
-                case "Selected":
-                    NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
-                    UpdateText("Select");
-                    break;
-                default:
-                    break;
+                NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z,-1);
+            }
+            else
+            {
+                NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
             }
         }
         else
         {
-            NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z);
+            NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z, int.Parse(_target.name));
             _target.GetComponent<BoardPoint>().Occupied();
         }
 			

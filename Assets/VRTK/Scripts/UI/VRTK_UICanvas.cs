@@ -29,16 +29,9 @@ namespace VRTK
         protected virtual void OnEnable()
         {
             SetupCanvas();
+
         }
 
-        private void Update()
-        {
-            //保持UI看向本地玩家
-            if (CameraRigManager.LocalPlayerInstance != null)
-            {
-                transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-            }
-        }
 
         protected virtual void OnDisable()
         {

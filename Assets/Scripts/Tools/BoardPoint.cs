@@ -75,58 +75,37 @@ public class BoardPoint : MonoBehaviour {
     [Tooltip("是否被占用")]
     public bool isOccupied;
 
-    [Tooltip("光圈预设，用于提示玩家")]
-    public GameObject beamsPreb;
-
-    [Tooltip("战斗UI预设")]
-    public GameObject warUiPre;
-
-    [Tooltip("战斗光标")]
-    public GameObject warPointer;
-
     #endregion
 
 
     #region Private Variables   //私有变量区域
 
-    GameObject beams,warUI,pointer;
+    private GameObject beams, warUI, pointer;
 
-	#endregion
-	
-	
-	#region MonoBehaviour CallBacks //回调函数区域
 
-	#endregion
-	
-	#region Public Methods	//公共方法区域
-	
+    #endregion
+
+
+    #region MonoBehaviour CallBacks //回调函数区域
+
+    private void Start()
+    {
+        beams = transform.FindChild("Beams").gameObject;
+        warUI = transform.FindChild("WarUI").gameObject;
+        pointer = transform.FindChild("PointerPrefab").gameObject;
+    }
+    #endregion
+
+    #region Public Methods	//公共方法区域
+
     public void Occupied()
     {
-        if (beams==null)
-        {
-            beams= transform.FindChild("Beams(Clone)").gameObject;
-
-        }
-        if (warUI==null)
-        {
-            warUI= transform.FindChild("WarUI(Clone)").gameObject;
-        }
-        if (pointer == null)
-        {
-            pointer = transform.FindChild("PointerPrefab(Clone)").gameObject;
-        }
         warUI.SetActive(false);
         beams.SetActive(false);
         pointer.SetActive(false);
-        BoardManager.points[int.Parse(gameObject.name)].isOccupied = true;
-        isOccupied = true;
     }
 
 	public void HidePointer(){
-		if (isOccupied) //如果这个位置已被占用，则返回
-		{
-			return;
-		}
 		warUI.SetActive(false);
 		beams.SetActive(false);
 		pointer.SetActive(false);
@@ -134,48 +113,21 @@ public class BoardPoint : MonoBehaviour {
 
     public void ShowBeams()
     {
-        if (isOccupied) //如果这个位置已被占用，则返回
+        if (!beams.activeSelf)
         {
-            return;
-        }
-        if (beams==null)
-        {
-			beams = GameObject.Instantiate(beamsPreb,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			beams.transform.localPosition = new Vector3(0,1f,0);
-        }
-        else
-        {
-            if (!beams.activeSelf)
-            {
-                beams.SetActive(true);
-            }
+            beams.SetActive(true);
         }
 
-        if (warUI==null)
+        if (!warUI.activeSelf)
         {
-			warUI = GameObject.Instantiate(warUiPre,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			warUI.transform.localPosition = new Vector3(0,3f,0);
+            warUI.SetActive(true);
         }
-        else
+        
+        if (!pointer.activeSelf)
         {
-            if (!warUI.activeSelf)
-            {
-                warUI.SetActive(true);
-            }
+            pointer.SetActive(true);
         }
-
-        if (pointer == null)
-        {
-			pointer = GameObject.Instantiate(warPointer,Vector3.zero,Quaternion.identity,transform) as GameObject;
-			pointer.transform.localPosition = new Vector3(0, 1f, 0);
-        }
-        else
-        {
-            if (!pointer.activeSelf)
-            {
-                pointer.SetActive(true);
-            }
-        }
+        
     }
 	
 	#endregion
