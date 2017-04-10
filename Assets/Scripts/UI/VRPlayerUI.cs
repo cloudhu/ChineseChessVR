@@ -111,8 +111,6 @@ public class VRPlayerUI : MonoBehaviour {
 	[SerializeField]
 	private Text bufferLagText;
 
-	private bool showSpeakerLag;
-
 	GameObject _target;	 //目标
 
 	CameraRigManager manager;
@@ -147,9 +145,9 @@ public class VRPlayerUI : MonoBehaviour {
 
 		recorderSprite.enabled = recorder != null && recorder.IsTransmitting;
 		speakerSprite.enabled = speaker != null && speaker.IsPlaying;
-		bufferLagText.enabled = showSpeakerLag && speaker.IsPlaying && speaker.IsVoiceLinked;
+		bufferLagText.enabled = speaker.IsPlaying && speaker.IsVoiceLinked;
 		bufferLagText.text = string.Format("{0}", speaker.CurrentBufferLag);
-		// Reflect the Player Health
+
 		if (PlayerHealthSlider != null) {
 			PlayerHealthSlider.value = manager.Health;
 		}

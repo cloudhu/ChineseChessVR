@@ -80,7 +80,7 @@ public class BoardPoint : MonoBehaviour {
 
     #region Private Variables   //私有变量区域
 
-    private GameObject beams, warUI, pointer;
+    private GameObject pointer;
 
 
     #endregion
@@ -90,9 +90,7 @@ public class BoardPoint : MonoBehaviour {
 
     private void Start()
     {
-        beams = transform.FindChild("Beams").gameObject;
-        warUI = transform.FindChild("WarUI").gameObject;
-        pointer = transform.FindChild("PointerPrefab").gameObject;
+		pointer = transform.FindChild("PointerSword").gameObject;
     }
     #endregion
 
@@ -100,28 +98,15 @@ public class BoardPoint : MonoBehaviour {
 
     public void Occupied()
     {
-        warUI.SetActive(false);
-        beams.SetActive(false);
         pointer.SetActive(false);
     }
 
 	public void HidePointer(){
-		warUI.SetActive(false);
-		beams.SetActive(false);
 		pointer.SetActive(false);
 	}
 
     public void ShowBeams()
     {
-        if (!beams.activeSelf)
-        {
-            beams.SetActive(true);
-        }
-
-        if (!warUI.activeSelf)
-        {
-            warUI.SetActive(true);
-        }
         
         if (!pointer.activeSelf)
         {

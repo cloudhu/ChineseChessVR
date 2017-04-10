@@ -97,7 +97,6 @@ public class ChessmanUI : MonoBehaviour {
 	#region Private Variables   //私有变量区域
 
 	GameObject _target;
-	ChessmanController manager;
 
 	#endregion
 	
@@ -106,10 +105,10 @@ public class ChessmanUI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		_target = transform.parent.gameObject;
-		manager = _target.GetComponent<ChessmanController> ();
 		int chessmanId = int.Parse (_target.name);
 		if (chessmanId < 16) {
 			RedFlag.SetActive (true);
+			fontColor = Color.red;
 			UpdateText ("Red "+ChessmanManager.chessman [chessmanId]._type.ToString ());
 		} else {
 			UpdateText ("Black "+ChessmanManager.chessman[chessmanId]._type.ToString());

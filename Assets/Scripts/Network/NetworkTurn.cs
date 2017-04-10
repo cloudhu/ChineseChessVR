@@ -138,8 +138,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     #region Private Variables   //私有变量区域
 
-	//本地玩家选择
-	private bool localSelection;
 	//远程玩家选择
 	private bool remoteSelection;
 
@@ -159,17 +157,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private CanvasGroup ButtonCanvasGroup;
 
-	[Tooltip("计时器填充图")]
-	[SerializeField]
-	private RectTransform TimerFillImage;
-
 	[Tooltip("回合文本")]
 	[SerializeField]
 	private Text TurnText;
-
-	[Tooltip("时间文本")]
-	[SerializeField]
-	private Text TimeText;
 
 	[Tooltip("远程玩家文本")]
 	[SerializeField]
@@ -215,7 +205,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private RectTransform RequestPanel;
 
-	private ResultType result;//结果
+	private ResultType result=ResultType.None;//结果
 
 	private PunTurnManager turnManager;//回合管家
 
@@ -281,36 +271,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 				this.TurnText.text = (this.turnManager.Turn*0.5f).ToString();	//更新回合数
 			}
 
-			if (this.turnManager.Turn > 0 && this.TimeText != null && ! IsShowingResults)
+			if (this.turnManager.Turn > 0  && ! IsShowingResults)
 			{
 				float leftTime = this.turnManager.RemainingSecondsInTurn;
 
-
-				TimerFillImage.anchorMax = new Vector2(1f- leftTime/TurnTime,1f);
-
-				if (leftTime==0) {	//超时判负
-					if (localPlayerType==ChessPlayerType.Red) {
-						result = ResultType.LocalLoss;
-					}
-					if (localPlayerType==ChessPlayerType.Black) {
-						result = ResultType.LocalWin;
-					}
-					if (_isRedTurn) {
-						//红方超时，判输
-						this.turnManager.SendMove ("RedTimeOut",true);
-						return;
-					} else {
-						//黑方超时，判输
-						this.turnManager.SendMove ("BlackTimeOut",true);
-						return;
-					}
-				}
 				if (_isRedTurn) {
-					Tip.UpdateText ("红方剩余时间：" +leftTime.ToString("F1") +"秒", "1");
-					this.TimeText.text = "红方本回合剩余时间："+leftTime.ToString("F1") + " 秒";	//更新回合剩余时间
+					Tip.UpdateText ("红方剩余时间|Red Remaining Time：" +leftTime.ToString("F1") +"秒", "1");
 				} else {
-					this.TimeText.text = "黑方本回合剩余时间："+leftTime.ToString("F1") + " 秒";	//更新回合剩余时间
-					Tip.UpdateText ("黑方剩余时间：" +leftTime.ToString("F1") +"秒", "1");
+					Tip.UpdateText ("黑方剩余时间|Black Remaining Time：" +leftTime.ToString("F1") +"秒", "1");
 				}
 			}
 
@@ -399,9 +367,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="turn">回合.</param>
 	public void OnTurnBegins(int turn)
 	{
-		Debug.Log("OnTurnBegins() turn: "+ turn);
+		//Debug.Log("OnTurnBegins() turn: "+ turn);
         _selectedId = -1;
-		localSelection = false;
+
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
 		IsShowingResults = false;	//不展示结果
 		ButtonCanvasGroup.interactable = true;	//可以与按钮交互
@@ -453,20 +421,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			case "Restart":
 				if (!photonPlayer.IsLocal)
 					PopRequest ("重新开始对局");
-				else
-					localSelection = true;
 				break;
 			case "Draw":
 				if (!photonPlayer.IsLocal)
 					PopRequest ("和棋");
-				else
-					localSelection = true;
 				break;
 			case "Back":
 				if (!photonPlayer.IsLocal)
 					PopRequest ("悔棋");
-				else
-					localSelection = true;
 				break;
 			case "重新开始对局Yes":
 				Restart ();
@@ -517,12 +479,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         {
             switch (tmpStr)
             {
-                case "RedTimeOut":
-                    Tip.UpdateText("红方超时,判输！", "0");
-                    break;
-                case "BlackTimeOut":
-                    Tip.UpdateText("黑方超时,判输！", "0");
-                    break;
                 case "BlackDefeat":
                     Tip.UpdateText("黑方认输！", "0");
                     if (localPlayerType == ChessPlayerType.Red)
@@ -558,6 +514,27 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		if (!IsShowingResults)
 		{
 			Debug.Log("OnTurnTimeEnds: Calling OnTurnCompleted");
+			if (_isRedTurn) {
+				GameStatusText.text = "红方超时，判负！";
+				//红方超时，判输
+				if (localPlayerType==ChessPlayerType.Red) {
+					result = ResultType.LocalLoss;
+				}
+				if (localPlayerType==ChessPlayerType.Black) {
+					result = ResultType.LocalWin;
+				}
+
+			} else {
+				GameStatusText.text = "黑方超时，判负！";
+				//黑方超时，判输
+				if (localPlayerType==ChessPlayerType.Red) {
+					result = ResultType.LocalLoss;
+				}
+				if (localPlayerType==ChessPlayerType.Black) {
+					result = ResultType.LocalWin;
+				}
+			}
+				
 			OnTurnCompleted(-1);
 		}
 	}
@@ -635,6 +612,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         switch (result) //根据结果展示不同的图片
         {
             case ResultType.None:
+				yield return new WaitForSeconds(2.0f);
+				this.StartTurn();
                 break;
             case ResultType.Draw:
                 this.WinOrLossImage.sprite = this.SpriteDraw;
@@ -652,7 +631,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		this.WinOrLossImage.gameObject.SetActive(true);
 		yield return new WaitForSeconds(2.0f);
-        this.StartTurn();
+		this.Restart();
     }
 
 	/// <summary>
@@ -692,7 +671,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	/// <param name="t">T.</param>
 	public void OnAgree(Text t){
-		localSelection = true;
 		this.turnManager.SendMove(t.text+"Yes", false);
 		PlayMusic(selectClap);
 	}
@@ -702,7 +680,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	/// <param name="t">T.</param>
 	public void OnDisagree(Text t){
-		localSelection = false;
 		this.turnManager.SendMove(t.text+"No", false);
 		PlayMusic(selectClap);
 	}
@@ -969,10 +946,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 		else
 		{
-
-			TimerFillImage.anchorMax = new Vector2(0f, 1f);
-			this.TimeText.text = "";
 			this.RemotePlayerText.text = "等待其他玩家        00";
+			GameStatusText.text="等待其他玩家        00";
 		}
 
 		if (local != null)
@@ -1181,8 +1156,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	void RefreshUIViews()
 	{
-		TimerFillImage.anchorMax = new Vector2(0f, 1f);
-
 		GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;

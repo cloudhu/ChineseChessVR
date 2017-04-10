@@ -228,7 +228,7 @@ public class PunTurnManager : PunBehaviour
                 {
                     this.finishedPlayers.Add(sender);
 
-                        this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
+                    this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
 
                 }
 

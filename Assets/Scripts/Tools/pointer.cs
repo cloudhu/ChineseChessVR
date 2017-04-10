@@ -80,11 +80,15 @@ public class pointer : VRTK_InteractableObject
 
 	#region Private Variables   //私有变量区域
 	
-
+	WarUI warUI;
 	#endregion
 	
 	
 	#region MonoBehaviour CallBacks //回调函数区域
+
+	void Start(){
+		warUI= transform.parent.FindChild("WarUI").GetComponent<WarUI>();
+	}
 
     #endregion
 
@@ -93,11 +97,10 @@ public class pointer : VRTK_InteractableObject
     public override void StartUsing(GameObject usingObject)
     {
         base.StartUsing(usingObject);
-        GameObject war= transform.parent.FindChild("WarUI").gameObject;
-		if (war==null) {
+		if (warUI==null) {
 			return;
 		}
-        war.GetComponent<WarUI>().TrySelectChessman();
+        warUI.TrySelectChessman();
         //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }
 
