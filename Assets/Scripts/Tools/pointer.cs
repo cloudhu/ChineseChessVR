@@ -62,6 +62,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
+using Lean;
 /// <summary>
 /// FileName: pointer.cs
 /// Author: 胡良云（CloudHu）
@@ -81,14 +82,21 @@ public class pointer : VRTK_InteractableObject
 	#region Private Variables   //私有变量区域
 	
 	WarUI warUI;
-	#endregion
-	
-	
-	#region MonoBehaviour CallBacks //回调函数区域
+    private LeanPool pointerPool; //指针对象池 
+    #endregion
 
-	void Start(){
+
+    #region MonoBehaviour CallBacks //回调函数区域
+
+    void Start(){
 		warUI= transform.parent.FindChild("WarUI").GetComponent<WarUI>();
-	}
+        pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        pointerPool.FastDespawn(gameObject);
+    }
 
     #endregion
 

@@ -210,7 +210,7 @@ public class PositionManager : MonoBehaviour {
         _x = (ChessmanManager.chessman[selectedId]._x + x) *0.5f; //得出象眼的位置
         _z = (ChessmanManager.chessman[selectedId]._z + z) *0.5f;
 
-        for (int i = 5; i < ChessmanManager.chessman.Length; i++)
+        for (int i = 0; i < ChessmanManager.chessman.Length; i++)
         {
             if ( !ChessmanManager.chessman[i]._dead && ChessmanManager.chessman[i]._z == _z && ChessmanManager.chessman[i]._x==_x )  //如果象眼有棋子，则被塞
             {

@@ -88,8 +88,6 @@ public class ChessmanController : VRTK_InteractableObject {
     [Tooltip("选中棋子的id")]
     public int ChessmanId;
 
-	[Tooltip("探针")]
-	public GameObject probeElephant,probeHorse;  //用于探测可行的位置
     #endregion
 
 
@@ -322,33 +320,139 @@ public class ChessmanController : VRTK_InteractableObject {
 		}
 	}
 
+    /// <summary>
+    /// 象采用探测方法
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
 	void ShowElephantWay(float x,float z){
-		/* 
+        /* 
          * 1.目标位置不能越过河界走入对方的领地 
          * 2.只能斜走（两步），可以使用汉字中的田字形象地表述：田字格的对角线，即俗称象（相）走田字 
          * 3.当象（相）行走的路线中，及田字中心有棋子时（无论己方或者是对方的棋子），则不允许走过去，俗称：塞象（相）眼。 
         */
+        float xStep = step;
+        
+        if (isRed)
+        {
+            xStep = -step;
+        }
 
-		float xStep = step; 	//特步
-		float absX = Mathf.Abs (x);
-		if (isRed) {
-			xStep = -step;
-		}
-		if (z == 6f || z == 18f) {
-			if (absX==13.5f) {
-				
-			}
-		} else if (z == 0f || z == 24f) {
-			
-		} else {
-			
-		}
+        if (z==0)
+        {
+            GameObject go = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z + step), Quaternion.identity, transform) as GameObject;
+            movePointer(go, new Vector3(x - 2 * xStep, 3f, z + 2 * step));
+            GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, 3f, z + step), Quaternion.identity, transform) as GameObject;
+            movePointer(go1, new Vector3(x + 2 * xStep, 3f, z + 2 * step));
+            return;
+        }
 
-	}
+        if (z==6f || z==18f)
+        {
+
+            if (Mathf.Abs(x)== 13.5f)
+            {
+                GameObject go= pointerPool.FastSpawn(new Vector3(x+xStep, 3f, z-step), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x+2*xStep, 3f, z-2*step));
+                GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, 3f, z+step), Quaternion.identity, transform) as GameObject;
+                movePointer(go1, new Vector3(x + 2 * xStep, 3f, z + 2*step));
+            }
+            else
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z - step), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x - 2 * xStep, 3f, z - 2 * step));
+                GameObject go1 = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z + step), Quaternion.identity, transform) as GameObject;
+                movePointer(go1, new Vector3(x - 2 * xStep, 3f, z + 2 * step));
+            }
+            return;
+        }
+
+        if (z == 12f)
+        {
+
+            GameObject go = pointerPool.FastSpawn(new Vector3(x + xStep, 3f, z - step), Quaternion.identity, transform) as GameObject;
+            movePointer(go, new Vector3(x + 2 * xStep, 3f, z - 2 * step));
+            GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, 3f, z + step), Quaternion.identity, transform) as GameObject;
+            movePointer(go1, new Vector3(x + 2 * xStep, 3f, z + 2 * step));
+
+            GameObject go2 = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z - step), Quaternion.identity, transform) as GameObject;
+            movePointer(go2, new Vector3(x - 2 * xStep, 3f, z - 2 * step));
+            GameObject go3 = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z + step), Quaternion.identity, transform) as GameObject;
+            movePointer(go3, new Vector3(x - 2 * xStep, 3f, z + 2 * step));
+            
+            return;
+        }
+
+        if (z == 24f)
+        {
+            GameObject go = pointerPool.FastSpawn(new Vector3(x - xStep, 3f, z - step), Quaternion.identity, transform) as GameObject;
+            movePointer(go, new Vector3(x - 2 * xStep, 3f, z - 2 * step));
+            GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, 3f, z - step), Quaternion.identity, transform) as GameObject;
+            movePointer(go1, new Vector3(x + 2 * xStep, 3f, z - 2 * step));
+            return;
+        }
+
+    }
 
 	void ShowHorseWay(float x,float z){
+        /* 
+        * 1.马走日字（斜对角线） 
+        * 2.可以将马走日分解为：先一步直走（或一横）再一步斜走 
+        * 3.如果在要去的方向，第一步直行处（或者横行）有别的棋子挡住，则不许走过去（俗称：蹩马腿） 
+        */
+        float absX = Mathf.Abs(x);
+        float xStep = step;
 
-	}
+        if (isRed)
+        {
+            xStep = -step;
+        }
+
+        if ((z-step)>=step)
+        {
+            
+            if ((absX-step)<13.5f)
+            {
+                GameObject go1 = pointerPool.FastSpawn(new Vector3(x, 3f, z - step), Quaternion.identity, transform) as GameObject;
+                movePointer(go1, new Vector3(x+step, 3f, z - 2 * step));
+            }
+            if ((absX + step) <= 13.5f)
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x, 3f, z - step), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x - step, 3f, z - 2 * step));
+            }
+
+            if ((absX - step) <=10.5f)
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x+step, 3f, z), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x + 2*step, 3f, z ));
+            }
+
+
+
+
+            if ((absX + step) <=10.5f)
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x-step, 3f, z ), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x - 2*step, 3f, z ));
+            }
+        }
+
+        if ((z +step) < 24f)
+        {
+            if ((absX - step) < 13.5f)
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x, 3f, z - step), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x + step, 3f, z - 2 * step));
+            }
+            if ((absX + step )< 10.5f)
+            {
+                GameObject go = pointerPool.FastSpawn(new Vector3(x, 3f, z - step), Quaternion.identity, transform) as GameObject;
+                movePointer(go, new Vector3(x - step, 3f, z - 2 * step));
+            }
+        }
+
+    }
 
 	void ShowRookWay(float x,float z){
 
@@ -361,6 +465,15 @@ public class ChessmanController : VRTK_InteractableObject {
 	void ShowPawnWay(float x,float z){
 
 	}
+
+    void movePointer(GameObject go,Vector3 position)
+    {
+        Hashtable ht = new Hashtable();
+        ht.Add("position", position);
+        ht.Add("islocal", true);
+        ht.Add("time", 0.2f);
+        iTween.MoveTo(go, ht);
+    }
 	#endregion
 	
 }
