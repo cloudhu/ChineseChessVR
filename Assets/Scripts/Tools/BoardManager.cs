@@ -79,9 +79,10 @@ public class BoardManager : MonoBehaviour {
 
     private BoardPoint[] points = new BoardPoint[90]; //棋盘上的90个坐标点
     private List<BoardPoint> hidePoints = new List<BoardPoint>(); //展示后需要隐藏的坐标点
-    private List<int> occupiedId = new List<int>(); //被占用的棋子ID
-    private List<int> freedId = new List<int>();    //没有被占用的棋子ID
+    private List<int> occupiedId = new List<int>(); //被占用的棋子ID     占用位
+    private List<int> freedId = new List<int>();    //没有被占用的棋子ID 即空位
 
+	private float unitStep = 3f;
     #endregion
 
 
@@ -89,7 +90,7 @@ public class BoardManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         points = transform.GetComponentsInChildren<BoardPoint>();
-        for (int i = 0; i < points.Length; i++)
+        for (int i = 0; i < points.Length; i++)	//把90个点位分为 占用位和空位
         {
             if (points[i].isOccupied)
             {
@@ -145,6 +146,8 @@ public class BoardManager : MonoBehaviour {
     /// <param name="id">棋子id</param>
     public void showPossibleWay(int id)
     {
+		float x = ChessmanManager.chessman[id]._x;	//棋子位置x
+		float z= ChessmanManager.chessman[id]._z;
         switch (ChessmanManager.chessman[id]._type)
         {
             case ChessmanManager.Chessman.TYPE.KING:
@@ -157,7 +160,7 @@ public class BoardManager : MonoBehaviour {
                 ShowElephantWay(id);
                 break;
             case ChessmanManager.Chessman.TYPE.HORSE:
-                ShowHorseWay(id);
+			ShowHorseWay(id,x,z);
                 break;
             case ChessmanManager.Chessman.TYPE.ROOK:
                 ShowRookWay(id);
@@ -166,7 +169,7 @@ public class BoardManager : MonoBehaviour {
                 ShowCannonWay(id);
                 break;
             case ChessmanManager.Chessman.TYPE.PAWN:
-                ShowPawnWay(id);
+			ShowPawnWay(id,x,z);
                 break;
         }
     }
@@ -194,7 +197,7 @@ public class BoardManager : MonoBehaviour {
 
     void ShowKingWay(int id)
     {
-        for (int i = 12; i < 31; i++) //九宫限制
+        for (int i = 12; i < 30; i++) //九宫限制
         {
             if (!points[i].isOccupied)
             {
@@ -209,7 +212,7 @@ public class BoardManager : MonoBehaviour {
 
     void ShowGuardWay(int id)
     {
-        for (int i = 12; i < 31; i++)   //九宫限制
+        for (int i = 12; i < 30; i++)   //九宫限制
         {
             if (!points[i].isOccupied)
             {
@@ -242,29 +245,21 @@ public class BoardManager : MonoBehaviour {
 
 
 
-    void ShowHorseWay(int id)
+	void ShowHorseWay(int id,float x,float z)
     {
         for (int i = 0; i < freedId.Count; i++)
         {
             int aId = freedId[i];
-            float _x = points[aId].transform.localPosition.x;	//节点位置x		
-            float fromX = ChessmanManager.chessman[id]._x;	//棋子位置x
-
-            if (_x > (fromX-9f) && _x < (fromX+9f))
-            {
-                float _z = points[aId].transform.localPosition.z;
-                float fromZ= ChessmanManager.chessman[id]._z;
-                if (_z > (fromZ-9f) && _z < (fromZ+9f))
-                {
-                    if (PositionManager.canMoveHorse(id, _x, _z, -1))
-                    {
-                        points[aId].ShowBeams();
-						hidePoints.Add (points[aId]);
-                    }
-
-                }
-            }
-            
+            float _x = points[aId].transform.localPosition.x;	//节点位置x	
+			float _z = points[aId].transform.localPosition.z;
+			float _Step = Mathf.Abs(_x - x)+Mathf.Abs(_z - z);  //判断移动步长
+			if (_Step==9f) {
+				if (PositionManager.canMoveHorse(id, _x, _z, -1))
+				{
+					points[aId].ShowBeams();
+					hidePoints.Add (points[aId]);
+				}
+			}
         }
     }
 
@@ -306,32 +301,56 @@ public class BoardManager : MonoBehaviour {
         }
     }
 
-    void ShowPawnWay(int id)
+	void ShowPawnWay(int id,float x,float z)
     {
+		/* 
+         * 0.不能后退，且每次直走一步
+         * 1.在没有过河界前，只能向前，不能横着走
+         * 2.过了河界之后，每行一步棋可以向前直走，或者横走（左、右）一步
+         */
         for (int i = 0; i < freedId.Count; i++)
         {
             int aId = freedId[i];
             float _x = points[aId].transform.localPosition.x;
-                
-            float fromX = ChessmanManager.chessman[id]._x;
-            if (_x<(fromX+6f) && _x > (fromX - 6f))
-            {
-                float _z = points[aId].transform.localPosition.z;
-                float fromZ = ChessmanManager.chessman[id]._z;
-                if (_z>(fromZ-6f) && _z<(fromZ+6f))
-                {
-                    if (PositionManager.canMovePawn(id, _x, _z, -1))
-                    {
-                        points[aId].ShowBeams();
-						hidePoints.Add (points[aId]);
-                    }
-                }
-            }
+			float _z = points[aId].transform.localPosition.z;
 
-            
+			if (_x==x || _z==z) {
+				float Step = Mathf.Abs(_x - x)+Mathf.Abs(_z - z);  //移动步长
+				if (Step==unitStep) //步长为一个单位步长
+				{
+					if (id < 16) { //红方阵营 Red
+						if (x > 0) {
+							if (z == _z) {
+								ShowPointer (aId);
+							}
+						} else {
+							if (_x <= x) {
+								ShowPointer (aId);
+							}
+						}
+					} else {	//黑方阵营 Black
+						if (x < 0) {
+							if (z == _z) {
+								ShowPointer (aId);
+							}
+						} else {
+							if (_x >= x) {
+								ShowPointer (aId);
+							}
+						}
+					}
+				}
+			}       
         }
     }
 
+	/// <summary>
+	/// Shows the pointer 把可行位置的光标显示出来.
+	/// </summary>
+	void ShowPointer(int aId){
+		points [aId].ShowBeams ();
+		hidePoints.Add (points [aId]);
+	}
     #endregion
 
 

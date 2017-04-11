@@ -320,11 +320,6 @@ public class PositionManager : MonoBehaviour {
         float _xStep = Mathf.Abs(_x - x);  //判断x轴移动步长
         float _zStep = Mathf.Abs(_z - z);  //判断z轴移动步长
 
-        if ((_xStep+_zStep)!=3*step) //日字步长为3倍基数步长
-        {
-            return false;
-        }
-
         if (_xStep ==2*step && _zStep == step)   //利用步长判断是否走日字
         {
             if (_x < x)
@@ -476,17 +471,6 @@ public class PositionManager : MonoBehaviour {
 
         float _x = ChessmanManager.chessman[selectedId]._x;
         float _z = ChessmanManager.chessman[selectedId]._z;
-        float _xStep = Mathf.Abs(_x - x);  //判断x轴移动步长
-        float _zStep = Mathf.Abs(_z - z);  //判断z轴移动步长
-
-        if (_x != x && _z != z) //直线移动
-        {
-            return false;
-        }
-        if (_xStep!=step && _zStep!=step)
-        {
-            return false;
-        }
 
         if (selectedId<16)  //红色阵营
         {

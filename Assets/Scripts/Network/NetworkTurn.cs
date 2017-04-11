@@ -753,29 +753,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <returns></returns>
     bool CanMove(int moveId, int killId, Vector3 targetPosition)
     {
-        if (SameColor(moveId, killId)) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
+        if (killId!=-1 && SameColor(moveId, killId)) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
             OnCancelSelected(moveId);
             TrySelectChessman(killId);
             return false;
-        }
-        float row = targetPosition.x;
-        float col = targetPosition.z;
-        switch (ChessmanManager.chessman[moveId]._type)
-        {
-            case ChessmanManager.Chessman.TYPE.KING:
-                return PositionManager.canMoveKing(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.GUARD:
-                return PositionManager.canMoveGuard(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.ELEPHANT:
-                return PositionManager.canMoveElephant(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.HORSE:
-                return PositionManager.canMoveHorse(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.ROOK:
-                return PositionManager.canMoveRook(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.CANNON:
-                return PositionManager.canMoveCannon(moveId, row, col, killId);
-            case ChessmanManager.Chessman.TYPE.PAWN:
-                return PositionManager.canMovePawn(moveId, row, col, killId);
         }
 
         return true;

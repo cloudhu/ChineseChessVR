@@ -62,7 +62,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
-
+using Lean;
 
 /// <summary>
 /// FileName: ChessmanController.cs
@@ -86,32 +86,32 @@ public class ChessmanController : VRTK_InteractableObject {
     public GameObject warUiPrefab;
 
     [Tooltip("选中棋子的id")]
-    public int selectedId;
+    public int ChessmanId;
 
+	[Tooltip("探针")]
+	public GameObject probeElephant,probeHorse;  //用于探测可行的位置
     #endregion
 
 
     #region Private Variables   //私有变量区域
 	AudioSource As;
 	Animator ani;
-	//private NavMeshAgent agent;    //寻路组件
 	WarUI war; //战争UI
+	private LeanPool pointerPool; //指针对象池 
+	float step=3f;	//单位步长
+	bool isRed;
     #endregion
 
 
     #region MonoBehaviour CallBacks //回调函数区域
     // Use this for initialization
     void Start () {
-        selectedId =int.Parse(this.gameObject.name);
+        ChessmanId =int.Parse(this.gameObject.name);
+		isRed = ChessmanManager.chessman [ChessmanId]._red;
 		ani = transform.GetComponent<Animator> ();
 		if (this.As == null) this.As = FindObjectOfType<AudioSource>();
-		/*agent = this.GetComponent<NavMeshAgent>();//获取寻路组件，如果为空则添加之  ！！用iTween代替寻路
-		if (agent == null)	
-		{
-			agent=gameObject.AddComponent<NavMeshAgent>();
-			agent.radius = 0.3f;
-		}
-		agent.enabled = true;*/
+
+		pointerPool = transform.parent.GetComponent<LeanPool> ();	//获取指针的对象池组件
 
         //创建棋子UI
 		if (this.ChessmamUiPrefab != null)
@@ -171,8 +171,8 @@ public class ChessmanController : VRTK_InteractableObject {
 		ht.Add ("time", 3.0f);
 		iTween.MoveTo (gameObject, ht);
 
-		ChessmanManager.chessman[selectedId]._x = targetPosition.x;
-		ChessmanManager.chessman[selectedId]._z = targetPosition.z;
+		ChessmanManager.chessman[ChessmanId]._x = targetPosition.x;
+		ChessmanManager.chessman[ChessmanId]._z = targetPosition.z;
 	}
 
 	/// <summary>
@@ -188,6 +188,35 @@ public class ChessmanController : VRTK_InteractableObject {
 
 
 	#region Private Methods //私有方法
+
+	void Search(){
+		float x = ChessmanManager.chessman[ChessmanId]._x;	//棋子位置x
+		float z= ChessmanManager.chessman[ChessmanId]._z;
+		switch (ChessmanManager.chessman[ChessmanId]._type)
+		{
+		case ChessmanManager.Chessman.TYPE.KING:
+			ShowKingWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.GUARD:
+			ShowGuardWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.ELEPHANT:
+			ShowElephantWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.HORSE:
+			ShowHorseWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.ROOK:
+			ShowRookWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.CANNON:
+			ShowCannonWay(x,z);
+			break;
+		case ChessmanManager.Chessman.TYPE.PAWN:
+			ShowPawnWay(x,z);
+			break;
+		}
+	}
 
 	void Move(){
 		ani.SetBool ("TH Sword Run",true);
@@ -230,6 +259,108 @@ public class ChessmanController : VRTK_InteractableObject {
 		SteamVR_Controller.Input(deviceIndex1).TriggerHapticPulse(duration);
 	}
 
+	#endregion
+
+	#region ToolMethods
+
+	/// <summary>
+	/// Shows the king way.将帅的路径，总结为十字路口
+	/// </summary>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	void ShowKingWay(float x,float z){
+		/*
+		1.将帅被限制在九宫格内移动
+		2.移动的步长为一格，一格的距离为3
+		3.将帅不能在一条直线上面对面（中间无棋子遮挡）,如一方占据中路三线中的一线,在无遮挡的情况下,另一方必须回避该线,否则会被对方秒杀
+		*/
+		float xStep = step;
+		float otherKingZ=ChessmanManager.chessman[0]._z;	//另外一个将帅的Z轴值
+		if (isRed) {
+			otherKingZ=ChessmanManager.chessman[16]._z;
+			xStep = -step; //红方取反
+		}
+		float absX = Mathf.Abs (x);
+
+		if (absX>7.5f) {	//正前方指针
+			pointerPool.FastSpawn (new Vector3 (x+xStep,0,z),Quaternion.identity,transform);
+		}
+		if (absX<13.5f) {	//正后方
+			pointerPool.FastSpawn (new Vector3 (x-xStep,0,z),Quaternion.identity,transform);
+		}
+
+		if (z>9f && (z-3f)!=otherKingZ) {		//左
+			pointerPool.FastSpawn (new Vector3 (x,0,z-step),Quaternion.identity,transform);
+		}
+
+		if (z<15f && (z+3f)!=otherKingZ) {	//右
+			pointerPool.FastSpawn (new Vector3 (x,0,z+step),Quaternion.identity,transform);
+		}
+	}
+
+	/// <summary>
+	/// Shows the guard way.士的路径，斜十字算法
+	/// </summary>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	void ShowGuardWay(float x,float z){
+		/* 
+         * 1.目标位置在九宫格内 
+         * 2.只许沿着九宫中的斜线行走一步（方格的对角线） 
+        */
+		if (z != 12f) {
+			if (isRed) {
+				pointerPool.FastSpawn (new Vector3 (10.5f, 0, 12f), Quaternion.identity, transform);
+			} else {
+				pointerPool.FastSpawn (new Vector3 (-10.5f, 0, 12f), Quaternion.identity, transform);
+			}
+		} else {
+			pointerPool.FastSpawn (new Vector3 (x+step, 0, 9f), Quaternion.identity, transform);
+			pointerPool.FastSpawn (new Vector3 (x-step, 0, 9f), Quaternion.identity, transform);
+			pointerPool.FastSpawn (new Vector3 (x+step, 0, 15f), Quaternion.identity, transform);
+			pointerPool.FastSpawn (new Vector3 (x-step, 0, 15f), Quaternion.identity, transform);
+		}
+	}
+
+	void ShowElephantWay(float x,float z){
+		/* 
+         * 1.目标位置不能越过河界走入对方的领地 
+         * 2.只能斜走（两步），可以使用汉字中的田字形象地表述：田字格的对角线，即俗称象（相）走田字 
+         * 3.当象（相）行走的路线中，及田字中心有棋子时（无论己方或者是对方的棋子），则不允许走过去，俗称：塞象（相）眼。 
+        */
+
+		float xStep = step; 	//特步
+		float absX = Mathf.Abs (x);
+		if (isRed) {
+			xStep = -step;
+		}
+		if (z == 6f || z == 18f) {
+			if (absX==13.5f) {
+				
+			}
+		} else if (z == 0f || z == 24f) {
+			
+		} else {
+			
+		}
+
+	}
+
+	void ShowHorseWay(float x,float z){
+
+	}
+
+	void ShowRookWay(float x,float z){
+
+	}
+
+	void ShowCannonWay(float x,float z){
+
+	}
+
+	void ShowPawnWay(float x,float z){
+
+	}
 	#endregion
 	
 }
