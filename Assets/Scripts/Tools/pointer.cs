@@ -95,7 +95,10 @@ public class pointer : VRTK_InteractableObject
 
     private void OnTriggerEnter(Collider other)
     {
-        pointerPool.FastDespawn(gameObject);
+		if (other.CompareTag("Red") || other.CompareTag("Black")) { //如果碰到棋子，则回收
+			pointerPool.FastDespawn(gameObject);
+		}
+
     }
 
     #endregion
@@ -109,6 +112,8 @@ public class pointer : VRTK_InteractableObject
 			return;
 		}
         warUI.TrySelectChessman();
+		pointerPool.FastDespawn(gameObject,1f);
+
         //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }
 
