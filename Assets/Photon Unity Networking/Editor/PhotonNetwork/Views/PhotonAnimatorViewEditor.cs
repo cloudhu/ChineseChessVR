@@ -24,7 +24,6 @@ using UnityEditorInternal;
 using UnityEditor.Animations;
 #endif
 
-
 [CustomEditor(typeof (PhotonAnimatorView))]
 public class PhotonAnimatorViewEditor : Editor
 {

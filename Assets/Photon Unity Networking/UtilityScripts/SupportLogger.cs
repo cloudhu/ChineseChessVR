@@ -1,6 +1,7 @@
 using System.Text;
 using UnityEngine;
 using System.Collections;
+using ExitGames.Client.Photon;
 
 public class SupportLogger : MonoBehaviour
 {

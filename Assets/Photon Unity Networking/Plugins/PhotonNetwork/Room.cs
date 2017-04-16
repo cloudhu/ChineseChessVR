@@ -264,20 +264,19 @@ public class Room : RoomInfo
         // no expected values -> set and callback
         bool noCas = customPropsToCheck == null || customPropsToCheck.Count == 0;
 
-        if (noCas)
+        if (PhotonNetwork.offlineMode || noCas)
         {
-            this.CustomProperties.Merge(customProps);
+            this.CustomProperties.Merge(customProps);   // the customProps are already stripped to string-keys-only (custom-props keys)
             this.CustomProperties.StripKeysWithNullValues();
         }
 
         if (!PhotonNetwork.offlineMode)
         {
-            PhotonNetwork.networkingPeer.OpSetPropertiesOfRoom(customProps, customPropsToCheck, webForward);
+            PhotonNetwork.networkingPeer.OpSetPropertiesOfRoom(customProps, customPropsToCheck, webForward);    // as the customProps are stripped already, this equals OpSetCustomPropertiesOfRoom()
         }
 
         if (PhotonNetwork.offlineMode || noCas)
         {
-            this.InternalCacheProperties(customProps);
             NetworkingPeer.SendMonoMessage(PhotonNetworkingMessage.OnPhotonCustomRoomPropertiesChanged, customProps);
         }
     }

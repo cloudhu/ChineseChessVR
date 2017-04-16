@@ -82,8 +82,6 @@ public class PunLauncher  : Photon.MonoBehaviour {
 	[Tooltip("版本")]
 	public string Version = "1.0";
 
-    [Tooltip("UI加载动画")]
-    public Loader loaderAnime;
     [Tooltip("UI连接对象")]
     public GameObject ConnectUI;
     #endregion
@@ -109,17 +107,10 @@ public class PunLauncher  : Photon.MonoBehaviour {
 	public void Connect(){
 		if (!PhotonNetwork.connected)
 		{
-			Debug.Log("Connect() was called by Unity. Scene is loaded. Let's connect to the Photon Master Server. Calling: PhotonNetwork.ConnectUsingSettings();");
 
 			PhotonNetwork.ConnectUsingSettings(Version);
-            if (loaderAnime != null)
-            {
-                loaderAnime.StartLoaderAnimation();
-				PlayMusic (selectClap);
-                //ConnectUI.GetComponent<RectTransform>().localRotation = new Quaternion(0, 0, 0, 0);
-                ConnectUI.SetActive(false);
-
-            }
+		    PlayMusic (selectClap);
+            ConnectUI.SetActive(false);
     	}
 	}
 
@@ -143,21 +134,7 @@ public class PunLauncher  : Photon.MonoBehaviour {
 	{
 		Debug.Log("OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
 		PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
-    	loaderAnime.StopLoaderAnimation();
 	}
-
-	// the following methods are implemented to give you some context. re-implement them as needed.
-
-	public virtual void OnFailedToConnectToPhoton(DisconnectCause cause)
-	{
-		Debug.LogError("Cause: " + cause);
-    	loaderAnime.StopLoaderAnimation();
-	 }
-	
-    public void OnJoinedRoom()
-    {
-        loaderAnime.StopLoaderAnimation();
-    }
 
     #endregion
 

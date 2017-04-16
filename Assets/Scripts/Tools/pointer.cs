@@ -89,15 +89,18 @@ public class pointer : VRTK_InteractableObject
     #region MonoBehaviour CallBacks //回调函数区域
 
     void Start(){
-		warUI= transform.parent.FindChild("WarUI").GetComponent<WarUI>();
+		warUI= transform.FindChild("WarUI").GetComponent<WarUI>();
         pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
     }
 
     private void OnTriggerEnter(Collider other)
     {
 		if (other.CompareTag("Red") || other.CompareTag("Black")) { //如果碰到棋子，则回收
-			pointerPool.FastDespawn(gameObject);
-		}
+			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
+			
+			pointerPool.obstacles.Add (other.gameObject);
+            pointerPool.FastDespawn(gameObject,0.1f);
+        }
 
     }
 
@@ -112,7 +115,9 @@ public class pointer : VRTK_InteractableObject
 			return;
 		}
         warUI.TrySelectChessman();
-		pointerPool.FastDespawn(gameObject,1f);
+
+		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
+		pointerPool.FastDespawn(gameObject,0.1f);
 
         //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }
@@ -124,5 +129,4 @@ public class pointer : VRTK_InteractableObject
     }
 
     #endregion
-
 }

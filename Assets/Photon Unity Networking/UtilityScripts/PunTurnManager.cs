@@ -8,8 +8,6 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-
-using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon;
@@ -70,7 +68,7 @@ public class PunTurnManager : PunBehaviour
 	/// <value><c>true</c> if this turn is completed by all; otherwise, <c>false</c>.</value>
     public bool IsCompletedByAll
     {
-        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == 1; }
+        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == PhotonNetwork.room.PlayerCount; }
     }
 
 	/// <summary>
@@ -228,7 +226,7 @@ public class PunTurnManager : PunBehaviour
                 {
                     this.finishedPlayers.Add(sender);
 
-                    this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
+                        this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
 
                 }
 

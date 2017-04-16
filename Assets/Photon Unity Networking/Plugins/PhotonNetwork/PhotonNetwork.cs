@@ -28,7 +28,7 @@ using System.IO;
 public static class PhotonNetwork
 {
     /// <summary>Version number of PUN. Also used in GameVersion to separate client version from each other.</summary>
-    public const string versionPUN = "1.81";
+    public const string versionPUN = "1.83";
 
     /// <summary>Version string for your this build. Can be used to separate incompatible clients. Sent during connect.</summary>
     /// <remarks>This is only sent when you connect so that is also the place you set it usually (e.g. in ConnectUsingSettings).</remarks>
@@ -63,6 +63,9 @@ public static class PhotonNetwork
 
     /// <summary>Currently used server address (no matter if master or game server).</summary>
     public static string ServerAddress { get { return (networkingPeer != null) ? networkingPeer.ServerAddress : "<not connected>"; } }
+
+    /// <summary>Currently used Cloud Region (if any). As long as the client is not on a Master Server or Game Server, the region is not yet defined.</summary>
+    public static CloudRegionCode CloudRegion { get { return (networkingPeer != null && connected && Server!=ServerConnection.NameServer) ? networkingPeer.CloudRegion : CloudRegionCode.none; } }
 
     /// <summary>
     /// False until you connected to Photon initially. True in offline mode, while connected to any server and even while switching servers.
@@ -1126,12 +1129,6 @@ public static class PhotonNetwork
 
 
         #if UNITY_XBOXONE
-        Debug.Log("UNITY_XBOXONE is defined: Using AuthMode 'AuthOnceWss' and EncryptionMode 'DatagramEncryption'.");
-        if (!PhotonPeer.NativeDatagramEncrypt)
-        {
-            Debug.LogError("XB1 builds need a Photon3Unity3d.dll which uses the native PhotonEncryptorPlugin. This dll does not!");
-        }
-
         networkingPeer.AuthMode = AuthModeOption.AuthOnceWss;
         networkingPeer.EncryptionMode = EncryptionMode.DatagramEncryption;
         #endif
@@ -2995,42 +2992,114 @@ public static class PhotonNetwork
         return objectsWithComponent;
     }
 
-    /// <summary>
-    /// Enable/disable receiving on given group (applied to PhotonViews)
-    /// </summary>
-    /// <param name="group">The interest group to affect.</param>
-    /// <param name="enabled">Sets if receiving from group to enabled (or not).</param>
+
+
+    [Obsolete("Use SetInterestGroups(byte group, bool enabled) instead.")]
     public static void SetReceivingEnabled(int group, bool enabled)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
-        networkingPeer.SetReceivingEnabled(group, enabled);
+
+        SetInterestGroups((byte)group, enabled);
+    }
+
+    /// <summary>Enable/disable receiving events from a given Interest Group.</summary>
+    /// <remarks>
+    /// A client can tell the server which Interest Groups it's interested in. 
+    /// The server will only forward events for those Interest Groups to that client (saving bandwidth and performance).
+    /// 
+    /// See: https://doc.photonengine.com/en-us/pun/current/manuals-and-demos/interestgroupsinterestgroups
+    /// 
+    /// See: https://doc.photonengine.com/en-us/pun/current/manuals-and-demos/culling-demo
+    /// </remarks>
+    /// <param name="group">The interest group to affect.</param>
+    /// <param name="enabled">Sets if receiving from group to enabled (or not).</param>
+    public static void SetInterestGroups(byte group, bool enabled)
+    {
+        if (!VerifyCanUseNetwork())
+        {
+            return;
+        }
+
+        if (enabled)
+        {
+            byte[] groups = new byte[1] { (byte)group };
+            networkingPeer.SetInterestGroups(null, groups);
+        }
+        else
+        {
+            byte[] groups = new byte[1] { (byte)group };
+            networkingPeer.SetInterestGroups(groups, null);
+        }
     }
 
 
-    /// <summary>
-    /// Enable/disable receiving on given groups (applied to PhotonViews)
-    /// </summary>
-    /// <param name="enableGroups">The interest groups to enable (or null).</param>
-    /// <param name="disableGroups">The interest groups to disable (or null).</param>
+    [Obsolete("Use SetInterestGroups(byte[] disableGroups, byte[] enableGroups) instead. Mind the parameter order!")]
     public static void SetReceivingEnabled(int[] enableGroups, int[] disableGroups)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
-        networkingPeer.SetReceivingEnabled(enableGroups, disableGroups);
+        
+        byte[] disableByteGroups = null;
+        byte[] enableByteGroups = null;
+
+        if (enableGroups != null)
+        {
+            enableByteGroups = new byte[enableGroups.Length];
+            Array.Copy(enableGroups, enableByteGroups, enableGroups.Length);
+        }
+        if (disableGroups != null)
+        {
+            disableByteGroups = new byte[disableGroups.Length];
+            Array.Copy(disableGroups, disableByteGroups, disableGroups.Length);
+        }
+
+        networkingPeer.SetInterestGroups(disableByteGroups, enableByteGroups);
+    }
+
+    /// <summary>Enable/disable receiving on given Interest Groups (applied to PhotonViews).</summary>
+    /// <remarks>
+    /// A client can tell the server which Interest Groups it's interested in. 
+    /// The server will only forward events for those Interest Groups to that client (saving bandwidth and performance).
+    /// 
+    /// See: https://doc.photonengine.com/en-us/pun/current/manuals-and-demos/interestgroupsinterestgroups
+    /// 
+    /// See: https://doc.photonengine.com/en-us/pun/current/manuals-and-demos/culling-demo
+    /// </remarks>
+    /// <param name="disableGroups">The interest groups to disable (or null).</param>
+    /// <param name="enableGroups">The interest groups to enable (or null).</param>
+    public static void SetInterestGroups(byte[] disableGroups, byte[] enableGroups)
+    {
+        if (!VerifyCanUseNetwork())
+        {
+            return;
+        }
+        networkingPeer.SetInterestGroups(disableGroups, enableGroups);
     }
 
 
-    /// <summary>
-    /// Enable/disable sending on given group (applied to PhotonViews)
-    /// </summary>
+
+    [Obsolete("Use SetSendingEnabled(byte group, bool enabled). Interest Groups have a byte-typed ID. Mind the parameter order.")]
+    public static void SetSendingEnabled(int group, bool enabled)
+    {
+        SetSendingEnabled((byte)group, enabled);
+    }
+
+    /// <summary>Enable/disable sending on given group (applied to PhotonViews)</summary>
+    /// <remarks>
+    /// This does not interact with the Photon server-side. 
+    /// It's just a client-side setting to suppress updates, should they be sent to one of the blocked groups.
+    /// 
+    /// This setting is not particularly useful, as it means that updates literally never reach the server or anyone else.
+    /// Use with care.
+    /// </remarks>
     /// <param name="group">The interest group to affect.</param>
     /// <param name="enabled">Sets if sending to group is enabled (or not).</param>
-    public static void SetSendingEnabled(int group, bool enabled)
+    public static void SetSendingEnabled(byte group, bool enabled)
     {
         if (!VerifyCanUseNetwork())
         {
@@ -3041,18 +3110,43 @@ public static class PhotonNetwork
     }
 
 
-    /// <summary>
-    /// Enable/disable sending on given groups (applied to PhotonViews)
-    /// </summary>
+    [Obsolete("Use SetSendingEnabled(byte group, bool enabled). Interest Groups have a byte-typed ID. Mind the parameter order.")]
+    public static void SetSendingEnabled(int[] enableGroups, int[] disableGroups)
+    {
+        byte[] disableByteGroups = null;
+        byte[] enableByteGroups = null;
+
+        if (enableGroups != null)
+        {
+            enableByteGroups = new byte[enableGroups.Length];
+            Array.Copy(enableGroups, enableByteGroups, enableGroups.Length);
+        }
+        if (disableGroups != null)
+        {
+            disableByteGroups = new byte[disableGroups.Length];
+            Array.Copy(disableGroups, disableByteGroups, disableGroups.Length);
+        }
+
+        SetSendingEnabled(disableByteGroups, enableByteGroups);
+    }
+
+    /// <summary>Enable/disable sending on given groups (applied to PhotonViews)</summary>
+    /// <remarks>
+    /// This does not interact with the Photon server-side. 
+    /// It's just a client-side setting to suppress updates, should they be sent to one of the blocked groups.
+    /// 
+    /// This setting is not particularly useful, as it means that updates literally never reach the server or anyone else.
+    /// Use with care.
     /// <param name="enableGroups">The interest groups to enable sending on (or null).</param>
     /// <param name="disableGroups">The interest groups to disable sending on (or null).</param>
-    public static void SetSendingEnabled(int[] enableGroups, int[] disableGroups)
+    public static void SetSendingEnabled(byte[] disableGroups, byte[] enableGroups)
     {
         if (!VerifyCanUseNetwork())
         {
             return;
         }
-        networkingPeer.SetSendingEnabled(enableGroups, disableGroups);
+
+        networkingPeer.SetSendingEnabled(disableGroups, enableGroups);
     }
 
 

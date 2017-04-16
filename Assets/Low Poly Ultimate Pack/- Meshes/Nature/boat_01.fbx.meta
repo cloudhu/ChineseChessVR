@@ -1,0 +1,226 @@
+fileFormatVersion: 2
+guid: ed5126e19182d3e4c9ea2bab78ec1692
+timeCreated: 1455319538
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: boat_01
+    100004: boat_01.001
+    100006: Circle.010
+    100008: Circle.011
+    100010: Circle.012
+    100012: bungalov_01
+    100014: bungalov_02
+    100016: bungalov_02-2
+    100018: cactus_01
+    100020: cactus_02
+    100022: Camera
+    100024: cave_01
+    100026: Circle
+    100028: Circle.002
+    100030: Circle.003
+    100032: Circle.008
+    100034: Circle.009
+    100036: Cube
+    100038: Cube.002
+    100040: fire_01
+    100042: lava_brick_01
+    100044: lava_brick_02
+    100046: lava_brick_03
+    100048: raft_01
+    100050: smoke_01
+    100052: sunscreen_01
+    100054: terrain_03.000
+    100056: terrain_03.001
+    100058: torche_01
+    100060: vulcano_01.001
+    400000: //RootNode
+    400002: boat_01
+    400004: boat_01.001
+    400006: Circle.010
+    400008: Circle.011
+    400010: Circle.012
+    400012: bungalov_01
+    400014: bungalov_02
+    400016: bungalov_02-2
+    400018: cactus_01
+    400020: cactus_02
+    400022: Camera
+    400024: cave_01
+    400026: Circle
+    400028: Circle.002
+    400030: Circle.003
+    400032: Circle.008
+    400034: Circle.009
+    400036: Cube
+    400038: Cube.002
+    400040: fire_01
+    400042: lava_brick_01
+    400044: lava_brick_02
+    400046: lava_brick_03
+    400048: raft_01
+    400050: smoke_01
+    400052: sunscreen_01
+    400054: terrain_03.000
+    400056: terrain_03.001
+    400058: torche_01
+    400060: vulcano_01.001
+    2300000: //RootNode
+    2300002: boat_01
+    2300004: boat_01.001
+    2300006: Circle.010
+    2300008: Circle.011
+    2300010: Circle.012
+    2300012: bungalov_01
+    2300014: bungalov_02
+    2300016: bungalov_02-2
+    2300018: cactus_01
+    2300020: cactus_02
+    2300022: cave_01
+    2300024: Circle
+    2300026: Circle.002
+    2300028: Circle.003
+    2300030: Circle.008
+    2300032: Circle.009
+    2300034: Cube
+    2300036: Cube.002
+    2300038: fire_01
+    2300040: lava_brick_01
+    2300042: lava_brick_02
+    2300044: lava_brick_03
+    2300046: raft_01
+    2300048: smoke_01
+    2300050: sunscreen_01
+    2300052: terrain_03.000
+    2300054: terrain_03.001
+    2300056: torche_01
+    2300058: vulcano_01.001
+    3300000: //RootNode
+    3300002: boat_01
+    3300004: boat_01.001
+    3300006: Circle.010
+    3300008: Circle.011
+    3300010: Circle.012
+    3300012: bungalov_01
+    3300014: bungalov_02
+    3300016: bungalov_02-2
+    3300018: cactus_01
+    3300020: cactus_02
+    3300022: cave_01
+    3300024: Circle
+    3300026: Circle.002
+    3300028: Circle.003
+    3300030: Circle.008
+    3300032: Circle.009
+    3300034: Cube
+    3300036: Cube.002
+    3300038: fire_01
+    3300040: lava_brick_01
+    3300042: lava_brick_02
+    3300044: lava_brick_03
+    3300046: raft_01
+    3300048: smoke_01
+    3300050: sunscreen_01
+    3300052: terrain_03.000
+    3300054: terrain_03.001
+    3300056: torche_01
+    3300058: vulcano_01.001
+    4300000: boat_01
+    4300002: Circle.012
+    4300004: Circle.011
+    4300006: Circle.010
+    4300008: boat_01.001
+    4300010: raft_01
+    4300012: cactus_02
+    4300014: cactus_01
+    4300016: bungalov_02-2
+    4300018: Cube.002
+    4300020: bungalov_02
+    4300022: fire_01
+    4300024: torche_01
+    4300026: sunscreen_01
+    4300028: bungalov_01
+    4300030: Circle
+    4300032: terrain_03.000
+    4300034: terrain_03.001
+    4300036: cave_01
+    4300038: smoke_01
+    4300040: Circle.009
+    4300042: Circle.008
+    4300044: lava_brick_02
+    4300046: lava_brick_01
+    4300048: lava_brick_03
+    4300050: Circle.003
+    4300052: Circle.002
+    4300054: vulcano_01.001
+    4300056: Cube
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

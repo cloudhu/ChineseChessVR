@@ -1305,9 +1305,6 @@
             Called by a timer in intervals.
             </summary>
         </member>
-        <member name="F:ExitGames.Client.Photon.EnetPeer.channels">
-            <summary>Will contain channel 0xFF and any other.</summary>
-        </member>
         <member name="F:ExitGames.Client.Photon.EnetPeer.sentReliableCommands">
             <summary>One list for all channels keeps sent commands (for re-sending).</summary>
         </member>
@@ -1714,7 +1711,7 @@
         </member>
         <member name="F:ExitGames.Client.Photon.Protocol16.GpType.Custom">
             <summary>
-              A costum type
+              A custom type. 0x63
             </summary>
         </member>
         <member name="F:ExitGames.Client.Photon.Protocol16.GpType.Null">

@@ -130,7 +130,7 @@ public class WarUI : MonoBehaviour {
                 fontSize = 24;
                 UpdateText("Selected");
             } else {
-                fontColor = Color.blue;
+				fontColor = Color.green;
                 fontSize = 16;
                 UpdateText("Select");
             }
@@ -155,7 +155,7 @@ public class WarUI : MonoBehaviour {
         {
             if (tmpText== "Select")
             {
-                NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z,-1);
+                NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
             }
             else
             {
@@ -164,8 +164,8 @@ public class WarUI : MonoBehaviour {
         }
         else
         {
-            NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z, int.Parse(_target.name));
-            _target.GetComponent<BoardPoint>().Occupied();
+            NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z);
+            //_target.GetComponent<BoardPoint>().Occupied();
         }
 			
     }

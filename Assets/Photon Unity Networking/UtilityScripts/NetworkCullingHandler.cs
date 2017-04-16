@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 ///     Handles the network culling.
@@ -8,13 +8,13 @@ using System.Collections.Generic;
 public class NetworkCullingHandler : MonoBehaviour, IPunObservable
 {
     #region VARIABLES
-    
+
     private int orderIndex;
 
     private CullArea cullArea;
 
-    private List<int> previousActiveCells, activeCells;
-    
+    private List<byte> previousActiveCells, activeCells;
+
     private PhotonView pView;
 
     private Vector3 lastPosition, currentPosition;
@@ -28,25 +28,25 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     /// </summary>
     private void OnEnable()
     {
-        if (pView == null)
+        if (this.pView == null)
         {
-            pView = GetComponent<PhotonView>();
+            this.pView = GetComponent<PhotonView>();
 
-            if (!pView.isMine)
+            if (!this.pView.isMine)
             {
                 return;
             }
         }
-        
-        if (cullArea == null)
-        {
-            cullArea = GameObject.FindObjectOfType<CullArea>();
-        }
-        
-        previousActiveCells = new List<int>(0);
-        activeCells = new List<int>(0);
 
-        currentPosition = lastPosition = transform.position;
+        if (this.cullArea == null)
+        {
+            this.cullArea = FindObjectOfType<CullArea>();
+        }
+
+        this.previousActiveCells = new List<byte>(0);
+        this.activeCells = new List<byte>(0);
+
+        this.currentPosition = this.lastPosition = transform.position;
     }
 
     /// <summary>
@@ -54,24 +54,24 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     /// </summary>
     private void Start()
     {
-        if (!pView.isMine)
+        if (!this.pView.isMine)
         {
             return;
         }
 
         if (PhotonNetwork.inRoom)
         {
-            if (cullArea.NumberOfSubdivisions == 0)
+            if (this.cullArea.NumberOfSubdivisions == 0)
             {
-                pView.group = cullArea.FIRST_GROUP_ID;
+                this.pView.group = this.cullArea.FIRST_GROUP_ID;
 
-                PhotonNetwork.SetReceivingEnabled(cullArea.FIRST_GROUP_ID, true);
-                PhotonNetwork.SetSendingEnabled(cullArea.FIRST_GROUP_ID, true);
+                PhotonNetwork.SetInterestGroups(this.cullArea.FIRST_GROUP_ID, true);
+                PhotonNetwork.SetSendingEnabled(this.cullArea.FIRST_GROUP_ID, true);
             }
             else
             {
                 // This is used to continuously update the active group.
-                pView.ObservedComponents.Add(this);
+                this.pView.ObservedComponents.Add(this);
             }
         }
     }
@@ -81,22 +81,22 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     /// </summary>
     private void Update()
     {
-        if (!pView.isMine)
+        if (!this.pView.isMine)
         {
             return;
         }
 
-        lastPosition = currentPosition;
-        currentPosition = transform.position;
+        this.lastPosition = this.currentPosition;
+        this.currentPosition = transform.position;
 
         // This is a simple position comparison of the current and the previous position. 
         // When using Network Culling in a bigger project keep in mind that there might
         // be more transform-related options, e.g. the rotation, or other options to check.
-        if (currentPosition != lastPosition)
+        if (this.currentPosition != this.lastPosition)
         {
-            if (HaveActiveCellsChanged())
+            if (this.HaveActiveCellsChanged())
             {
-                UpdateInterestGroups();
+                this.UpdateInterestGroups();
             }
         }
     }
@@ -106,7 +106,7 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     /// </summary>
     private void OnGUI()
     {
-        if (!pView.isMine)
+        if (!this.pView.isMine)
         {
             return;
         }
@@ -114,14 +114,14 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
         string subscribedAndActiveCells = "Inside cells:\n";
         string subscribedCells = "Subscribed cells:\n";
 
-        for (int index = 0; index < activeCells.Count; ++index)
+        for (int index = 0; index < this.activeCells.Count; ++index)
         {
-            if (index <= cullArea.NumberOfSubdivisions)
+            if (index <= this.cullArea.NumberOfSubdivisions)
             {
-                subscribedAndActiveCells += activeCells[index] + "  ";
+                subscribedAndActiveCells += this.activeCells[index] + "  ";
             }
 
-            subscribedCells += activeCells[index] + "  ";
+            subscribedCells += this.activeCells[index] + "  ";
         }
 
         GUI.Label(new Rect(20.0f, Screen.height - 100.0f, 200.0f, 40.0f), "<color=white>" + subscribedAndActiveCells + "</color>", new GUIStyle() { alignment = TextAnchor.UpperLeft, fontSize = 16 });
@@ -136,51 +136,51 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     /// <returns>True if the previously active cells have changed and false otherwise.</returns>
     private bool HaveActiveCellsChanged()
     {
-        if (cullArea.NumberOfSubdivisions == 0)
+        if (this.cullArea.NumberOfSubdivisions == 0)
         {
             return false;
         }
 
-        previousActiveCells = new List<int>(activeCells);
-        activeCells = cullArea.GetActiveCells(transform.position);
+        this.previousActiveCells = new List<byte>(this.activeCells);
+        this.activeCells = this.cullArea.GetActiveCells(transform.position);
 
         // If the player leaves the area we insert the whole area itself as an active cell.
         // This can be removed if it is sure that the player is not able to leave the area.
-        while (activeCells.Count <= cullArea.NumberOfSubdivisions)
+        while (this.activeCells.Count <= this.cullArea.NumberOfSubdivisions)
         {
-            activeCells.Add(cullArea.FIRST_GROUP_ID);
+            this.activeCells.Add(this.cullArea.FIRST_GROUP_ID);
         }
 
-        if (activeCells.Count != previousActiveCells.Count)
+        if (this.activeCells.Count != this.previousActiveCells.Count)
         {
             return true;
         }
 
-        if (activeCells[cullArea.NumberOfSubdivisions] != previousActiveCells[cullArea.NumberOfSubdivisions])
+        if (this.activeCells[this.cullArea.NumberOfSubdivisions] != this.previousActiveCells[this.cullArea.NumberOfSubdivisions])
         {
             return true;
         }
 
         return false;
     }
-    
+
     /// <summary>
     ///     Unsubscribes from old and subscribes to new interest groups.
     /// </summary>
     private void UpdateInterestGroups()
     {
-        List<int> disable = new List<int>(0);
+        List<byte> disable = new List<byte>(0);
 
-        foreach (int groupId in previousActiveCells)
+        foreach (byte groupId in this.previousActiveCells)
         {
-            if (!activeCells.Contains(groupId))
+            if (!this.activeCells.Contains(groupId))
             {
                 disable.Add(groupId);
             }
         }
-        
-        PhotonNetwork.SetReceivingEnabled(activeCells.ToArray(), disable.ToArray());
-        PhotonNetwork.SetSendingEnabled(activeCells.ToArray(), disable.ToArray());
+
+        PhotonNetwork.SetInterestGroups(disable.ToArray(), this.activeCells.ToArray());
+        PhotonNetwork.SetSendingEnabled(disable.ToArray(), this.activeCells.ToArray());
     }
 
     #region IPunObservable implementation
@@ -194,25 +194,25 @@ public class NetworkCullingHandler : MonoBehaviour, IPunObservable
     {
         // If the player leaves the area we insert the whole area itself as an active cell.
         // This can be removed if it is sure that the player is not able to leave the area.
-        while (activeCells.Count <= cullArea.NumberOfSubdivisions)
+        while (this.activeCells.Count <= this.cullArea.NumberOfSubdivisions)
         {
-            activeCells.Add(cullArea.FIRST_GROUP_ID);
+            this.activeCells.Add(this.cullArea.FIRST_GROUP_ID);
         }
 
-        if (cullArea.NumberOfSubdivisions == 1)
+        if (this.cullArea.NumberOfSubdivisions == 1)
         {
-            orderIndex = (++orderIndex % cullArea.SUBDIVISION_FIRST_LEVEL_ORDER.Length);
-            pView.group = activeCells[cullArea.SUBDIVISION_FIRST_LEVEL_ORDER[orderIndex]];
+            this.orderIndex = (++this.orderIndex%this.cullArea.SUBDIVISION_FIRST_LEVEL_ORDER.Length);
+            this.pView.group = this.activeCells[this.cullArea.SUBDIVISION_FIRST_LEVEL_ORDER[this.orderIndex]];
         }
-        else if (cullArea.NumberOfSubdivisions == 2)
+        else if (this.cullArea.NumberOfSubdivisions == 2)
         {
-            orderIndex = (++orderIndex % cullArea.SUBDIVISION_SECOND_LEVEL_ORDER.Length);
-            pView.group = activeCells[cullArea.SUBDIVISION_SECOND_LEVEL_ORDER[orderIndex]];
+            this.orderIndex = (++this.orderIndex%this.cullArea.SUBDIVISION_SECOND_LEVEL_ORDER.Length);
+            this.pView.group = this.activeCells[this.cullArea.SUBDIVISION_SECOND_LEVEL_ORDER[this.orderIndex]];
         }
-        else if (cullArea.NumberOfSubdivisions == 3)
+        else if (this.cullArea.NumberOfSubdivisions == 3)
         {
-            orderIndex = (++orderIndex % cullArea.SUBDIVISION_THIRD_LEVEL_ORDER.Length);
-            pView.group = activeCells[cullArea.SUBDIVISION_THIRD_LEVEL_ORDER[orderIndex]];
+            this.orderIndex = (++this.orderIndex%this.cullArea.SUBDIVISION_THIRD_LEVEL_ORDER.Length);
+            this.pView.group = this.activeCells[this.cullArea.SUBDIVISION_THIRD_LEVEL_ORDER[this.orderIndex]];
         }
     }
 

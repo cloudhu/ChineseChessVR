@@ -315,18 +315,19 @@ namespace ExitGames.Client.Photon.Chat
         /// </remarks>
         /// <param name="channelName">Name of the channel to publish to.</param>
         /// <param name="message">Your message (string or any serializable data).</param>
+        /// <param name="forwardAsWebhook">Optionally, public messages can be forwarded as webhooks. Configure webhooks for your Chat app to use this.</param>
         /// <returns>False if the client is not yet ready to send messages.</returns>
-        public bool PublishMessage(string channelName, object message)
+        public bool PublishMessage(string channelName, object message, bool forwardAsWebhook = false)
         {
-            return this.publishMessage(channelName, message, true);
+            return this.publishMessage(channelName, message, true, forwardAsWebhook);
         }
 
-        internal bool PublishMessageUnreliable(string channelName, object message)
+        internal bool PublishMessageUnreliable(string channelName, object message, bool forwardAsWebhook = false)
         {
-            return this.publishMessage(channelName, message, false);
+            return this.publishMessage(channelName, message, false, forwardAsWebhook);
         }
 
-        private bool publishMessage(string channelName, object message, bool reliable)
+        private bool publishMessage(string channelName, object message, bool reliable, bool forwardAsWebhook = false)
         {
             if (!this.CanChat)
             {
@@ -351,7 +352,10 @@ namespace ExitGames.Client.Photon.Chat
                     { (byte)ChatParameterCode.Channel, channelName },
                     { (byte)ChatParameterCode.Message, message }
                 };
-
+            if (forwardAsWebhook)
+            {
+                parameters.Add(ChatParameterCode.WebFlags, (byte)0x1);
+            }
             return this.chatPeer.OpCustom((byte)ChatOperationCode.Publish, parameters, reliable);
         }
 
@@ -360,10 +364,11 @@ namespace ExitGames.Client.Photon.Chat
         /// </summary>
         /// <param name="target">Username to send this message to.</param>
         /// <param name="message">The message you want to send. Can be a simple string or anything serializable.</param>
+        /// <param name="forwardAsWebhook">Optionally, private messages can be forwarded as webhooks. Configure webhooks for your Chat app to use this.</param>
         /// <returns>True if this clients can send the message to the server.</returns>
-        public bool SendPrivateMessage(string target, object message)
+        public bool SendPrivateMessage(string target, object message, bool forwardAsWebhook = false)
         {
-            return this.SendPrivateMessage(target, message, false);
+            return this.SendPrivateMessage(target, message, false, forwardAsWebhook);
         }
 
         /// <summary>
@@ -372,18 +377,19 @@ namespace ExitGames.Client.Photon.Chat
         /// <param name="target">Username to send this message to.</param>
         /// <param name="message">The message you want to send. Can be a simple string or anything serializable.</param>
         /// <param name="encrypt">Optionally, private messages can be encrypted. Encryption is not end-to-end as the server decrypts the message.</param>
+        /// <param name="forwardAsWebhook">Optionally, private messages can be forwarded as webhooks. Configure webhooks for your Chat app to use this.</param>
         /// <returns>True if this clients can send the message to the server.</returns>
-        public bool SendPrivateMessage(string target, object message, bool encrypt)
+        public bool SendPrivateMessage(string target, object message, bool encrypt, bool forwardAsWebhook)
         {
-            return this.sendPrivateMessage(target, message, encrypt, true);
+            return this.sendPrivateMessage(target, message, encrypt, true, forwardAsWebhook);
         }
 
-        internal bool SendPrivateMessageUnreliable(string target, object message, bool encrypt)
+        internal bool SendPrivateMessageUnreliable(string target, object message, bool encrypt, bool forwardAsWebhook = false)
         {
-            return this.sendPrivateMessage(target, message, encrypt, false);
+            return this.sendPrivateMessage(target, message, encrypt, false, forwardAsWebhook);
         }
 
-        private bool sendPrivateMessage(string target, object message, bool encrypt, bool reliable)
+        private bool sendPrivateMessage(string target, object message, bool encrypt, bool reliable, bool forwardAsWebhook = false)
         {
             if (!this.CanChat)
             {
@@ -408,9 +414,11 @@ namespace ExitGames.Client.Photon.Chat
                     { ChatParameterCode.UserId, target },
                     { ChatParameterCode.Message, message }
                 };
-
-            bool sent = this.chatPeer.OpCustom((byte)ChatOperationCode.SendPrivate, parameters, reliable, 0, encrypt);
-            return sent;
+            if (forwardAsWebhook)
+            {
+                parameters.Add(ChatParameterCode.WebFlags, (byte)0x1);
+            }
+            return this.chatPeer.OpCustom((byte)ChatOperationCode.SendPrivate, parameters, reliable, 0, encrypt);
         }
 
         /// <summary>Sets the user's status (pre-defined or custom) and an optional message.</summary>

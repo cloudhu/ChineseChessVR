@@ -65,6 +65,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
 using VRTK;
+using Lean;
 
 /// <summary>
 /// FileName: NetworkTurn.cs
@@ -129,9 +130,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public GameObject Selected;
     [Tooltip("路径")]
     public GameObject Path;
-    [Tooltip("棋盘总管")]
-    public BoardManager boardManager;
+   // [Tooltip("棋盘总管")]
+    //public BoardManager boardManager;
 
+	public LeanPool pointerPool; //指针对象池 
     static public NetworkTurn Instance;
     #endregion
 
@@ -159,7 +161,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	[Tooltip("回合文本")]
 	[SerializeField]
-	private Text TurnText;
+	private Text TurnText,turn;
 
 	[Tooltip("远程玩家文本")]
 	[SerializeField]
@@ -169,13 +171,17 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	[SerializeField]
 	private Text LocalPlayerText;
 
+    [Tooltip("远程玩家文本")]
+    [SerializeField]
+    private Text RemotePlayerTime;
+
+    [Tooltip("本地玩家文本")]
+    [SerializeField]
+    private Text LocalPlayerTime;
+
     [Tooltip("游戏状态文本")]
     [SerializeField]
-    private Text GameStatusText;
-
-	[Tooltip("游戏提示信息")]
-	[SerializeField]
-	private Tips Tip;
+    private Text GameStatusText,status;
 
     [Tooltip("输赢图片")]
 	[SerializeField]
@@ -269,16 +275,18 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			if (this.TurnText != null)
 			{
 				this.TurnText.text = (this.turnManager.Turn*0.5f).ToString();	//更新回合数
-			}
+                turn.text = TurnText.text;
+
+            }
 
 			if (this.turnManager.Turn > 0  && ! IsShowingResults)
 			{
 				float leftTime = this.turnManager.RemainingSecondsInTurn;
 
 				if (_isRedTurn) {
-					Tip.UpdateText ("红方剩余时间|Red Remaining Time：" +leftTime.ToString("F1") +"秒", "1");
+                    LocalPlayerTime.text = "红方剩余时间|Red Remaining Time：" + leftTime.ToString("F1") + "秒";
 				} else {
-					Tip.UpdateText ("黑方剩余时间|Black Remaining Time：" +leftTime.ToString("F1") +"秒", "1");
+                    RemotePlayerTime.text = "黑方剩余时间|Black Remaining Time：" + leftTime.ToString("F1") + "秒";
 				}
 			}
 
@@ -300,24 +308,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="killId">击杀棋子ID.</param>
 	/// <param name="x">The x coordinate坐标.</param>
 	/// <param name="z">The z coordinate坐标.</param>
-    public void TryMoveChessman(int killId, float x, float z,int occupyId)
+    public void TryMoveChessman(int killId, float x, float z)
     {
-        if (killId != -1 && SameColor(killId, _selectedId))
-        {
-            TrySelectChessman(killId);
-            return;
-        }
-
-        bool ret = CanMove(_selectedId, killId, new Vector3(x, 1f, z));
+		bool ret = CanMove(_selectedId, killId,x,z);
 
         if (ret)
         {
-            MoveStone(_selectedId, killId, new Vector3(x, 1f, z),occupyId);
-            OnMoveChessman(_selectedId, killId, x, z,occupyId);
-        }
-        else
-        {
-            MoveError(_selectedId, new Vector3(x, 1f, z));
+            MoveStone(_selectedId, killId, new Vector3(x, 0.57f, z));
+            OnMoveChessman(_selectedId, killId, x, z);
         }
     }
 
@@ -472,7 +470,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             if (!photonPlayer.IsLocal)
             {
                 string[] strArr = tmpStr.Split(char.Parse("s"));
-                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])),int.Parse(strArr[6]));
+                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])));
             }
         }
         else
@@ -480,14 +478,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             switch (tmpStr)
             {
                 case "BlackDefeat":
-                    Tip.UpdateText("黑方认输！", "0");
+                    status.text = "黑方认输！";
                     if (localPlayerType == ChessPlayerType.Red)
                     {
                         result = ResultType.LocalWin;
                     }
                     break;
                 case "RedDefeat":
-                    Tip.UpdateText("红方认输！", "0");
+                    status.text = "红方认输！";
                     if (localPlayerType == ChessPlayerType.Black)
                     {
                         result = ResultType.LocalWin;
@@ -576,10 +574,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="moveId">选中的棋子</param>
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
-    public void MoveStone(int moveId, int killId, Vector3 targetPosition,int occupyId)
+    public void MoveStone(int moveId, int killId, Vector3 targetPosition)
     {
-        boardManager.leavePoint(ChessmanManager.chessman[moveId]._x, ChessmanManager.chessman[moveId]._z);
-        boardManager.occupyPoint(occupyId);
+        //boardManager.leavePoint(ChessmanManager.chessman[moveId]._x, ChessmanManager.chessman[moveId]._z);
+        //boardManager.occupyPoint(occupyId);
         // 0.保存记录到列表
         SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
 		// 1.若移动到的位置上有棋子，将其吃掉  
@@ -706,7 +704,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     }
 		
 
-    public void OnSelectChessman(int selectId,float x,float z,int occupyId)
+    public void OnSelectChessman(int selectId,float x,float z)
     {
         if (_selectedId == -1)
         {
@@ -714,7 +712,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         }
         else
         {
-            TryMoveChessman(selectId, x, z,occupyId);
+            TryMoveChessman(selectId, x, z);
         }
         
     }
@@ -751,14 +749,30 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
     /// <returns></returns>
-    bool CanMove(int moveId, int killId, Vector3 targetPosition)
+	bool CanMove(int moveId, int killId,float x,float z)
     {
-        if (killId!=-1 && SameColor(moveId, killId)) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
-            OnCancelSelected(moveId);
-            TrySelectChessman(killId);
-            return false;
-        }
+        if (killId!=-1) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
+			if (SameColor (moveId, killId)) {
+				OnCancelSelected (moveId);
+				TrySelectChessman (killId);
+				return false;
+			}
+			switch (ChessmanManager.chessman[moveId]._type) {
+			case ChessmanManager.Chessman.TYPE.KING:
+			case ChessmanManager.Chessman.TYPE.GUARD:
+			case ChessmanManager.Chessman.TYPE.ROOK:
+			case ChessmanManager.Chessman.TYPE.PAWN:
+				return isObstacle (killId);
+			case ChessmanManager.Chessman.TYPE.ELEPHANT:
+				return CanMoveElephant (killId,moveId,x,z);
+			case ChessmanManager.Chessman.TYPE.HORSE:
+				return CanMoveHorse (killId,moveId,x,z);
+			case ChessmanManager.Chessman.TYPE.CANNON:
+				return CanMoveCannon (killId,moveId,x,z);
+			}
 
+        }
+			
         return true;
     }
 
@@ -771,6 +785,121 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         return _isRedTurn == ChessmanManager.chessman[id]._red;
     }
+
+	/// <summary>
+	/// Is the obstacle. | 判断目标棋子是否可以击杀，通过障碍来判断，如果该目标是障碍中的一员，则可以击杀
+	/// </summary>
+	/// <returns><c>true</c>, if obstacle was ised, <c>false</c> otherwise.</returns>
+	/// <param name="killId">Kill identifier.</param>
+	bool isObstacle(int killId){
+		if (pointerPool.obstacles.Count>0) {
+			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
+				if (pointerPool.obstacles[i].name==killId.ToString()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	 
+	/// <summary>
+	/// Determines whether this instance can move elephant the specified killId moveId x z. | 在障碍物中寻找符合步长条件的目标击杀
+	/// </summary>
+	/// <returns><c>true</c> if this instance can move elephant the specified killId moveId x z; otherwise, <c>false</c>.</returns>
+	/// <param name="killId">Kill identifier.</param>
+	/// <param name="moveId">Move identifier.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	bool CanMoveElephant(int killId,int moveId,float x,float z){
+		if (pointerPool.obstacles.Count>0) {
+			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
+				if (pointerPool.obstacles[i].name==killId.ToString()) {
+					float _x = ChessmanManager.chessman [moveId]._x;
+					float _z = ChessmanManager.chessman [moveId]._z;
+					if (Mathf.Abs(x-_x)==6f && Mathf.Abs(z-_z)==6f) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/// <summary>
+	/// Determines whether this instance can move horse the specified killId moveId x z. | 在障碍物中寻找符合步长条件的目标击杀
+	/// </summary>
+	/// <returns><c>true</c> if this instance can move horse the specified killId moveId x z; otherwise, <c>false</c>.</returns>
+	/// <param name="killId">Kill identifier.</param>
+	/// <param name="moveId">Move identifier.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	bool CanMoveHorse(int killId,int moveId,float x,float z){
+		if (pointerPool.obstacles.Count>0) {
+			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
+				if (pointerPool.obstacles[i].name==killId.ToString()) {
+					float _x = ChessmanManager.chessman [moveId]._x;
+					float _z = ChessmanManager.chessman [moveId]._z;
+					if (Mathf.Abs(x-_x)==6f || Mathf.Abs(z-_z)==6f) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/// <summary>
+	/// Determines whether this instance can move cannon the specified killId moveId x z. | 首先判断目标是否在障碍物中，然后判断是否有炮台（即炮打翻山的隔子）
+	/// </summary>
+	/// <returns><c>true</c> if this instance can move cannon the specified killId moveId x z; otherwise, <c>false</c>.</returns>
+	/// <param name="killId">Kill identifier.</param>
+	/// <param name="moveId">Move identifier.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="z">The z coordinate.</param>
+	bool CanMoveCannon(int killId,int moveId,float x,float z){
+		
+		if (pointerPool.obstacles.Count>0) {
+			int ob = 0;
+			bool isOb = false;
+			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
+				float ox = pointerPool.obstacles [i].transform.localPosition.x;
+				float oz = pointerPool.obstacles [i].transform.localPosition.z;
+
+				if (ox==x && oz==z) {
+					isOb = true;
+					continue;
+				}
+				float _x = ChessmanManager.chessman [moveId]._x;
+				float _z = ChessmanManager.chessman [moveId]._z;
+				if (_x == x) {
+					if (z > _z) {
+						if (oz > _z && oz < z) {
+							ob += 1;
+						}
+					} else {
+						if (oz < _z && oz > z) {
+							ob += 1;
+						}
+					}
+				} else {
+					if (x > _x) {
+						if (ox > _x && ox < x) {
+							ob += 1;
+						}
+					} else {
+						if (ox < _x && ox > x) {
+							ob += 1;
+						}
+					}
+				}
+
+			}
+			if (isOb && ob==1) {
+				return true;
+			}
+		}
+		return false;
+	}
     #endregion
 
     #region PUN Callbacks   //重新PUN回调函数
@@ -913,8 +1042,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		PhotonPlayer remote = PhotonNetwork.player.GetNext();
 		PhotonPlayer local = PhotonNetwork.player;
 
-		Tip.UpdateText (GameStatusText.text,"0");
-
 		if (remote != null)
 		{
 			// 应该是这种格式: "name        00"
@@ -994,10 +1121,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	void ConfirmedSelect(int selectId){
 		_selectedId = selectId;
-
+		Transform chessman=chessManManager.transform.FindChild(selectId.ToString());
+		chessman.GetComponent<ChessmanController> ().SelectedChessman ();
 		HidePath ();
-		boardManager.hidePossibleWay ();
-		boardManager.showPossibleWay(selectId);
+		//boardManager.hidePossibleWay ();
+		//boardManager.showPossibleWay(selectId);
 	}
 
 	/// <summary>  
@@ -1007,8 +1135,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	void KillChessman(int id)
 	{
 		if (id == -1) return;
-
-		CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+		if (_isRedTurn && localPlayerType==ChessPlayerType.Black) {	//红方回合被击杀的必然是黑方减分
+			CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+		}
+		if (!_isRedTurn && localPlayerType==ChessPlayerType.Red) {
+			CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+		}
 		ChessmanManager.chessman[id]._dead = true;
 		Transform chessman=chessManManager.transform.FindChild(id.ToString());
 		chessman.GetComponent<ChessmanController> ().SwitchDead ();
@@ -1058,15 +1190,16 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>  
 	void ShowPath(Vector3 oldPosition, Vector3 newPosition)
 	{
-		Selected.transform.localPosition = newPosition;
+		
 		if (!Selected.activeSelf) {
 			Selected.SetActive(true);
-		}
+            Selected.transform.localPosition = newPosition;
+        }
 
-		Path.transform.localPosition = oldPosition;
 		if (!Path.activeSelf) {
 			Path.SetActive(true);
-		}
+            Path.transform.localPosition = oldPosition;
+        }
 
 	}
 
@@ -1093,7 +1226,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	void MoveChessman(int moveId, Vector3 targetPosition)
 	{
 		Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
-		boardManager.hidePossibleWay ();
+		//boardManager.hidePossibleWay ();
 		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
 		_isRedTurn = !_isRedTurn;
 	}
@@ -1124,11 +1257,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="killId">要击杀的棋子ID.</param>
 	/// <param name="toX">目标To x.</param>
 	/// <param name="toZ">目标To z.</param>
-	void OnMoveChessman(int selectedId,int killId,float toX,float toZ,int occupyId)
+	void OnMoveChessman(int selectedId,int killId,float toX,float toZ)
 	{
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
-		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString() + "s" +occupyId.ToString();
+		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
 		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
 	}
 

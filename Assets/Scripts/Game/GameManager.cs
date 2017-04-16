@@ -98,14 +98,20 @@ public class GameManager : Photon.MonoBehaviour {
 
 	private GameObject instance;
 
-	#endregion
 
-	#region MonoBehaviour CallBacks
+    #endregion
 
-	/// <summary>
-	/// MonoBehaviour method called on GameObject by Unity during initialization phase.
-	/// </summary>
-	void Start()
+    #region MonoBehaviour CallBacks
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 90;
+    }
+
+    /// <summary>
+    /// MonoBehaviour method called on GameObject by Unity during initialization phase.
+    /// </summary>
+    void Start()
 	{
 		Instance = this;
 	}

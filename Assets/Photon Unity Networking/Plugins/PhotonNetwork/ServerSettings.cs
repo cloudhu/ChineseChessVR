@@ -12,22 +12,58 @@ using UnityEngine;
 public class Region
 {
     public CloudRegionCode Code;
+    /// <summary>Unlike the CloudRegionCode, this may contain cluster information.</summary>
+    public string Cluster;
     public string HostAndPort;
     public int Ping;
 
-    public static CloudRegionCode Parse(string codeAsString)
+    public Region(CloudRegionCode code)
     {
-        codeAsString = codeAsString.ToLower();
-
-        CloudRegionCode code = CloudRegionCode.none;
-        if (Enum.IsDefined(typeof(CloudRegionCode), codeAsString))
-        {
-            code = (CloudRegionCode)Enum.Parse(typeof(CloudRegionCode), codeAsString);
-        }
-
-        return code;
+        this.Code = code;
+        this.Cluster = code.ToString();
     }
 
+    public Region(CloudRegionCode code, string regionCodeString, string address)
+    {
+        this.Code = code;
+        this.Cluster = regionCodeString;
+        this.HostAndPort = address;
+    }
+
+    public static CloudRegionCode Parse(string codeAsString)
+    {
+        if (codeAsString == null)
+        {
+            return CloudRegionCode.none;
+        }
+
+        int slash = codeAsString.IndexOf('/');
+        if (slash > 0)
+        {
+            codeAsString = codeAsString.Substring(0, slash);
+        }
+        codeAsString = codeAsString.ToLower();
+
+        if (Enum.IsDefined(typeof(CloudRegionCode), codeAsString))
+        {
+            return (CloudRegionCode)Enum.Parse(typeof(CloudRegionCode), codeAsString);
+        }
+
+        return CloudRegionCode.none;
+    }
+
+
+    internal static CloudRegionFlag ParseFlag(CloudRegionCode region)
+    {
+        if (Enum.IsDefined(typeof(CloudRegionFlag), region.ToString()))
+        {
+            return (CloudRegionFlag)Enum.Parse(typeof(CloudRegionFlag), region.ToString());
+        }
+
+        return (CloudRegionFlag)0;
+    }
+
+    [Obsolete]
     internal static CloudRegionFlag ParseFlag(string codeAsString)
     {
         codeAsString = codeAsString.ToLower();
@@ -43,7 +79,7 @@ public class Region
 
     public override string ToString()
     {
-        return string.Format("'{0}' \t{1}ms \t{2}", this.Code, this.Ping, this.HostAndPort);
+        return string.Format("'{0}' \t{1}ms \t{2}", this.Cluster, this.Ping, this.HostAndPort);
     }
 }
 
@@ -84,7 +120,6 @@ public class ServerSettings : ScriptableObject
     public bool DisableAutoOpenWizard;
 
 
-
     public void UseCloudBestRegion(string cloudAppid)
     {
         this.HostType = HostingOption.BestRegion;
@@ -120,7 +155,6 @@ public class ServerSettings : ScriptableObject
     {
         try
         {
-
             new Guid(val);
         }
         catch
@@ -130,29 +164,17 @@ public class ServerSettings : ScriptableObject
         return true;
     }
 
-	/// <summary>
-	/// Gets the best region code in preferences.
-	/// This composes the PhotonHandler, since its Internal and can not be accessed by the custom inspector
-	/// </summary>
-	/// <value>The best region code in preferences.</value>
-	public static CloudRegionCode BestRegionCodeInPreferences{
-		get{
-			return PhotonHandler.BestRegionCodeInPreferences;
-		}
-	}
+    /// <summary>
+    /// Gets the best region code in preferences.
+    /// This composes the PhotonHandler, since its Internal and can not be accessed by the custom inspector
+    /// </summary>
+    /// <value>The best region code in preferences.</value>
+    public static CloudRegionCode BestRegionCodeInPreferences
+    {
+        get { return PhotonHandler.BestRegionCodeInPreferences; }
+    }
 
-	/// <summary>
-	/// Gets the best region code currently.
-	/// This composes the PhotonHandler, since its Internal and can not be accessed by the custom inspector
-	/// </summary>
-	/// <value>The best region code currently.</value>
-	public static CloudRegionCode BestRegionCodeCurrently{
-		get{
-			return PhotonHandler.BestRegionCodeCurrently;
-		}
-	}
-
-	public static void ResetBestRegionCodeInPreferences()
+    public static void ResetBestRegionCodeInPreferences()
 	{
 		PhotonHandler.BestRegionCodeInPreferences = CloudRegionCode.none;
 	}

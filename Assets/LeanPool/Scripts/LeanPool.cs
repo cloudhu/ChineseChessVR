@@ -38,9 +38,13 @@ namespace Lean
 		
 		[Tooltip("Should this pool send messages to the clones when they're spawned/despawned?")]
 		public NotificationType Notification = NotificationType.SendMessage;
-		
+
+		public List<GameObject> spawnedClones = new List<GameObject>();
+		public List<GameObject> obstacles  = new List<GameObject>();
+
 		// All the currently cached prefab instances
 		private List<GameObject> cache = new List<GameObject>();
+
 		
 		// All the delayed destruction objects
 		private List<DelayedDestruction> delayedDestructions = new List<DelayedDestruction>();
@@ -202,11 +206,11 @@ namespace Lean
 						
 						// Activate clone
 						clone.SetActive(true);
-						
+						spawnedClones.Add (clone);
 						// Messages?
 						SendNotification(clone, "OnSpawn");
-						
-						return clone;
+                        //Debug.Log("OnSpawn" + clone);
+                        return clone;
 					}
 					else
 					{
@@ -236,6 +240,7 @@ namespace Lean
 		// This will despawn a clone and add it to the cache
 		public void FastDespawn(GameObject clone, float delay = 0.0f)
 		{
+			
 			if (clone != null)
 			{
 				// Delay the despawn?
@@ -266,12 +271,14 @@ namespace Lean
 					
 					// Move it under this GO
 					clone.transform.SetParent(transform, false);
+                    //Debug.Log("OnDespawn"+clone);
 				}
 			}
 			else
 			{
 				//Debug.LogWarning("Attempting to despawn a null clone");
 			}
+			spawnedClones.Remove (clone);
 		}
 		
 		// This allows you to make another clone and add it to the cache
@@ -373,7 +380,7 @@ namespace Lean
 			clone.name = Prefab.name + " " + total;
 			
 			clone.transform.SetParent(parent, false);
-			
+			spawnedClones.Add (clone);
 			return clone;
 		}
 		
@@ -396,5 +403,20 @@ namespace Lean
 				break;
 			}
 		}
+
+        /// <summary>
+        /// 清除指针和障碍列表
+        /// </summary>
+		public void hidePointer (){
+			if (spawnedClones.Count > 0) {
+			
+				for (int i = 0; i < spawnedClones.Count; i++) {
+					Despawn (spawnedClones [i]);
+				}
+				spawnedClones.Clear ();
+			}
+            if (obstacles.Count > 0)
+                obstacles.Clear();
+        }
 	}
 }

@@ -251,6 +251,7 @@ public class RoomInfo
 
         // merge the custom properties (from your application) to the cache (only string-typed keys will be kept)
         this.customPropertiesField.MergeStringKeys(propertiesToCache);
+        this.customPropertiesField.StripKeysWithNullValues();
     }
 
 

@@ -111,7 +111,8 @@ public class ChessmanUI : MonoBehaviour {
 			fontColor = Color.red;
 			UpdateText ("Red "+ChessmanManager.chessman [chessmanId]._type.ToString ());
 		} else {
-			UpdateText ("Black "+ChessmanManager.chessman[chessmanId]._type.ToString());
+            fontColor = Color.black;
+            UpdateText ("Black "+ChessmanManager.chessman[chessmanId]._type.ToString());
 			BlackFlag.SetActive (true);
 		}
 

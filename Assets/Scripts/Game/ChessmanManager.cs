@@ -267,7 +267,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			GameObject ChessMan = GameObject.Instantiate(prefabs ) as GameObject;
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
-			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 1f, chessman [i]._z);
+			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
 		}  
 	}	
 	#endregion
