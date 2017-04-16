@@ -146,11 +146,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     // 追踪显示结果的时机来处理游戏逻辑.
     private bool IsShowingResults;
 	
-
-	[Tooltip("语音UI视图")]
-	[SerializeField]
-	private RectTransform VoiceUiView;
-
 	[Tooltip("游戏UI视图")]
 	[SerializeField]
 	private RectTransform GameUiView;
@@ -173,11 +168,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     [Tooltip("远程玩家文本")]
     [SerializeField]
-    private Text RemotePlayerTime;
+    private Text RemotePlayerTime,Score;
 
     [Tooltip("本地玩家文本")]
     [SerializeField]
-    private Text LocalPlayerTime;
+    private Text LocalPlayerTime,LocalScore;
 
     [Tooltip("游戏状态文本")]
     [SerializeField]
@@ -283,18 +278,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			{
 				float leftTime = this.turnManager.RemainingSecondsInTurn;
 
-				if (_isRedTurn) {
-                    LocalPlayerTime.text = "红方剩余时间|Red Remaining Time：" + leftTime.ToString("F1") + "秒";
+				if (_isRedTurn && localPlayerType==ChessPlayerType.Red) {
+                    LocalPlayerTime.text = leftTime.ToString("F1") + "秒";
 				} else {
-                    RemotePlayerTime.text = "黑方剩余时间|Black Remaining Time：" + leftTime.ToString("F1") + "秒";
+                    RemotePlayerTime.text =leftTime.ToString("F1") + "秒";
 				}
 			}
-
-
 		}
-
-		this.UpdatePlayerTexts();	//更新玩家文本信息
-
 
 	}
 
@@ -545,7 +535,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		if (this.result == ResultType.LocalWin)
 		{
 			PhotonNetwork.player.AddScore(1);   //这是PhotonPlayer的扩展方法.就是给玩家加分
-		}
+            LocalScore.text = PhotonNetwork.player.GetScore().ToString();
+            UpdatePlayerTexts();
+        }
 	}
 	#endregion
 
@@ -913,6 +905,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public override void OnLeftRoom()
     {
         Debug.Log("OnLeftRoom()");
+        UpdatePlayerTexts();
 		PlayMusic (LeaveClip);
         RefreshUIViews();
     }
@@ -964,6 +957,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
                 GameStatusText.text = "棋局已开始，正在进入观棋模式……";
             }
         }
+        UpdatePlayerTexts();
 		RefreshUIViews();
    	}
 		
@@ -1039,17 +1033,18 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
 	private void UpdatePlayerTexts()
 	{
-		PhotonPlayer remote = PhotonNetwork.player.GetNext();
+		
 		PhotonPlayer local = PhotonNetwork.player;
-
-		if (remote != null)
+        PhotonPlayer remote = PhotonNetwork.player.GetNext();
+        if (remote != null)
 		{
 			// 应该是这种格式: "name        00"
 			if (PhotonNetwork.isMasterClient) {
-				this.RemotePlayerText.text = remote.NickName + "—黑方 | Black   " + remote.GetScore ().ToString ("D2");
-			} else {
-
-				this.RemotePlayerText.text = remote.NickName + "—红方 | Red   " + remote.GetScore ().ToString ("D2");
+				this.RemotePlayerText.text = remote.NickName + "—黑方 | Black";
+                Score.text= remote.GetScore().ToString("D2");
+            } else {
+                Score.text = remote.GetScore().ToString("D2");
+                this.RemotePlayerText.text = remote.NickName + "—红方 | Red" ;
 			}
 		}
 		else
@@ -1063,11 +1058,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			// 应该是这种样式: "YOU   00"
 			if (PhotonNetwork.isMasterClient)
 			{
-				this.LocalPlayerText.text = local.NickName+":红方 | Red   " + local.GetScore().ToString("D2");
-				//Debug.Log ("MasterClient");
-			}else{
-
-				this.LocalPlayerText.text = local.NickName + ":黑方 | Black   " + local.GetScore().ToString("D2");
+				this.LocalPlayerText.text = local.NickName+":红方 | Red";
+                LocalScore.text= local.GetScore().ToString("D2");
+                //Debug.Log ("MasterClient");
+            }
+            else{
+                LocalScore.text = local.GetScore().ToString("D2");
+                this.LocalPlayerText.text = local.NickName + ":黑方 | Black";
 			}
 
 
@@ -1271,7 +1268,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	void RefreshUIViews()
 	{
 		GameUiView.gameObject.SetActive(PhotonNetwork.inRoom);
-		VoiceUiView.gameObject.SetActive(PhotonNetwork.inRoom);
 		ButtonCanvasGroup.interactable = PhotonNetwork.room != null ? PhotonNetwork.room.PlayerCount > 1 : false;
 	}
 

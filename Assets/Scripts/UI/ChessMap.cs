@@ -266,7 +266,8 @@ public class ChessMap : MonoBehaviour {
             GameObject ChessMan = GameObject.Instantiate(prefabs) as GameObject;
             ChessMan.name = i.ToString();
             ChessMan.transform.SetParent(transform, false);
-            ChessMan.transform.localPosition = new Vector3(chessman[i]._x,  chessman[i]._z,0);
+            ChessMan.GetComponent<RectTransform>().localPosition= new Vector3(chessman[i]._x, chessman[i]._z, 0);
+            //ChessMan.transform.localPosition = new Vector3(chessman[i]._x,  chessman[i]._z,0);
         }
     }
     #endregion

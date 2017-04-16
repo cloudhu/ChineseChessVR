@@ -79,9 +79,6 @@ public class ChessmanController : VRTK_InteractableObject {
     [Tooltip("棋子的音效")]
     public AudioClip awakeMusic,ArrivalAC,RunAC,DieAC;
 
-    [Tooltip("UI游戏对象预设")]
-	public GameObject ChessmamUiPrefab;
-
     [Tooltip("战斗UI游戏对象预设")]
     public GameObject warUiPrefab;
 
@@ -111,17 +108,6 @@ public class ChessmanController : VRTK_InteractableObject {
 		if (this.As == null) this.As = FindObjectOfType<AudioSource>();
 
 		pointerPool = transform.parent.GetComponent<LeanPool> ();	//获取指针的对象池组件
-
-        //创建棋子UI
-		if (this.ChessmamUiPrefab != null)
-		{
-			GameObject _uiGo = Instantiate(this.ChessmamUiPrefab,Vector3.zero,Quaternion.identity,transform);
-			_uiGo.transform.localPosition = new Vector3 (0, 2.2f, 0);
-		}
-		else
-		{
-			Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
-		}
 
         //创建战斗UI
         if (this.warUiPrefab != null)
@@ -498,25 +484,25 @@ public class ChessmanController : VRTK_InteractableObject {
 		}
 
 		for (int i = 1; i < 10; i++) {	//循环生成指针
-			if (Mathf.Abs(x+step*i)<=13.5f) {
+			if (Mathf.Abs(x+step*i)<16.5f) {
 				pointerPool.FastSpawn(new Vector3(x+step*i, pointerHeight, z), Quaternion.identity, transform.parent);
 			}
-			if (Mathf.Abs(x-step*i)<=13.5f) {
+			if (Mathf.Abs(x-step*i)<16.5f) {
 				pointerPool.FastSpawn(new Vector3(x-step*i, pointerHeight, z), Quaternion.identity, transform.parent);
 			}
-			if (Mathf.Abs(z+step*i)<=12f) {
+			if (Mathf.Abs(z+step*i)<15f) {
 				pointerPool.FastSpawn(new Vector3(x, pointerHeight, z+step*i), Quaternion.identity, transform.parent);
 			}
-			if (Mathf.Abs(z-step*i)<=12f) {
+			if (Mathf.Abs(z-step*i)<15f) {
 				pointerPool.FastSpawn(new Vector3(x, pointerHeight, z-step*i), Quaternion.identity, transform.parent);
 			}
 		}
 
 		if (pointerPool.obstacles.Count>0) {
-			float minUp=13.5f;		//上下左右的阀值，参考Tower象棋规范文档的笛卡尔坐标系
-			float maxDown = -13.5f;
-			float minRight = 12f;
-			float maxLeft=-12f;
+			float minUp=16.5f;		//上下左右的阀值，参考Tower象棋规范文档的笛卡尔坐标系
+			float maxDown = -16.5f;
+			float minRight = 15f;
+			float maxLeft=-15f;
 			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
 				float _z = pointerPool.obstacles [i].transform.localPosition.z;
 				float _x = pointerPool.obstacles [i].transform.localPosition.x;
@@ -552,22 +538,22 @@ public class ChessmanController : VRTK_InteractableObject {
 				for (int i = 0; i < pointerPool.spawnedClones.Count; i++) {
 					float _x = pointerPool.spawnedClones [i].transform.localPosition.x;
 					float _z=pointerPool.spawnedClones [i].transform.localPosition.z;
-					if (minUp!=13.5f && _x>minUp) {
+					if (minUp!=16.5f && _x>minUp) {
 						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
 						continue;
 					}
 
-					if (maxDown!=-13.5f && _x<maxDown) {
+					if (maxDown!=-16.5f && _x<maxDown) {
 						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
 						continue;
 					}
 
-					if (minRight!=12f && _z>minRight) {
+					if (minRight!=15f && _z>minRight) {
 						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
 						continue;
 					}
 
-					if (maxLeft!=-12f && _z<maxLeft) {
+					if (maxLeft!=-15f && _z<maxLeft) {
 						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
 					}
 				}

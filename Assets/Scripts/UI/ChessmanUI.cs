@@ -88,8 +88,6 @@ public class ChessmanUI : MonoBehaviour {
 
 	[Tooltip("和目标之间的偏移值")]
 	public Vector3 ScreenOffset = new Vector3(0f,5f,0f);
-	[Tooltip("旗帜：红与黑")]
-	public GameObject RedFlag,BlackFlag;
 	
 	#endregion
 
@@ -107,13 +105,11 @@ public class ChessmanUI : MonoBehaviour {
 		_target = transform.parent.gameObject;
 		int chessmanId = int.Parse (_target.name);
 		if (chessmanId < 16) {
-			RedFlag.SetActive (true);
 			fontColor = Color.red;
 			UpdateText ("Red "+ChessmanManager.chessman [chessmanId]._type.ToString ());
 		} else {
             fontColor = Color.black;
             UpdateText ("Black "+ChessmanManager.chessman[chessmanId]._type.ToString());
-			BlackFlag.SetActive (true);
 		}
 
 		ResetUI();

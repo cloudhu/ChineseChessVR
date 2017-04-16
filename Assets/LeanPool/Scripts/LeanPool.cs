@@ -411,7 +411,10 @@ namespace Lean
 			if (spawnedClones.Count > 0) {
 			
 				for (int i = 0; i < spawnedClones.Count; i++) {
-					Despawn (spawnedClones [i]);
+                    if (spawnedClones[i].activeSelf)
+                    {
+                        FastDespawn(spawnedClones[i]);
+                    }
 				}
 				spawnedClones.Clear ();
 			}
