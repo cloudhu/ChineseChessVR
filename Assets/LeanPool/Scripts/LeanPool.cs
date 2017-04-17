@@ -39,8 +39,8 @@ namespace Lean
 		[Tooltip("Should this pool send messages to the clones when they're spawned/despawned?")]
 		public NotificationType Notification = NotificationType.SendMessage;
 
-		public List<GameObject> spawnedClones = new List<GameObject>();
-		public List<GameObject> obstacles  = new List<GameObject>();
+		public List<GameObject> spawnedPointers = new List<GameObject>();
+		public List<GameObject> DetectedObstacles  = new List<GameObject>();
 
 		// All the currently cached prefab instances
 		private List<GameObject> cache = new List<GameObject>();
@@ -206,7 +206,7 @@ namespace Lean
 						
 						// Activate clone
 						clone.SetActive(true);
-						spawnedClones.Add (clone);
+						spawnedPointers.Add (clone);
 						// Messages?
 						SendNotification(clone, "OnSpawn");
                         //Debug.Log("OnSpawn" + clone);
@@ -278,7 +278,7 @@ namespace Lean
 			{
 				//Debug.LogWarning("Attempting to despawn a null clone");
 			}
-			spawnedClones.Remove (clone);
+			spawnedPointers.Remove (clone);
 		}
 		
 		// This allows you to make another clone and add it to the cache
@@ -380,7 +380,6 @@ namespace Lean
 			clone.name = Prefab.name + " " + total;
 			
 			clone.transform.SetParent(parent, false);
-			spawnedClones.Add (clone);
 			return clone;
 		}
 		
@@ -408,18 +407,19 @@ namespace Lean
         /// 清除指针和障碍列表
         /// </summary>
 		public void hidePointer (){
-			if (spawnedClones.Count > 0) {
+			if (spawnedPointers.Count > 0) {
 			
-				for (int i = 0; i < spawnedClones.Count; i++) {
-                    if (spawnedClones[i].activeSelf)
-                    {
-                        FastDespawn(spawnedClones[i]);
-                    }
+				for (int i = 0; i < spawnedPointers.Count; i++) {
+					int index = spawnedPointers.Count - 1;
+					if (index >= 0) {
+						FastDespawn(spawnedPointers [index]);
+					}
+
 				}
-				spawnedClones.Clear ();
+				spawnedPointers.Clear ();
 			}
-            if (obstacles.Count > 0)
-                obstacles.Clear();
+            if (DetectedObstacles.Count > 0)
+                DetectedObstacles.Clear();
         }
 	}
 }

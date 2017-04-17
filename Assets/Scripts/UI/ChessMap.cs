@@ -96,7 +96,7 @@ public class ChessMap : MonoBehaviour {
     public struct Chessman
     {
         public enum TYPE { KING, GUARD, ELEPHANT, HORSE, ROOK, CANNON, PAWN };
-
+		public GameObject go;
         //棋子的ID  
         public int _id;
 
@@ -264,10 +264,10 @@ public class ChessMap : MonoBehaviour {
             GameObject prefabs = GetPrefab(i, chessman[i]._type);
             //Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
             GameObject ChessMan = GameObject.Instantiate(prefabs) as GameObject;
+			chessman [i].go = ChessMan;
             ChessMan.name = i.ToString();
             ChessMan.transform.SetParent(transform, false);
             ChessMan.GetComponent<RectTransform>().localPosition= new Vector3(chessman[i]._x, chessman[i]._z, 0);
-            //ChessMan.transform.localPosition = new Vector3(chessman[i]._x,  chessman[i]._z,0);
         }
     }
     #endregion

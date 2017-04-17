@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=pointer.cs company=League of HTC Vive Developers>
+// <copyright file=MapChessman.cs company=League of HTC Vive Dev>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -52,26 +52,24 @@
 //   
 // </copyright>
 // <summary>
-//  Chinese Chess VR
+//  ChineseChessVR
 // </summary>
 // <author>胡良云（CloudHu）</author>
-//中文注释：胡良云（CloudHu） 3/29/2017
+//中文注释：胡良云（CloudHu） 4/17/2017
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using VRTK;
-using Lean;
+
 /// <summary>
-/// FileName: pointer.cs
+/// FileName: MapChessman.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 负责标记出可以行走的棋子位置
-/// DateTime: 3/29/2017
+/// Description: 
+/// DateTime: 4/17/2017
 /// </summary>
-public class pointer : VRTK_InteractableObject
-{
+public class MapChessman : MonoBehaviour {
 	
 	#region Public Variables  //公共变量区域
 	
@@ -80,53 +78,28 @@ public class pointer : VRTK_InteractableObject
 
 
 	#region Private Variables   //私有变量区域
+	private int id;
+
+	#endregion
 	
-	WarUI warUI;
-    private LeanPool pointerPool; //指针对象池 
-    #endregion
+	
+	#region MonoBehaviour CallBacks //回调函数区域
+	// Use this for initialization
+	void Start () {
+		id = int.Parse (gameObject.name);
+	}
 
-
-    #region MonoBehaviour CallBacks //回调函数区域
-
-    void Start(){
-		warUI= transform.FindChild("WarUI").GetComponent<WarUI>();
-        pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-		if (other.CompareTag("Red") || other.CompareTag("Black")) { //如果碰到棋子，则回收
-			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
-			
-			pointerPool.DetectedObstacles.Add (other.gameObject);
-            pointerPool.FastDespawn(gameObject,0.1f);
-        }
-
-    }
-
-    #endregion
-
-    #region Public Methods	//公共方法区域
-
-    public override void StartUsing(GameObject usingObject)
-    {
-        base.StartUsing(usingObject);
-		if (warUI==null) {
-			return;
-		}
-        warUI.TrySelectChessman();
-
-		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
-		pointerPool.FastDespawn(gameObject,0.1f);
-
-        //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
-    }
-
-    public override void StopUsing(GameObject usingObject)
-    {
-        base.StopUsing(usingObject);
-
-    }
-
-    #endregion
+	#endregion
+	
+	#region Public Methods	//公共方法区域
+	
+	public void trySelectChessman(){
+		ChessmanManager.chessman [id].go.GetComponent<ChessmanController> ().trySelectChessman ();
+	}
+	#endregion
+	
+	#region Private Methods	//私有方法区域
+	
+	
+	#endregion
 }

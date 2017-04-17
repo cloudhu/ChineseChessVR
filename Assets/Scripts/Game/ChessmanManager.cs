@@ -99,6 +99,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	{  
 		public enum TYPE { KING, GUARD, ELEPHANT, HORSE, ROOK, CANNON, PAWN };  
 
+		public GameObject go;
 		//棋子的ID  
 		public int _id;  
 
@@ -265,6 +266,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			GameObject prefabs = GetPrefab(i, chessman[i]._type);
 			//Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
 			GameObject ChessMan = GameObject.Instantiate(prefabs ) as GameObject;
+			chessman [i].go = ChessMan;
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
 			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);

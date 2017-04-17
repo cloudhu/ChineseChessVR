@@ -129,16 +129,19 @@ public class ChessmanController : VRTK_InteractableObject {
     public override void StartUsing(GameObject usingObject)
 	{
 		base.StartUsing(usingObject);
-		if (NetworkTurn.Instance._selectedId != ChessmanId) {
-			war.TrySelectChessman ();
-		}
-        //Debug.Log("StartUsing :Called war.TrySelectChessman ();");
+		trySelectChessman ();
 	}
 
 	public override void StopUsing(GameObject usingObject)
 	{
 		base.StopUsing(usingObject);
 
+	}
+
+	public void trySelectChessman(){
+		if (NetworkTurn.Instance._selectedId != ChessmanId) {
+			war.TrySelectChessman ();
+		}
 	}
 
 	public void SelectedChessman(){
@@ -161,7 +164,14 @@ public class ChessmanController : VRTK_InteractableObject {
 		ht.Add ("islocal",true);
 		ht.Add ("time", 3.0f);
 		iTween.MoveTo (gameObject, ht);
-
+		ht.Clear ();
+		float x = targetPosition.z == 0 ? 0 : (targetPosition.z / 3f) * 58f;
+		float y=targetPosition.x == 0 ? 0 : (targetPosition.x / 3f) * 58f;
+		Vector3 transMap = new Vector3 (x,y,0);
+		ht.Add ("position", transMap);
+		ht.Add ("islocal",true);
+		ht.Add ("time", 3.0f);
+		iTween.MoveTo (ChessMap.chessman[ChessmanId].go,ht);
 		ChessmanManager.chessman[ChessmanId]._x = targetPosition.x;
 		ChessmanManager.chessman[ChessmanId]._z = targetPosition.z;
 	}
@@ -221,6 +231,7 @@ public class ChessmanController : VRTK_InteractableObject {
 	}
 		
 	void PureDead(){
+		ChessMap.chessman [ChessmanId].go.SetActive (false);
 		gameObject.SetActive (false);
 	}
 
@@ -498,16 +509,16 @@ public class ChessmanController : VRTK_InteractableObject {
 			}
 		}
 
-		if (pointerPool.obstacles.Count>0) {
+		if (pointerPool.DetectedObstacles.Count>0) {
 			float minUp=16.5f;		//上下左右的阀值，参考Tower象棋规范文档的笛卡尔坐标系
 			float maxDown = -16.5f;
 			float minRight = 15f;
 			float maxLeft=-15f;
-			for (int i = 0; i < pointerPool.obstacles.Count; i++) {
-				float _z = pointerPool.obstacles [i].transform.localPosition.z;
-				float _x = pointerPool.obstacles [i].transform.localPosition.x;
+			for (int i = 0; i < pointerPool.DetectedObstacles.Count; i++) {
+				float _z = pointerPool.DetectedObstacles [i].transform.localPosition.z;
+				float _x = pointerPool.DetectedObstacles [i].transform.localPosition.x;
 
-				if (_z==z) {
+				if (_z==z) {	//Test: pos(7.5,-9) ob1(-13.5,-9) maxDown=-13.5f; ob2(-7.5,-9) maxDown=-7.5f; ob3(13.5,-9) minUp=13.5f;
 					if (_x > x) {
 						if (_x<minUp) {
 							minUp = _x;
@@ -533,29 +544,34 @@ public class ChessmanController : VRTK_InteractableObject {
 				}
 			}
 
-			if (pointerPool.spawnedClones.Count>0) {
+			if (pointerPool.spawnedPointers.Count>0) {
 				//剔除阀值外的多余指针
-				for (int i = 0; i < pointerPool.spawnedClones.Count; i++) {
-					float _x = pointerPool.spawnedClones [i].transform.localPosition.x;
-					float _z=pointerPool.spawnedClones [i].transform.localPosition.z;
-					if (minUp!=16.5f && _x>minUp) {
-						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
-						continue;
+				for (int i = 0; i < pointerPool.spawnedPointers.Count; i++) {
+					int index = pointerPool.spawnedPointers.Count - 1;
+					if (index>=0) {
+						GameObject go = pointerPool.spawnedPointers [index];
+						float _x = go.transform.localPosition.x;
+						float _z = go.transform.localPosition.z;
+						if (_x>minUp) {
+							pointerPool.FastDespawn (go);
+							continue;
+						}
+
+						if (_x<maxDown) {
+							pointerPool.FastDespawn (go);
+							continue;
+						}
+
+						if (_z>minRight) {
+							pointerPool.FastDespawn (go);
+							continue;
+						}
+
+						if (_z<maxLeft) {
+							pointerPool.FastDespawn (go);
+						}
 					}
 
-					if (maxDown!=-16.5f && _x<maxDown) {
-						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
-						continue;
-					}
-
-					if (minRight!=15f && _z>minRight) {
-						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
-						continue;
-					}
-
-					if (maxLeft!=-15f && _z<maxLeft) {
-						pointerPool.FastDespawn (pointerPool.spawnedClones [i]);
-					}
 				}
 			}
 		}
