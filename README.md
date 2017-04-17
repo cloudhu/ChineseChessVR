@@ -26,6 +26,7 @@
 >1.如果项目里面没有以下插件，请按顺序导入(If you don't have these plugins in your project,please import them in specified Order)SteamVR+VRTK+PUNVoice+Photon Unity Networking；<br>
 2.你需要一套HTC Vive设备来开发或测试（It's obvious that you need Htc vive to develope or test）；<br>
 3.因为是MO，你需要联网(You also need network to enable a MO)；<br>
+
 0x05 Donate 捐款
 ----
 >你的捐款将用于维持中国象棋VR的开发，如果有足够的资金，我们可以租用游戏服务器，谢谢！Your donation will be used to keep developing ChineseChessVR，if we have enough money we can rent GameServer，thanks！<br>
@@ -33,7 +34,7 @@
 [![Support via Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/CloudHu) <br>
 <br>
 上面是Paypal的链接，如果你没有Paypal账户，可以扫描下方的支付宝二维码来捐款，非常感谢！<br>
-![Support via Paypal](http://a2.qpic.cn/psb?/V14W3jU1139kAk/dqVCPK0BwG.dmnVl5ZT4dL078h4hYx27iXOPWeluFLc!/b/dIEBAAAAAAAA&ek=1&kp=1&pt=0&bo=gALLAzgEZwYRGDg!&tm=1492419600&sce=60-2-2&rf=viewer_4)
+![支付宝二维码](http://a2.qpic.cn/psb?/V14W3jU1139kAk/dqVCPK0BwG.dmnVl5ZT4dL078h4hYx27iXOPWeluFLc!/b/dIEBAAAAAAAA&ek=1&kp=1&pt=0&bo=gALLAzgEZwYRGDg!&tm=1492419600&sce=60-2-2&rf=viewer_4)
 <br>
 
 To be Continued……
