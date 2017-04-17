@@ -34,7 +34,7 @@
 [![Support via Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/CloudHu) <br>
 <br>
 上面是Paypal的链接，如果你没有Paypal账户，可以扫描下方的支付宝二维码来捐款，非常感谢！<br>
-![支付宝二维码](http://a2.qpic.cn/psb?/V14W3jU1139kAk/dqVCPK0BwG.dmnVl5ZT4dL078h4hYx27iXOPWeluFLc!/b/dIEBAAAAAAAA&ek=1&kp=1&pt=0&bo=gALLAzgEZwYRGDg!&tm=1492419600&sce=60-2-2&rf=viewer_4)
+![支付宝二维码](http://oojs718qb.bkt.clouddn.com/pay.jpg)
 <br>
 
 To be Continued……
