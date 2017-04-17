@@ -30,7 +30,7 @@
 
         private void VRTK_ControllerUIPointerEvents_ListenerExample_UIPointerElementEnter(object sender, UIPointerEventArgs e)
         {
-            Debug.Log("UI Pointer entered " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
+           // Debug.Log("UI Pointer entered " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
             if (togglePointerOnHit && GetComponent<VRTK_Pointer>())
             {
                 GetComponent<VRTK_Pointer>().Toggle(true);
@@ -39,7 +39,7 @@
 
         private void VRTK_ControllerUIPointerEvents_ListenerExample_UIPointerElementExit(object sender, UIPointerEventArgs e)
         {
-            Debug.Log("UI Pointer exited " + e.previousTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
+            //Debug.Log("UI Pointer exited " + e.previousTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
             if (togglePointerOnHit && GetComponent<VRTK_Pointer>())
             {
                 GetComponent<VRTK_Pointer>().Toggle(false);
@@ -48,17 +48,17 @@
 
         private void VRTK_ControllerUIPointerEvents_ListenerExample_UIPointerElementClick(object sender, UIPointerEventArgs e)
         {
-            Debug.Log("UI Pointer clicked " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
+            //Debug.Log("UI Pointer clicked " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
         }
 
         private void VRTK_ControllerUIPointerEvents_ListenerExample_UIPointerElementDragStart(object sender, UIPointerEventArgs e)
         {
-            Debug.Log("UI Pointer started dragging " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
+            //Debug.Log("UI Pointer started dragging " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
         }
 
         private void VRTK_ControllerUIPointerEvents_ListenerExample_UIPointerElementDragEnd(object sender, UIPointerEventArgs e)
         {
-            Debug.Log("UI Pointer stopped dragging " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
+            //Debug.Log("UI Pointer stopped dragging " + e.currentTarget.name + " on Controller index [" + e.controllerIndex + "] and the state was " + e.isActive);
         }
     }
 }

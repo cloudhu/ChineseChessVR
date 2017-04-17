@@ -72,16 +72,16 @@ using Lean;
 /// </summary>
 public class pointer : VRTK_InteractableObject
 {
-	
-	#region Public Variables  //公共变量区域
-	
-	
-	#endregion
+
+    #region Public Variables  //公共变量区域
 
 
-	#region Private Variables   //私有变量区域
-	
-	WarUI warUI;
+    #endregion
+
+
+    #region Private Variables   //私有变量区域
+    private ChessmanManager chessmanManager;
+    WarUI warUI;
     private LeanPool pointerPool; //指针对象池 
     #endregion
 
@@ -91,15 +91,21 @@ public class pointer : VRTK_InteractableObject
     void Start(){
 		warUI= transform.FindChild("WarUI").GetComponent<WarUI>();
         pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
+        chessmanManager = transform.parent.GetComponent<ChessmanManager>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
 		if (other.CompareTag("Red") || other.CompareTag("Black")) { //如果碰到棋子，则回收
-			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
-			
-			pointerPool.DetectedObstacles.Add (other.gameObject);
-            pointerPool.FastDespawn(gameObject,0.1f);
+			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
+            if (chessmanManager == null) chessmanManager = transform.parent.GetComponent<ChessmanManager>();
+
+            chessmanManager.DetectedObstacles.Add (other.gameObject);
+            //Debug.Log(chessmanManager.DetectedObstacles.Count.ToString() + "++++");
+            chessmanManager.spawnedPointers.Remove(gameObject);
+            chessmanManager.TrimPointer();
+            pointerPool.FastDespawn(gameObject);
+            
         }
 
     }
@@ -116,8 +122,10 @@ public class pointer : VRTK_InteractableObject
 		}
         warUI.TrySelectChessman();
 
-		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>(); 
-		pointerPool.FastDespawn(gameObject,0.1f);
+		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
+
+        chessmanManager.spawnedPointers.Remove(gameObject);
+        pointerPool.FastDespawn(gameObject,0.1f);
 
         //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }

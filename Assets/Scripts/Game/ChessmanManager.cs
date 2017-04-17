@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file=ChessmanManager.cs company=League of HTC Vive Developers>
+// <copyright file=this.cs company=League of HTC Vive Developers>
 /*
 11111111111111111111111111111111111111001111111111111111111111111
 11111111111111111111111111111111111100011111111111111111111111111
@@ -59,23 +59,26 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 
+using Lean;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// FileName: ChessmanManager.cs
+/// FileName: this.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
 /// Description: 这个脚本用于管理所有棋子
 /// DateTime: 3/22/2017
 /// </summary>
 public class ChessmanManager : Photon.MonoBehaviour {
-	
-	#region Public Variables  //公共变量区域
 
-	//红方阵营
-	public GameObject Red_King;  	//帅
+    #region Public Variables  //公共变量区域
+
+    public List<GameObject> spawnedPointers = new List<GameObject>();
+    public List<GameObject> DetectedObstacles = new List<GameObject>();
+    //红方阵营
+    public GameObject Red_King;  	//帅
 	public GameObject Red_Guard; 	//仕 	
 	public GameObject Red_Elephant; //象 
 	public GameObject Red_Horse;  	//馬
@@ -173,24 +176,26 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			z = _z;  
 			type = _type;  
 		}  
-	}  
- 
-	#endregion
-
-
-	#region Private Variables   //私有变量区域
-	
-
-	#endregion
-	
-	
-	#region MonoBehaviour CallBacks //回调函数区域
-
-
-	// Use this for initialization
-	void Start () {
-        ChessmanInit();
 	}
+
+    #endregion
+
+
+    #region Private Variables   //私有变量区域
+
+    private LeanPool pointerPool; //指针对象池 
+
+    #endregion
+
+
+    #region MonoBehaviour CallBacks //回调函数区域
+
+
+    // Use this for initialization
+    void Start () {
+        ChessmanInit();
+        pointerPool = transform.GetComponent<LeanPool>();    //获取指针的对象池组件
+    }
 	
 
 	#endregion
@@ -203,25 +208,25 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	/// <param name="id">棋子id</param>  
 	/// <param name="type">棋子类型</param>  
 	/// <returns></returns>  
-	public GameObject GetPrefab(int id, ChessmanManager.Chessman.TYPE type)  
+	public GameObject GetPrefab(int id, Chessman.TYPE type)  
 	{  
 		if (id < 16)  //id小于16表示是红方阵营
 		{  
 			switch (type)  
 			{  
-				case ChessmanManager.Chessman.TYPE.KING:  
+				case Chessman.TYPE.KING:  
 					return Red_King;  
-				case ChessmanManager.Chessman.TYPE.GUARD:  
+				case Chessman.TYPE.GUARD:  
 					return Red_Guard;  
-				case ChessmanManager.Chessman.TYPE.ELEPHANT:  
+				case Chessman.TYPE.ELEPHANT:  
 					return Red_Elephant;  
-				case ChessmanManager.Chessman.TYPE.HORSE:  
+				case Chessman.TYPE.HORSE:  
 					return Red_Horse;  
-				case ChessmanManager.Chessman.TYPE.ROOK:  
+				case Chessman.TYPE.ROOK:  
 					return Red_Rook;  
-				case ChessmanManager.Chessman.TYPE.CANNON:  
+				case Chessman.TYPE.CANNON:  
 					return Red_Cannon;  
-				case ChessmanManager.Chessman.TYPE.PAWN:  
+				case Chessman.TYPE.PAWN:  
 					return Red_Pawn;  
 			}  
 		}  
@@ -229,19 +234,19 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		{  
 			switch (type)  
 			{  
-				case ChessmanManager.Chessman.TYPE.KING:  
+				case Chessman.TYPE.KING:  
 					return Black_King;  
-				case ChessmanManager.Chessman.TYPE.GUARD:  
+				case Chessman.TYPE.GUARD:  
 					return Black_Guard;  
-				case ChessmanManager.Chessman.TYPE.ELEPHANT:  
+				case Chessman.TYPE.ELEPHANT:  
 					return Black_Elephant;  
-				case ChessmanManager.Chessman.TYPE.HORSE:  
+				case Chessman.TYPE.HORSE:  
 					return Black_Horse;  
-				case ChessmanManager.Chessman.TYPE.ROOK:  
+				case Chessman.TYPE.ROOK:  
 					return Black_Rook;  
-				case ChessmanManager.Chessman.TYPE.CANNON:  
+				case Chessman.TYPE.CANNON:  
 					return Black_Cannon;  
-				case ChessmanManager.Chessman.TYPE.PAWN:  
+				case Chessman.TYPE.PAWN:  
 					return Black_Pawn;   
 			}  
 		}  
@@ -271,7 +276,135 @@ public class ChessmanManager : Photon.MonoBehaviour {
 			ChessMan.transform.SetParent (transform,false);
 			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
 		}  
-	}	
-	#endregion
-	
+	}
+
+    /// <summary>
+    /// 清除指针和障碍列表
+    /// </summary>
+    public void hidePointer()
+    {
+        if (pointerPool==null)
+        {
+            Debug.LogError(pointerPool + "null!!!");
+            return;
+        }
+        if (spawnedPointers.Count > 0)
+        {
+
+            for (int i = 0; i < spawnedPointers.Count; i++)
+            {
+                    pointerPool.FastDespawn(spawnedPointers[i]);
+                    //Debug.Log("De" + i + "  " + spawnedPointers[i]);
+            }
+            spawnedPointers.Clear();
+        }
+        if (DetectedObstacles.Count > 0)
+            DetectedObstacles.Clear();
+    }
+
+    /// <summary>
+    /// 移除多余的指针
+    /// </summary>
+    public void TrimPointer()
+    {
+        if (this.DetectedObstacles.Count > 0)
+        {
+            float minUp = 16.5f;        //上下左右的阀值，参考Tower象棋规范文档的笛卡尔坐标系
+            float maxDown = -16.5f;
+            float minRight = 15f;
+            float maxLeft = -15f;
+            for (int i = 0; i < this.DetectedObstacles.Count; i++)
+            {
+                int ChessmanId = NetworkTurn.Instance._selectedId;
+                float _z = this.DetectedObstacles[i].transform.localPosition.z;
+                float _x = this.DetectedObstacles[i].transform.localPosition.x;
+                float x = chessman[ChessmanId]._x;  //棋子位置x
+                float z = chessman[ChessmanId]._z;
+
+                if (_z == z)
+                {   //Test: pos(7.5,9) ob1(-13.5,9) maxDown=-13.5f; ob2(-7.5,9) maxDown=-7.5f; ob3(13.5,9) minUp=13.5f;ob4(7.5,-9)  maxLetf=-9f;
+                    if (_x > x)
+                    {
+                        if (_x < minUp)
+                        {
+                            minUp = _x;
+                        }
+                    }
+                    else
+                    {
+                        if (_x > maxDown)
+                        {
+                            maxDown = _x;
+                        }
+                    }
+                    continue;
+                }
+
+                if (_x == x)
+                {
+                    if (_z > z)
+                    {
+                        if (_z < minRight)
+                        {
+                            minRight = _z;
+                        }
+                    }
+                    else
+                    {
+                        if (_z > maxLeft)
+                        {
+                            maxLeft = _z;
+                        }
+                    }
+                }
+            }
+
+           // Debug.Log(this.spawnedPointers.Count.ToString() + "++++");
+            if (this.spawnedPointers.Count > 0)
+            {
+                //剔除阀值外的多余指针
+                for (int i = 0; i < this.spawnedPointers.Count; i++)
+                {
+                    int index = this.spawnedPointers.Count - 1;
+                    if (index >= 0)
+                    {
+                        GameObject go = this.spawnedPointers[index];
+                        float _x = go.transform.localPosition.x;
+                        float _z = go.transform.localPosition.z;
+                        //Debug.Log(index + " " + go + " " + _x + " " + " " + _z + " " + minUp + " " + maxDown + " " + minRight + " " + maxLeft);
+                        if (_x > minUp)
+                        {
+                            pointerPool.FastDespawn(go);
+                            this.spawnedPointers.RemoveAt(index);
+                            continue;
+                        }
+
+                        if (_x < maxDown)
+                        {
+                            pointerPool.FastDespawn(go);
+                            Debug.Log(go);
+                            this.spawnedPointers.RemoveAt(index);
+                            continue;
+                        }
+
+                        if (_z > minRight)
+                        {
+                            pointerPool.FastDespawn(go);
+                            this.spawnedPointers.RemoveAt(index);
+                            continue;
+                        }
+
+                        if (_z < maxLeft)
+                        {
+                            pointerPool.FastDespawn(go);
+                            this.spawnedPointers.RemoveAt(index);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    #endregion
+
 }

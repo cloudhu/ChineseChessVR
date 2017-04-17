@@ -58,9 +58,8 @@
 //中文注释：胡良云（CloudHu） 4/17/2017
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// FileName: MapChessman.cs
@@ -79,7 +78,7 @@ public class MapChessman : MonoBehaviour {
 
 	#region Private Variables   //私有变量区域
 	private int id;
-
+    private Image im;
 	#endregion
 	
 	
@@ -87,13 +86,26 @@ public class MapChessman : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		id = int.Parse (gameObject.name);
+        im = GetComponent<Image>();
 	}
 
-	#endregion
-	
-	#region Public Methods	//公共方法区域
-	
-	public void trySelectChessman(){
+    // 如果 MonoBehaviour 已启用，则在每一帧都调用 Update
+    private void Update()
+    {
+        if (NetworkTurn.Instance._selectedId == id)
+        {
+            im.color = Color.yellow;
+        }
+        else
+            im.color = Color.white;
+    }
+
+
+    #endregion
+
+    #region Public Methods	//公共方法区域
+
+    public void trySelectChessman(){
 		ChessmanManager.chessman [id].go.GetComponent<ChessmanController> ().trySelectChessman ();
 	}
 	#endregion

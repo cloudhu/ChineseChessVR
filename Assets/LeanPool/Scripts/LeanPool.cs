@@ -39,9 +39,6 @@ namespace Lean
 		[Tooltip("Should this pool send messages to the clones when they're spawned/despawned?")]
 		public NotificationType Notification = NotificationType.SendMessage;
 
-		public List<GameObject> spawnedPointers = new List<GameObject>();
-		public List<GameObject> DetectedObstacles  = new List<GameObject>();
-
 		// All the currently cached prefab instances
 		private List<GameObject> cache = new List<GameObject>();
 
@@ -206,7 +203,7 @@ namespace Lean
 						
 						// Activate clone
 						clone.SetActive(true);
-						spawnedPointers.Add (clone);
+				
 						// Messages?
 						SendNotification(clone, "OnSpawn");
                         //Debug.Log("OnSpawn" + clone);
@@ -278,7 +275,7 @@ namespace Lean
 			{
 				//Debug.LogWarning("Attempting to despawn a null clone");
 			}
-			spawnedPointers.Remove (clone);
+			
 		}
 		
 		// This allows you to make another clone and add it to the cache
@@ -403,23 +400,5 @@ namespace Lean
 			}
 		}
 
-        /// <summary>
-        /// 清除指针和障碍列表
-        /// </summary>
-		public void hidePointer (){
-			if (spawnedPointers.Count > 0) {
-			
-				for (int i = 0; i < spawnedPointers.Count; i++) {
-					int index = spawnedPointers.Count - 1;
-					if (index >= 0) {
-						FastDespawn(spawnedPointers [index]);
-					}
-
-				}
-				spawnedPointers.Clear ();
-			}
-            if (DetectedObstacles.Count > 0)
-                DetectedObstacles.Clear();
-        }
 	}
 }

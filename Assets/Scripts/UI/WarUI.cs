@@ -95,6 +95,8 @@ public class WarUI : MonoBehaviour {
     #region Private Variables   //私有变量区域
 
 	GameObject _target;
+    bool isChessman=false;
+    int chessmanId;
 
     #endregion
 
@@ -104,6 +106,11 @@ public class WarUI : MonoBehaviour {
     void Start()
     {
 		_target = transform.parent.gameObject;
+        if (_target.GetComponent<ChessmanController>())
+        {
+            isChessman = true;
+            chessmanId = int.Parse(_target.name);
+        }
         ResetUI();
     }
 
@@ -122,9 +129,9 @@ public class WarUI : MonoBehaviour {
 			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
 		}
 
-		if (_target.GetComponent<ChessmanController>())
+		if (isChessman)
 		{
-			if (NetworkTurn.Instance._selectedId == int.Parse (_target.name)) {	//如果选中棋子则更新UI文本显示
+			if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
 				
                 fontColor = Color.yellow;
                 fontSize = 24;
@@ -151,7 +158,7 @@ public class WarUI : MonoBehaviour {
     {
         //Debug.Log("WarUI:Called TrySelectChessman()");
         string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
-		if (_target.GetComponent<ChessmanController>())    //如果有这个组件就是棋子
+		if (isChessman)    //如果有这个组件就是棋子
         {
             if (tmpText== "Select")
             {

@@ -201,25 +201,25 @@ public class ChessMap : MonoBehaviour {
     /// <param name="id">棋子id</param>  
     /// <param name="type">棋子类型</param>  
     /// <returns></returns>  
-    public GameObject GetPrefab(int id, ChessMap.Chessman.TYPE type)
+    public GameObject GetPrefab(int id, Chessman.TYPE type)
     {
         if (id < 16)  //id小于16表示是红方阵营
         {
             switch (type)
             {
-                case ChessMap.Chessman.TYPE.KING:
+                case Chessman.TYPE.KING:
                     return Red_King;
-                case ChessMap.Chessman.TYPE.GUARD:
+                case Chessman.TYPE.GUARD:
                     return Red_Guard;
-                case ChessMap.Chessman.TYPE.ELEPHANT:
+                case Chessman.TYPE.ELEPHANT:
                     return Red_Elephant;
-                case ChessMap.Chessman.TYPE.HORSE:
+                case Chessman.TYPE.HORSE:
                     return Red_Horse;
-                case ChessMap.Chessman.TYPE.ROOK:
+                case Chessman.TYPE.ROOK:
                     return Red_Rook;
-                case ChessMap.Chessman.TYPE.CANNON:
+                case Chessman.TYPE.CANNON:
                     return Red_Cannon;
-                case ChessMap.Chessman.TYPE.PAWN:
+                case Chessman.TYPE.PAWN:
                     return Red_Pawn;
             }
         }
@@ -227,19 +227,19 @@ public class ChessMap : MonoBehaviour {
         {
             switch (type)
             {
-                case ChessMap.Chessman.TYPE.KING:
+                case Chessman.TYPE.KING:
                     return Black_King;
-                case ChessMap.Chessman.TYPE.GUARD:
+                case Chessman.TYPE.GUARD:
                     return Black_Guard;
-                case ChessMap.Chessman.TYPE.ELEPHANT:
+                case Chessman.TYPE.ELEPHANT:
                     return Black_Elephant;
-                case ChessMap.Chessman.TYPE.HORSE:
+                case Chessman.TYPE.HORSE:
                     return Black_Horse;
-                case ChessMap.Chessman.TYPE.ROOK:
+                case Chessman.TYPE.ROOK:
                     return Black_Rook;
-                case ChessMap.Chessman.TYPE.CANNON:
+                case Chessman.TYPE.CANNON:
                     return Black_Cannon;
-                case ChessMap.Chessman.TYPE.PAWN:
+                case Chessman.TYPE.PAWN:
                     return Black_Pawn;
             }
         }

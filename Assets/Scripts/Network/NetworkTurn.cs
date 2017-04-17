@@ -130,7 +130,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public GameObject Selected;
     [Tooltip("路径")]
     public GameObject Path;
-	public LeanPool pointerPool; //指针对象池 
     static public NetworkTurn Instance;
     #endregion
 
@@ -794,9 +793,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <returns><c>true</c>, if obstacle was ised, <c>false</c> otherwise.</returns>
 	/// <param name="killId">Kill identifier.</param>
 	bool isObstacle(int killId){
-		if (pointerPool.DetectedObstacles.Count>0) {
-			for (int i = 0; i < pointerPool.DetectedObstacles.Count; i++) {
-				if (pointerPool.DetectedObstacles[i].name==killId.ToString()) {
+		if (chessManManager.DetectedObstacles.Count>0) {
+			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
+				if (chessManManager.DetectedObstacles[i].name==killId.ToString()) {
 					return true;
 				}
 			}
@@ -813,9 +812,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="z">The z coordinate.</param>
 	bool CanMoveElephant(int killId,int moveId,float x,float z){
-		if (pointerPool.DetectedObstacles.Count>0) {
-			for (int i = 0; i < pointerPool.DetectedObstacles.Count; i++) {
-				if (pointerPool.DetectedObstacles[i].name==killId.ToString()) {
+		if (chessManManager.DetectedObstacles.Count>0) {
+			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
+				if (chessManManager.DetectedObstacles[i].name==killId.ToString()) {
 					float _x = ChessmanManager.chessman [moveId]._x;
 					float _z = ChessmanManager.chessman [moveId]._z;
 					if (Mathf.Abs(x-_x)==6f && Mathf.Abs(z-_z)==6f) {
@@ -836,9 +835,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="x">The x coordinate.</param>
 	/// <param name="z">The z coordinate.</param>
 	bool CanMoveHorse(int killId,int moveId,float x,float z){
-		if (pointerPool.DetectedObstacles.Count>0) {
-			for (int i = 0; i < pointerPool.DetectedObstacles.Count; i++) {
-				if (pointerPool.DetectedObstacles[i].name==killId.ToString()) {
+		if (chessManManager.DetectedObstacles.Count>0) {
+			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
+				if (chessManManager.DetectedObstacles[i].name==killId.ToString()) {
 					float _x = ChessmanManager.chessman [moveId]._x;
 					float _z = ChessmanManager.chessman [moveId]._z;
 					if (Mathf.Abs(x-_x)==6f || Mathf.Abs(z-_z)==6f) {
@@ -860,12 +859,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="z">The z coordinate.</param>
 	bool CanMoveCannon(int killId,int moveId,float x,float z){
 		
-		if (pointerPool.DetectedObstacles.Count>0) {
+		if (chessManManager.DetectedObstacles.Count>0) {
 			int ob = 0;
 			bool isOb = false;
-			for (int i = 0; i < pointerPool.DetectedObstacles.Count; i++) {
-				float ox = pointerPool.DetectedObstacles [i].transform.localPosition.x;
-				float oz = pointerPool.DetectedObstacles [i].transform.localPosition.z;
+			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
+				float ox = chessManManager.DetectedObstacles [i].transform.localPosition.x;
+				float oz = chessManManager.DetectedObstacles [i].transform.localPosition.z;
 
 				if (ox==x && oz==z) {
 					isOb = true;
