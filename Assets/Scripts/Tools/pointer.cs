@@ -81,7 +81,6 @@ public class pointer : VRTK_InteractableObject
 
     #region Private Variables   //私有变量区域
     private ChessmanManager chessmanManager;
-    WarUI warUI;
     private LeanPool pointerPool; //指针对象池 
     #endregion
 
@@ -89,14 +88,13 @@ public class pointer : VRTK_InteractableObject
     #region MonoBehaviour CallBacks //回调函数区域
 
     void Start(){
-		warUI= transform.FindChild("WarUI").GetComponent<WarUI>();
         pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
         chessmanManager = transform.parent.GetComponent<ChessmanManager>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-		if (other.CompareTag("Red") || other.CompareTag("Black")) { //如果碰到棋子，则回收
+		if (other.CompareTag("Chessman")) { //如果碰到棋子，则回收
 			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
             if (chessmanManager == null) chessmanManager = transform.parent.GetComponent<ChessmanManager>();
 
@@ -117,15 +115,12 @@ public class pointer : VRTK_InteractableObject
     public override void StartUsing(GameObject usingObject)
     {
         base.StartUsing(usingObject);
-		if (warUI==null) {
-			return;
-		}
-        warUI.TrySelectChessman();
+		NetworkTurn.Instance.OnSelectChessman(-1, transform.localPosition.x, transform.localPosition.z);
 
 		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
 
         chessmanManager.spawnedPointers.Remove(gameObject);
-        pointerPool.FastDespawn(gameObject,0.1f);
+        pointerPool.FastDespawn(gameObject);
 
         //Debug.Log("pointer--StartUsing :Called war.TrySelectChessman ();");
     }

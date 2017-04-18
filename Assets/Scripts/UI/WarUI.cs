@@ -95,7 +95,6 @@ public class WarUI : MonoBehaviour {
     #region Private Variables   //私有变量区域
 
 	GameObject _target;
-    bool isChessman=false;
     int chessmanId;
 
     #endregion
@@ -106,11 +105,9 @@ public class WarUI : MonoBehaviour {
     void Start()
     {
 		_target = transform.parent.gameObject;
-        if (_target.GetComponent<ChessmanController>())
-        {
-            isChessman = true;
-            chessmanId = int.Parse(_target.name);
-        }
+
+        chessmanId = int.Parse(_target.name);
+        
         ResetUI();
     }
 
@@ -129,22 +126,18 @@ public class WarUI : MonoBehaviour {
 			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
 		}
 
-		if (isChessman)
-		{
-			if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
-				
-                fontColor = Color.yellow;
-                fontSize = 24;
-                UpdateText("Selected");
-            } else {
-				fontColor = Color.green;
-                fontSize = 16;
-                UpdateText("Select");
-            }
+
+		if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
 			
-		}
-
-
+            fontColor = Color.yellow;
+            fontSize = 24;
+            UpdateText("Selected");
+        } else {
+			fontColor = Color.green;
+            fontSize = 16;
+            UpdateText("Select");
+        }
+			
     }
 
     #endregion
@@ -158,22 +151,15 @@ public class WarUI : MonoBehaviour {
     {
         //Debug.Log("WarUI:Called TrySelectChessman()");
         string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
-		if (isChessman)    //如果有这个组件就是棋子
+        if (tmpText== "Select")
         {
-            if (tmpText== "Select")
-            {
-                NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
-            }
-            else
-            {
-                NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
-            }
+            NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
         }
         else
         {
-            NetworkTurn.Instance.OnSelectChessman(-1, _target.transform.localPosition.x, _target.transform.localPosition.z);
-            //_target.GetComponent<BoardPoint>().Occupied();
+            NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
         }
+        
 			
     }
 

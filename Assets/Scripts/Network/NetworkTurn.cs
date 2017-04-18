@@ -295,7 +295,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
         if (ret)
         {
-            MoveStone(_selectedId, killId, new Vector3(x, 0.57f, z));
+			MoveStone(_selectedId, killId, x,z);
             OnMoveChessman(_selectedId, killId, x, z);
         }
     }
@@ -456,7 +456,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             if (!photonPlayer.IsLocal)
             {
                 string[] strArr = tmpStr.Split(char.Parse("s"));
-                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), new Vector3(float.Parse(strArr[4]), 1f, float.Parse(strArr[5])));
+                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), float.Parse(strArr[4]),float.Parse(strArr[5]));
             }
         }
         else
@@ -586,16 +586,16 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="moveId">选中的棋子</param>
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
-    public void MoveStone(int moveId, int killId, Vector3 targetPosition)
+	public void MoveStone(int moveId, int killId,float x,float z)
     {
         // 0.保存记录到列表
-        SaveStep(moveId, killId, targetPosition.x, targetPosition.z);
+        SaveStep(moveId, killId, x, z);
 		// 1.若移动到的位置上有棋子，将其吃掉  
         KillChessman(killId);
 		// 2.将移动棋子的路径显示出来  
-        ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), targetPosition);
+		ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), x,z);
 		// 3.将棋子移动到目标位置  
-        MoveChessman(moveId, targetPosition);
+		MoveChessman(moveId, x,z);
         
     }
 
@@ -1004,7 +1004,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="newPlayer">New player.</param>
 	public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
 	{
-		Debug.Log("Other player arrived");
+		//Debug.Log("Other player arrived");
 		LocalGameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
 		PlayMusic (JoinClip);
 	}
@@ -1017,7 +1017,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
 	{
 		PlayMusic (LeaveClip);
-		Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
+		//Debug.Log("Other player disconnected! isInactive: " + otherPlayer.IsInactive);
 		LocalGameStatusText.text ="玩家"+ otherPlayer.NickName+"已离开游戏";
         if (!otherPlayer.IsLocal)
         {
@@ -1061,13 +1061,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 	}
 
-	void MoveError(int moveId, Vector3 position)
+	void MoveError(int moveId, float x,float z)
 	{
 		GameObject chessman = chessManManager.transform.FindChild(moveId.ToString()).gameObject;
 		Vector3 oldPosition = new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z);
 		HidePath ();
-		ShowPath (oldPosition,position);
-		LocalGameStatusText.text = "MoveError:"+chessman.name+"不能移动到目标位置:"+position;
+		ShowPath (oldPosition,x,z);
+		LocalGameStatusText.text = "MoveError:"+chessman.name+"不能移动到目标位置:"+x;
 	}
 
 	void TrySelectChessman(int selectId)
@@ -1166,9 +1166,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <summary>  
 	/// 设置上一步棋子走过的路径，即将上一步行动的棋子的位置留下标识，并标识该棋子  
 	/// </summary>  
-	void ShowPath(Vector3 oldPosition, Vector3 newPosition)
+	void ShowPath(Vector3 oldPosition, float x,float z)
 	{
-		
+		Vector3 newPosition = new Vector3 (x, 0.57f, z);
 		if (!Selected.activeSelf) {
 			Selected.SetActive(true);
             Selected.transform.localPosition = newPosition;
@@ -1201,10 +1201,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// 移动棋子到目标位置  
 	/// </summary>  
 	/// <param name="targetPosition">目标位置</param>  
-	void MoveChessman(int moveId, Vector3 targetPosition)
+	void MoveChessman(int moveId,float x,float z)
 	{
 		Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
-		chessman.GetComponent<ChessmanController>().SetTarget(targetPosition);
+		chessman.GetComponent<ChessmanController>().SetTarget(x,z);
 		_isRedTurn = !_isRedTurn;
 	}
 
@@ -1217,7 +1217,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		if (_step.killId != -1) {
 			ReliveChess (_step.killId);
 		}
-		MoveChessman(_step.moveId, new Vector3(_step.xFrom,1f, _step.zFrom));
+		MoveChessman(_step.moveId, _step.xFrom, _step.zFrom);
 
 		HidePath();
 		if (_selectedId != -1)

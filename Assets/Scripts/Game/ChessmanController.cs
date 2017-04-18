@@ -155,7 +155,8 @@ public class ChessmanController : VRTK_InteractableObject {
 	/// 设置目标位置.
 	/// </summary>
 	/// <param name="targetPosition">目标位置.</param>
-	public void SetTarget(Vector3 targetPosition){
+	public void SetTarget(float x,float z){
+		Vector3 targetPosition = new Vector3 (x, 0.57f, z);
 		chessmanManager.hidePointer ();
 		Hashtable ht = new Hashtable ();
 		ht.Add ("position", targetPosition);
@@ -163,18 +164,18 @@ public class ChessmanController : VRTK_InteractableObject {
 		ht.Add ("onstart", "Move");
 		ht.Add ("oncomplete","Stop");
 		ht.Add ("islocal",true);
-		ht.Add ("time", 3.0f);
+		ht.Add ("speed", 2.0f);
 		iTween.MoveTo (gameObject, ht);
 		ht.Clear ();
-		float x = targetPosition.z == 0 ? 0 : (targetPosition.z / 3f) * 58f;
-		float y=targetPosition.x == 0 ? 0 : (targetPosition.x / 3f) * 58f;
-		Vector3 transMap = new Vector3 (x,y,0);
-		ht.Add ("position", transMap);
+		float _x = z == 0 ? 0 : (z / 3f) * 58f;
+		float _y = x == 0 ? 0 : (x / 3f) * 58f;
+		targetPosition = new Vector3 (_x,_y,0);
+		ht.Add ("position", targetPosition);
 		ht.Add ("islocal",true);
-		ht.Add ("time", 3.0f);
+		ht.Add ("speed", 2.0f);
 		iTween.MoveTo (ChessMap.chessman[ChessmanId].go,ht);
-		ChessmanManager.chessman[ChessmanId]._x = targetPosition.x;
-		ChessmanManager.chessman[ChessmanId]._z = targetPosition.z;
+		ChessmanManager.chessman[ChessmanId]._x = x;
+		ChessmanManager.chessman[ChessmanId]._z = z;
 	}
 
 	/// <summary>
