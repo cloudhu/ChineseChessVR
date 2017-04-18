@@ -265,14 +265,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 				return;	//回合结束
 			}
 
-			if (this.turnManager.Turn > 0  && ! IsShowingResults)
+			if (this.turnManager.Turn > 0  && !IsShowingResults)
 			{
-				float leftTime = this.turnManager.RemainingSecondsInTurn;
 
 				if (_isRedTurn && localPlayerType==ChessPlayerType.Red) {
-                    LocalPlayerTimeText.text = leftTime.ToString("F1") + "秒";
+                    LocalPlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
 				} else {
-                    RemotePlayerTimeText.text =leftTime.ToString("F1") + "秒";
+                    RemotePlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
 				}
 			}
 		}
@@ -346,7 +345,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="turn">回合.</param>
 	public void OnTurnBegins(int turn)
 	{
-		//Debug.Log("OnTurnBegins() turn: "+ turn);
+		Debug.Log("OnTurnBegins() turn: "+ turn);
         _selectedId = -1;
 		if (this.LocalTurnText != null)
 		{
@@ -1007,7 +1006,15 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		//Debug.Log("Other player arrived");
 		LocalGameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
 		PlayMusic (JoinClip);
-	}
+        if (PhotonNetwork.room.PlayerCount == 2)
+        {
+            if (this.turnManager.Turn == 0)
+            {
+                // when the room has two players, start the first turn (later on, joining players won't trigger a turn)
+                this.StartTurn();
+            }
+        }
+    }
 
 	/// <summary>
 	/// 当一个远程玩家离开房间时调用。这个PhotonPlayer 此时已经从playerlist玩家列表删除.

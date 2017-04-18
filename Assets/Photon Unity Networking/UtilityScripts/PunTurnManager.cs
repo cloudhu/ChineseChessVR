@@ -68,7 +68,7 @@ public class PunTurnManager : PunBehaviour
 	/// <value><c>true</c> if this turn is completed by all; otherwise, <c>false</c>.</value>
     public bool IsCompletedByAll
     {
-        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == PhotonNetwork.room.PlayerCount; }
+        get { return PhotonNetwork.room != null && Turn > 0 && this.finishedPlayers.Count == 1; }
     }
 
 	/// <summary>
