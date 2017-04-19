@@ -126,10 +126,10 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 			case 1:
 				transform.position = new Vector3(GameManager.Instance.head.position.x, GameManager.Instance.head.position.y+0.5f, GameManager.Instance.head.position.z);
 				transform.rotation = GameManager.Instance.head.rotation;
-				if (this.Health <= 0f)
+				/*if (this.Health <= 0f)
 				{
 					GameManager.Instance.LeaveRoom();
-				}
+				}*/
 				break;
 			case 2:
 				transform.position = GameManager.Instance.leftHand.position;

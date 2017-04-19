@@ -88,9 +88,9 @@ public class GameManager : Photon.MonoBehaviour {
 	public Transform leftHand;
 	public Transform rightHand;
 
-	public delegate void OnCharacterInstantiated(GameObject character);
+	//public delegate void OnCharacterInstantiated(GameObject character); //如果要使用VoiceUI来Debug则需启用注释掉的代码
 
-	public static event OnCharacterInstantiated CharacterInstantiated;
+	//public static event OnCharacterInstantiated CharacterInstantiated;
 
 	#endregion
 
@@ -106,15 +106,9 @@ public class GameManager : Photon.MonoBehaviour {
     private void Awake()
     {
         Application.targetFrameRate = 90;
-    }
-
-    /// <summary>
-    /// MonoBehaviour method called on GameObject by Unity during initialization phase.
-    /// </summary>
-    void Start()
-	{
 		Instance = this;
-	}
+    }
+		
 
 	/// <summary>
 	/// MonoBehaviour method called on GameObject by Unity on every frame.
@@ -142,9 +136,10 @@ public class GameManager : Photon.MonoBehaviour {
             GameObject Head = PhotonNetwork.Instantiate(this.HeadPrefab.name, Vector3.zero, Quaternion.identity, 0) as GameObject;
             PhotonNetwork.Instantiate(this.RHandPrefab.name, Vector3.zero, Quaternion.identity, 0);
             PhotonNetwork.Instantiate(this.LHandPrefab.name, Vector3.zero, Quaternion.identity, 0);
-			if (CharacterInstantiated != null) {
-				CharacterInstantiated(Head);
-			}
+			Head.GetComponent<PhotonVoiceRecorder> ().enabled = true;
+			//if (CharacterInstantiated != null) {
+				//CharacterInstantiated(Head);
+			//}
         }
         else
         {

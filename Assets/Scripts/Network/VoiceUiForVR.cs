@@ -154,12 +154,12 @@ public class VoiceUiForVR : MonoBehaviour {
 
 	private void OnEnable() {
 
-		GameManager.CharacterInstantiated += CharacterInstantiation_CharacterInstantiated;
+		//GameManager.CharacterInstantiated += CharacterInstantiation_CharacterInstantiated;
 		BetterToggleVR.ToggleValueChanged += BetterToggle_ToggleValueChanged;
 	}
 
 	private void OnDisable() {
-		GameManager.CharacterInstantiated -= CharacterInstantiation_CharacterInstantiated;
+		//GameManager.CharacterInstantiated -= CharacterInstantiation_CharacterInstantiated;
 		BetterToggleVR.ToggleValueChanged -= BetterToggle_ToggleValueChanged;
 	}
 
@@ -216,6 +216,11 @@ public class VoiceUiForVR : MonoBehaviour {
 	}
 	
 	private void Update() {
+		//保持UI看向本地玩家
+		if (CameraRigManager.LocalPlayerInstance != null)
+		{
+			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+		}
 		// editor only two-ways binding for toggles
 		#if UNITY_EDITOR
 		InitToggles(globalSettings.GetComponentsInChildren<Toggle>());
