@@ -76,7 +76,7 @@ public class ChessmanController : VRTK_InteractableObject {
 
     #region Public Variables  //公共变量区域
     [Tooltip("棋子的音效")]
-    public AudioClip awakeMusic,ArrivalAC,RunAC,DieAC;
+	public AudioClip spawnMusic,awakeMusic,ArrivalAC,RunAC,DieAC;
 
     [Tooltip("战斗UI游戏对象预设")]
     public GameObject warUiPrefab;
@@ -102,6 +102,7 @@ public class ChessmanController : VRTK_InteractableObject {
     #region MonoBehaviour CallBacks //回调函数区域
     // Use this for initialization
     void Start () {
+		PlaySound (spawnMusic);
         ChessmanId =int.Parse(this.gameObject.name);
 		isRed = ChessmanId<16;
 		ani = transform.GetComponent<Animator> ();
@@ -172,7 +173,7 @@ public class ChessmanController : VRTK_InteractableObject {
 		targetPosition = new Vector3 (_x,_y,0);
 		ht.Add ("position", targetPosition);
 		ht.Add ("islocal",true);
-		ht.Add ("speed", 2.0f);
+		ht.Add ("speed", 3.0f);
 		iTween.MoveTo (ChessMap.chessman[ChessmanId].go,ht);
 		ChessmanManager.chessman[ChessmanId]._x = x;
 		ChessmanManager.chessman[ChessmanId]._z = z;

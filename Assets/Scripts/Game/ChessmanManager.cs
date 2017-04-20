@@ -74,10 +74,13 @@ using UnityEngine;
 public class ChessmanManager : Photon.MonoBehaviour {
 
     #region Public Variables  //公共变量区域
-
+	[Tooltip("棋局UI地图")]
+	public ChessMap chessMap; //棋局地图
+	[Tooltip("已经生成的指针")]
     public List<GameObject> spawnedPointers = new List<GameObject>();
+	[Tooltip("检测到的障碍物")]
     public List<GameObject> DetectedObstacles = new List<GameObject>();
-    //红方阵营
+	[Header("红方阵营")]
     public GameObject Red_King;  	//帅
 	public GameObject Red_Guard; 	//仕 	
 	public GameObject Red_Elephant; //象 
@@ -86,7 +89,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	public GameObject Red_Cannon;   //炮
 	public GameObject Red_Pawn; 	//卒
 
-	//黑方阵营
+	[Header("黑方阵营")]
 	public GameObject Black_King;  	  //将
 	public GameObject Black_Guard;    //士
 	public GameObject Black_Elephant; //相 
@@ -193,7 +196,7 @@ public class ChessmanManager : Photon.MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        ChessmanInit();
+        //ChessmanInit();
         pointerPool = transform.GetComponent<LeanPool>();    //获取指针的对象池组件
     }
 	
@@ -260,21 +263,39 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	/// </summary>  
 	public void ChessmanInit()  
 	{  
-		for (int i = 0; i < 32; ++i)  
+		chessMap.ChessmanInit ();
+		for (int i = 0; i < 32; i++)  
 		{  
-			chessman[i].init(i);  
-		}  
+			chessman[i].init(i);
 
-		//实例化32个棋子  
-		for (int i = 0; i < 32; ++i)  
-		{  
-			GameObject prefabs = GetPrefab(i, chessman[i]._type);
+			GameObject ChessMan = GetPrefab(i, chessman[i]._type);
 			//Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-			GameObject ChessMan = GameObject.Instantiate(prefabs ) as GameObject;
-			chessman [i].go = ChessMan;
+			ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
+
             ChessMan.name = i.ToString(); 
 			ChessMan.transform.SetParent (transform,false);
 			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
+			chessman [i].go = ChessMan;
+		}  
+
+	}
+
+	/// <summary>
+	/// Reinits the chessman.重新初始化棋子
+	/// </summary>
+	public void ReinitChessman(){
+		for (int i = 0; i < 32; i++)  
+		{  
+			chessman[i].init(i);  
+			ChessMap.chessman[i].init(i);  
+			if (!chessman [i].go.activeSelf) {
+				chessman [i].go.SetActive (true);
+			}
+			if (!ChessMap.chessman [i].go.activeSelf) {
+				ChessMap.chessman [i].go.SetActive (true);
+			}
+			chessman [i].go.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
+			ChessMap.chessman [i].go.GetComponent<RectTransform>().localPosition= new Vector3(ChessMap.chessman[i]._x, ChessMap.chessman[i]._z, 0);
 		}  
 	}
 

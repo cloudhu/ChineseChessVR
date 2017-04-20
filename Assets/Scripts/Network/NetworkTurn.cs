@@ -79,6 +79,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	#region Public Variables  //公共变量区域
 	[Tooltip("棋局一回合的时间")]
 	public float TurnTime=120f;
+	[Tooltip("声源组件")]
     public AudioSource source;
     public enum ChessPlayerType	//棋手类型
     {
@@ -270,8 +271,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 				if (_isRedTurn && localPlayerType==ChessPlayerType.Red) {
                     LocalPlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+					RemotePlayerTimeText.text="00:00";
 				} else {
                     RemotePlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+					LocalPlayerTimeText.text ="00:00";
 				}
 			}
 		}
@@ -290,6 +293,23 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="z">The z coordinate坐标.</param>
     public void TryMoveChessman(int killId, float x, float z)
     {
+		if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
+
+		if (_selectedId>=16)    //黑子无法被红方或红色回合内选定
+		{
+			if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
+			{
+				return;
+			}
+		}
+		else    //红子同样无法被其他阵营选定
+		{
+			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
+			{
+				return;
+			}
+		}
+
 		bool ret = CanMove(_selectedId, killId,x,z);
 
         if (ret)
@@ -349,7 +369,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
         _selectedId = -1;
 		if (this.LocalTurnText != null)
 		{
-			this.LocalTurnText.text = (this.turnManager.Turn*0.5f).ToString();	//更新回合数
+			this.LocalTurnText.text = (this.turnManager.Turn).ToString();	//更新回合数
 			RemoteTurnText.text = LocalTurnText.text;
 
 		}
@@ -605,7 +625,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		ButtonCanvasGroup.interactable = false;	//禁用按钮交互
 		IsShowingResults = true;
-
+		this.turnManager.isTurnStarted = false;
 		switch (result) //根据结果展示不同的图片
 		{
 		case ResultType.None:
@@ -613,22 +633,19 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			break;
 		case ResultType.Draw:
 			this.WinOrLossImage.sprite = this.SpriteDraw;
-			this.Restart();
 			break;
 		case ResultType.LocalWin:
 			this.WinOrLossImage.sprite = this.SpriteWin;
-			this.Restart();
 			break;
 		case ResultType.LocalLoss:
 			this.WinOrLossImage.sprite = this.SpriteLose;
-			this.Restart();
-			break;
-		default:
-
 			break;
 		}
+		if (result!=ResultType.None) {
+			this.WinOrLossImage.gameObject.SetActive(true);
+			ButtonCanvasGroup.interactable = true;
+		}
 
-		this.WinOrLossImage.gameObject.SetActive(true);
 	}
 		
 
@@ -706,15 +723,17 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
     public void OnSelectChessman(int selectId,float x,float z)
     {
-        if (_selectedId == -1)
-        {
-            TrySelectChessman(selectId);
-        }
-        else
-        {
-            TryMoveChessman(selectId, x, z);
-        }
-        
+		if (this.turnManager.isTurnStarted) {
+		
+	        if (_selectedId == -1)
+	        {
+	            TrySelectChessman(selectId);
+	        }
+	        else
+	        {
+	            TryMoveChessman(selectId, x, z);
+	        }
+		}
     }
 
     /// <summary>
@@ -949,11 +968,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		if (PhotonNetwork.room.PlayerCount == 2 && this.turnManager.Turn == 0)
         {
-				LocalGameStatusText.text = "开局！";
-                // 当房间内有两个玩家,则开始首回合
-                this.StartTurn();
-				PlayMusic (welcomMusic);
-            
+             // 当房间内有两个玩家,则开始首回合
+			Play();
         }
 
         if (PhotonNetwork.room.PlayerCount > 2)
@@ -1006,13 +1022,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		//Debug.Log("Other player arrived");
 		LocalGameStatusText.text = "欢迎"+newPlayer.NickName+"加入游戏！";
 		PlayMusic (JoinClip);
-        if (PhotonNetwork.room.PlayerCount == 2)
-        {
-            if (this.turnManager.Turn == 0)
-            {
-                // when the room has two players, start the first turn (later on, joining players won't trigger a turn)
-                this.StartTurn();
-            }
+		if (PhotonNetwork.room.PlayerCount == 2 && this.turnManager.Turn == 0)
+		{
+            // when the room has two players, start the first turn (later on, joining players won't trigger a turn)
+			Play();
+        
         }
     }
 
@@ -1037,6 +1051,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 
 	#region Private Methods //私有方法
+	void Play(){
+		this.StartTurn();
+		PlayMusic (welcomMusic);
+		chessManManager.ChessmanInit ();
+		LocalGameStatusText.text = "开局！";
+		RemoteGameStatusText.text = "开局！";
+	}
 
 	/// <summary>
 	/// 播放指定音效.
@@ -1287,10 +1308,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	void Restart(){
 		if (PhotonNetwork.isMasterClient) {
-			PhotonNetwork.LoadLevel ("ChineseChessVR0");
-			Debug.Log ("Restarted!");
+			this.turnManager.RestartTurn ();
 		}
-
+		chessManManager.ReinitChessman ();
 	}
 
 	void CancelSelected(int cancelId){

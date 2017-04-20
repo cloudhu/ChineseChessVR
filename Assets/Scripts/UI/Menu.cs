@@ -75,8 +75,9 @@ using VRTK;
 public class Menu : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
+	[Tooltip("控制器事件")]
     public VRTK_ControllerEvents events;
-
+	[Tooltip("菜单UI")]
     public GameObject menu;
     #endregion
 
@@ -88,10 +89,6 @@ public class Menu : MonoBehaviour {
 
 
     #region MonoBehaviour CallBacks //回调函数区域
-    // Use this for initialization
-    void Start () {
-
-    }
 
     private void OnEnable()
     {

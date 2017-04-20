@@ -36,6 +36,7 @@ public class PunTurnManager : PunBehaviour
 		}
     }
 
+	public bool isTurnStarted=false;
 
 	/// <summary>
 	/// The duration of the turn in seconds.
@@ -138,12 +139,17 @@ public class PunTurnManager : PunBehaviour
 
 	#endregion
 
+	public void RestartTurn(){
+		Turn = 0;
+		BeginTurn ();
+	}
 
 	/// <summary>
 	/// Tells the TurnManager to begins a new turn.
 	/// </summary>
     public void BeginTurn()
     {
+		isTurnStarted = true;
         Turn = this.Turn + 1; // note: this will set a property in the room, which is available to the other players.
     }
 
@@ -226,7 +232,7 @@ public class PunTurnManager : PunBehaviour
                 {
                     this.finishedPlayers.Add(sender);
 
-                        this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
+                    this.TurnManagerListener.OnPlayerFinished(sender, turn, move);
 
                 }
 

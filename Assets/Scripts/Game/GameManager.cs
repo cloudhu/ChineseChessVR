@@ -83,9 +83,11 @@ public class GameManager : Photon.MonoBehaviour {
 	public GameObject LHandPrefab;
 	[Tooltip("玩家双手预设")]
 	public GameObject RHandPrefab;
-
+	[Tooltip("CameraRig里面的eye")]
 	public Transform head;
+	[Tooltip("CameraRig里面的左控制器")]
 	public Transform leftHand;
+	[Tooltip("CameraRig里面的右控制器")]
 	public Transform rightHand;
 
 	//public delegate void OnCharacterInstantiated(GameObject character); //如果要使用VoiceUI来Debug则需启用注释掉的代码

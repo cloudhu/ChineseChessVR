@@ -72,7 +72,7 @@ public class ChessMap : MonoBehaviour {
 
     #region Public Variables  //公共变量区域
 
-    //红方阵营
+	[Header("红方阵营")]
     public GameObject Red_King;     //帅
     public GameObject Red_Guard;    //仕 	
     public GameObject Red_Elephant; //象 
@@ -81,7 +81,7 @@ public class ChessMap : MonoBehaviour {
     public GameObject Red_Cannon;   //炮
     public GameObject Red_Pawn;     //卒
 
-    //黑方阵营
+	[Header("黑方阵营")]
     public GameObject Black_King;     //将
     public GameObject Black_Guard;    //士
     public GameObject Black_Elephant; //相 
@@ -183,14 +183,6 @@ public class ChessMap : MonoBehaviour {
 
     #region MonoBehaviour CallBacks //回调函数区域
 
-
-    // Use this for initialization
-    void Start()
-    {
-        ChessmanInit();
-    }
-
-
     #endregion
 
     #region Public Methods	//公共方法区域
@@ -253,21 +245,17 @@ public class ChessMap : MonoBehaviour {
     /// </summary>  
     public void ChessmanInit()
     {
-        for (int i = 0; i < 32; ++i)
+        for (int i = 0; i < 32; i++)
         {
             chessman[i].init(i);
-        }
-
-        //实例化32个棋子  
-        for (int i = 0; i < 32; ++i)
-        {
-            GameObject prefabs = GetPrefab(i, chessman[i]._type);
+			GameObject ChessMan = GetPrefab(i, chessman[i]._type);
             //Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-            GameObject ChessMan = GameObject.Instantiate(prefabs) as GameObject;
-			chessman [i].go = ChessMan;
+			ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
+
             ChessMan.name = i.ToString();
             ChessMan.transform.SetParent(transform, false);
             ChessMan.GetComponent<RectTransform>().localPosition= new Vector3(chessman[i]._x, chessman[i]._z, 0);
+			chessman [i].go = ChessMan;
         }
     }
     #endregion
