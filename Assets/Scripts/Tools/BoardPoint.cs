@@ -65,7 +65,7 @@ using UnityEngine;
 /// FileName: BoardPoint.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
+/// Description: 已经弃用!!
 /// DateTime: 3/25/2017
 /// </summary>
 public class BoardPoint : MonoBehaviour {

@@ -93,10 +93,8 @@ public class WarUI : MonoBehaviour {
 
 
     #region Private Variables   //私有变量区域
-
-	GameObject _target;
-    int chessmanId;
-
+	private int chessmanId;
+	private bool isVisible=true;
     #endregion
 
 
@@ -104,9 +102,8 @@ public class WarUI : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-		_target = transform.parent.gameObject;
 
-        chessmanId = int.Parse(_target.name);
+		chessmanId = int.Parse(transform.parent.gameObject.name);
         
         ResetUI();
     }
@@ -114,54 +111,41 @@ public class WarUI : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (_target == null)
+		if (!gameObject.activeSelf)
         {
-            Destroy(this.gameObject);
             return;
         }
 
 		//保持UI看向本地玩家
-		if (CameraRigManager.LocalPlayerInstance != null)
+		if (isVisible && CameraRigManager.LocalPlayerInstance != null)
 		{
 			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
+			if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
+
+				fontColor = Color.yellow;
+				fontSize = 24;
+				UpdateText("Selected");
+			} else {
+				fontColor = Color.green;
+				fontSize = 16;
+				UpdateText("Select");
+			}
 		}
-
-
-		if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
-			
-            fontColor = Color.yellow;
-            fontSize = 24;
-            UpdateText("Selected");
-        } else {
-			fontColor = Color.green;
-            fontSize = 16;
-            UpdateText("Select");
-        }
 			
     }
 
+	void OnBecameVisible(){
+		isVisible = true;
+	}
+
+	void OnBecameInvisible(){
+		Debug.Log ("看不见了!!");
+		isVisible = false;
+	}
     #endregion
 
     #region Public Methods	//公共方法区域
 
-	/// <summary>
-	/// 尝试去选择棋子,或者取消选择.
-	/// </summary>
-    public void TrySelectChessman()
-    {
-        //Debug.Log("WarUI:Called TrySelectChessman()");
-        string tmpText = transform.FindChild("Canvas/UITextFront").GetComponent<Text>().text;
-        if (tmpText== "Select")
-        {
-            NetworkTurn.Instance.OnSelectChessman(int.Parse(_target.name), _target.transform.localPosition.x, _target.transform.localPosition.z);
-        }
-        else
-        {
-            NetworkTurn.Instance.OnCancelSelected(int.Parse(_target.name));
-        }
-        
-			
-    }
 
 	/// <summary>
 	/// 重置UI.
@@ -185,13 +169,7 @@ public class WarUI : MonoBehaviour {
         ResetUI();
     }
 		
-
-
-
     #endregion
-
-
-
 
     #region Private Methods //私有方法
 

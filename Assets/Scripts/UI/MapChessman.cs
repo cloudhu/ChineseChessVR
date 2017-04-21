@@ -79,6 +79,7 @@ public class MapChessman : MonoBehaviour {
 	#region Private Variables   //私有变量区域
 	private int id;
     private Image im;
+	private bool isVisible=true;
 	#endregion
 	
 	
@@ -92,6 +93,10 @@ public class MapChessman : MonoBehaviour {
     // 如果 MonoBehaviour 已启用，则在每一帧都调用 Update
     private void Update()
     {
+		if (!isVisible || !gameObject.activeSelf) {
+			return;
+		}
+
         if (NetworkTurn.Instance._selectedId == id)
         {
             im.color = Color.yellow;
@@ -100,6 +105,13 @@ public class MapChessman : MonoBehaviour {
             im.color = Color.white;
     }
 
+	void OnBecameVisible(){
+		isVisible = true;
+	}
+
+	void OnBecameInvisible(){
+		isVisible = false;
+	}
 
     #endregion
 

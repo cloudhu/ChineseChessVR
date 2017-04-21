@@ -93,17 +93,14 @@ public class ChessmanUI : MonoBehaviour {
 
 
 	#region Private Variables   //私有变量区域
-
-	GameObject _target;
-
+	private bool isVisible=true;
 	#endregion
 	
 	
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
-		_target = transform.parent.gameObject;
-		int chessmanId = int.Parse (_target.name);
+		int chessmanId = int.Parse (transform.parent.gameObject.name);
 		if (chessmanId < 16) {
 			fontColor = Color.red;
 			UpdateText ("Red "+ChessmanManager.chessman [chessmanId]._type.ToString ());
@@ -117,19 +114,27 @@ public class ChessmanUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (_target == null) {
-			Destroy(this.gameObject);
+		if (!gameObject.activeSelf)
+		{
 			return;
 		}
 
         //保持UI看向本地玩家
-        if (CameraRigManager.LocalPlayerInstance != null)
+		if (isVisible && CameraRigManager.LocalPlayerInstance != null)
         {
             transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
         }
 			
 	}
 
+	void OnBecameVisible(){
+		isVisible = true;
+	}
+
+	void OnBecameInvisible(){
+		Debug.Log ("看不见了!!");
+		isVisible = false;
+	}
 	#endregion
 	
 	#region Public Methods	//公共方法区域

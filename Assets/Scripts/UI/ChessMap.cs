@@ -103,9 +103,6 @@ public class ChessMap : MonoBehaviour {
         //棋子是红子还是黑子,ID小于16的是红子，大于16是黑子  
         public bool _red;
 
-        //棋子是否死亡  
-        public bool _dead;
-
         //棋子在棋盘中的位置,  
         public float _x;
         public float _z;
@@ -118,7 +115,6 @@ public class ChessMap : MonoBehaviour {
         {
             _id = id;
             _red = id < 16;
-            _dead = false;
 
             //每个点上的棋子的类型  
             ChessmanPos[] pos = {

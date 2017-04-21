@@ -65,7 +65,7 @@ using UnityEngine;
 /// FileName: PositionManager.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 控制棋子的位移
+/// Description: 控制棋子的位移,已经弃用!!
 /// DateTime: 3/24/2017
 /// </summary>
 public class PositionManager : MonoBehaviour {

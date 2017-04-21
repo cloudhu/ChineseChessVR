@@ -65,7 +65,7 @@ using UnityEngine;
 /// FileName: BoardManager.cs
 /// Author: 胡良云（CloudHu）
 /// Corporation: 
-/// Description: 
+/// Description: 已经弃用
 /// DateTime: 3/26/2017
 /// </summary>
 public class BoardManager : MonoBehaviour {

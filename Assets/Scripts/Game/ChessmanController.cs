@@ -90,7 +90,7 @@ public class ChessmanController : VRTK_InteractableObject {
     #region Private Variables   //私有变量区域
 	AudioSource As;
 	Animator ani;
-	WarUI war; //战争UI
+
 	private LeanPool pointerPool; //指针对象池 
 	float step=3f;	//单位步长
     private float pointerHeight = 1.6f;
@@ -115,7 +115,6 @@ public class ChessmanController : VRTK_InteractableObject {
         {
             GameObject _uiGo = Instantiate(this.warUiPrefab, Vector3.zero, Quaternion.identity, transform);
 			_uiGo.transform.localPosition = new Vector3(0, 4f, 0);
-			war = _uiGo.GetComponent<WarUI> ();
         }
         else
         {
@@ -141,7 +140,7 @@ public class ChessmanController : VRTK_InteractableObject {
 
 	public void trySelectChessman(){
 		if (NetworkTurn.Instance._selectedId != ChessmanId) {
-			war.TrySelectChessman ();
+			NetworkTurn.Instance.OnSelectChessman(ChessmanId, transform.localPosition.x, transform.localPosition.z);
 		}
 	}
 

@@ -367,12 +367,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		Debug.Log("OnTurnBegins() turn: "+ turn);
         _selectedId = -1;
-		if (this.LocalTurnText != null)
-		{
-			this.LocalTurnText.text = (this.turnManager.Turn).ToString();	//更新回合数
-			RemoteTurnText.text = LocalTurnText.text;
 
-		}
+		this.LocalTurnText.text = (this.turnManager.Turn).ToString();	//更新回合数
+		RemoteTurnText.text = LocalTurnText.text;
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
 		IsShowingResults = false;	//不展示结果
 		ButtonCanvasGroup.interactable = true;	//可以与按钮交互
@@ -385,7 +382,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="obj">Object.</param>
 	public void OnTurnCompleted(int obj)
 	{
-		Debug.Log("OnTurnCompleted: " + obj);
 
 		this.Judge();	//计算输赢
 		this.UpdateScores();	//更新得分
@@ -408,8 +404,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			
 			if (!photonPlayer.IsLocal) {
 				string[] strArr = strMove.Split (char.Parse (" "));
-				if (strArr [0] == "+ConfirmedSelect") {
-				
+				if (strArr [0] == "+ConfirmedSelect") {				
 					ConfirmedSelect (int.Parse (strArr [1]));
 
 				} else {
@@ -451,8 +446,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			case "悔棋No":
 				LocalGameStatusText.text = "悔棋失败";
 				break;
-			default:
-				break;
 			}
 		}
 
@@ -470,11 +463,11 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		//Debug.Log("OnTurnFinished: " + photonPlayer + " turn: " + turn + " action: " + move);
 		string tmpStr = move.ToString ();
-        if (tmpStr.Contains("s"))
+		if (tmpStr.Contains("_"))
         {
             if (!photonPlayer.IsLocal)
             {
-                string[] strArr = tmpStr.Split(char.Parse("s"));
+				string[] strArr = tmpStr.Split(char.Parse("_"));
                 MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), float.Parse(strArr[4]),float.Parse(strArr[5]));
             }
         }
@@ -688,6 +681,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnAgree(Text t){
 		this.turnManager.SendMove(t.text+"Yes", false);
 		PlayMusic(selectClap);
+		RequestPanel.gameObject.SetActive (false);
 	}
 
 	/// <summary>
@@ -697,6 +691,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnDisagree(Text t){
 		this.turnManager.SendMove(t.text+"No", false);
 		PlayMusic(selectClap);
+		RequestPanel.gameObject.SetActive (false);
 	}
 
 	/// <summary>
@@ -932,7 +927,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public override void OnLeftRoom()
     {
         Debug.Log("OnLeftRoom()");
-        UpdatePlayerScoreTexts();
 		PlayMusic (LeaveClip);
         RefreshUIViews();
     }
@@ -949,22 +943,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         local = PhotonNetwork.player;
 		remote = PhotonNetwork.player.GetNext();
-		if (PhotonNetwork.isMasterClient && local !=null) {
 
-			localPlayerType = ChessPlayerType.Red;
-			LocalGameStatusText.text = "您是红方棋手……";
-			this.LocalPlayerNameText.text = local.NickName + ":红方";
-			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
-			playerType.Add ("playerType", "红方选手");
-			local.SetCustomProperties (playerType, null, false);
-		} else {
-			this.LocalPlayerNameText.text = local.NickName+":黑方";
-			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
-			playerType.Add("playerType", "黑方选手");
-			local.SetCustomProperties(playerType, null, false);
-			localPlayerType = ChessPlayerType.Black;
-			LocalGameStatusText.text = "您是黑方棋手……";
-		}
 
 		if (PhotonNetwork.room.PlayerCount == 2 && this.turnManager.Turn == 0)
         {
@@ -972,13 +951,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			Play();
         }
 
-        if (PhotonNetwork.room.PlayerCount > 2)
+		if (PhotonNetwork.room.PlayerCount > 2)
         {
-            if (localPlayerType == ChessPlayerType.Guest)
-            {
-                LocalGameStatusText.text = "棋局已开始，正在进入观棋模式……";
-            }
+			localPlayerType = ChessPlayerType.Guest;
+			LocalGameStatusText.text = "棋局已开始，正在进入观棋模式……";
         }
+
 		if (remote != null)
 		{
 			RemoteGameStatusText.text = "已匹配！";
@@ -995,8 +973,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			LocalGameStatusText.text="等待其他玩家...";
 			RemoteGameStatusText.text = "正在匹配...";
 		}
-			
-        UpdatePlayerScoreTexts();
+
 		RefreshUIViews();
    	}
 		
@@ -1051,12 +1028,33 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 
 	#region Private Methods //私有方法
+
+	/// <summary>
+	/// Play this instance.初始化棋子和地图并开始回合
+	/// </summary>
 	void Play(){
-		this.StartTurn();
+		if (PhotonNetwork.isMasterClient && local !=null) {
+
+			localPlayerType = ChessPlayerType.Red;
+			LocalGameStatusText.text = "您是红方棋手……";
+			this.LocalPlayerNameText.text = local.NickName + ":红方";
+			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
+			playerType.Add ("playerType", "红方选手");
+			local.SetCustomProperties (playerType, null, false);
+		} else {
+			this.LocalPlayerNameText.text = local.NickName+":黑方";
+			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
+			playerType.Add("playerType", "黑方选手");
+			local.SetCustomProperties(playerType, null, false);
+			localPlayerType = ChessPlayerType.Black;
+			LocalGameStatusText.text = "您是黑方棋手……";
+		}
 		PlayMusic (welcomMusic);
 		chessManManager.ChessmanInit ();
 		LocalGameStatusText.text = "开局！";
 		RemoteGameStatusText.text = "开局！";
+		UpdatePlayerScoreTexts();
+		this.StartTurn();
 	}
 
 	/// <summary>
@@ -1127,10 +1125,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		ConfirmedSelect (selectId);
 	}
 
-	void ConfirmedSelect(int selectId){
-		_selectedId = selectId;
-		Transform chessman=chessManManager.transform.FindChild(selectId.ToString());
-		chessman.GetComponent<ChessmanController> ().SelectedChessman ();
+	void ConfirmedSelect(int id){
+		_selectedId = id;
+		ChessmanManager.chessman[id].go.GetComponent<ChessmanController> ().SelectedChessman ();
 		HidePath ();
 	}
 
@@ -1142,14 +1139,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		if (id == -1) return;
 		if (_isRedTurn && localPlayerType==ChessPlayerType.Black) {	//红方回合被击杀的必然是黑方减分
-			CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+			CameraRigManager.LocalPlayerInstance.SendMessage("ApplyDamage");
 		}
 		if (!_isRedTurn && localPlayerType==ChessPlayerType.Red) {
-			CameraRigManager.LocalPlayerInstance.GetComponent<CameraRigManager> ().ApplyDamage ();
+			CameraRigManager.LocalPlayerInstance.SendMessage("ApplyDamage");
 		}
 		ChessmanManager.chessman[id]._dead = true;
-		Transform chessman=chessManManager.transform.FindChild(id.ToString());
-		chessman.GetComponent<ChessmanController> ().SwitchDead ();
+		ChessmanManager.chessman[id].go.GetComponent<ChessmanController> ().SwitchDead ();
 	}
 
 	/// <summary>  
@@ -1162,8 +1158,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 		//因GameObject.Find();函数不能找到active==false的物体，故先找到其父物体，再找到其子物体才可以找到active==false的物体  
 		ChessmanManager.chessman[id]._dead = false;
-		GameObject Stone = chessManManager.transform.Find(id.ToString()).gameObject;
-		Stone.SetActive(true);
+		ChessmanManager.chessman [id].go.SetActive (true);
+		ChessMap.chessman [id].go.SetActive (true);
 	}
 
 	/// <summary>  
@@ -1265,7 +1261,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		float fromX = ChessmanManager.chessman[selectedId]._x;
 		float fromZ = ChessmanManager.chessman[selectedId]._z;
-		string tmpStr = selectedId.ToString() +"s"+ killId.ToString()+"s"+fromX.ToString()+"s"+fromZ.ToString()+"s"+toX.ToString()+"s"+toZ.ToString();
+		string tmpStr = selectedId.ToString() +"_"+ killId.ToString()+"_"+fromX.ToString()+"_"+fromZ.ToString()+"_"+toX.ToString()+"_"+toZ.ToString();
 		this.turnManager.SendMove(tmpStr, true);	//弃用step结构体来传递信息的原因是Photon不能序列化,所以采用字符串来同步信息
 	}
 
@@ -1307,7 +1303,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	}
 
 	void Restart(){
-		if (PhotonNetwork.isMasterClient) {
+		if (PhotonNetwork.isMasterClient && PhotonNetwork.room.PlayerCount == 2 ) {
 			this.turnManager.RestartTurn ();
 		}
 		chessManManager.ReinitChessman ();
