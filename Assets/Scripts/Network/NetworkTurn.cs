@@ -132,6 +132,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     [Tooltip("路径")]
     public GameObject Path;
     static public NetworkTurn Instance;
+
+	public delegate void OnConfirmSelectChessman(int SelectedId);
+
+	public static event OnConfirmSelectChessman OnConfirmedSelect;
+
+	public delegate void OnChessmanDead();
+
+	public static event OnChessmanDead OnPureDead;
     #endregion
 
 
@@ -1125,9 +1133,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		ConfirmedSelect (selectId);
 	}
 
-	void ConfirmedSelect(int id){
-		_selectedId = id;
-		ChessmanManager.chessman[id].go.GetComponent<ChessmanController> ().SelectedChessman ();
+	void ConfirmedSelect(int SelectedId){
+		_selectedId = SelectedId;
+		OnConfirmedSelect (SelectedId);
+		ChessmanManager.chessman [SelectedId].go.GetComponent<ChessmanController> ().SelectedChessman ();
 		HidePath ();
 	}
 
@@ -1139,10 +1148,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	{
 		if (id == -1) return;
 		if (_isRedTurn && localPlayerType==ChessPlayerType.Black) {	//红方回合被击杀的必然是黑方减分
-			CameraRigManager.LocalPlayerInstance.SendMessage("ApplyDamage");
+			OnPureDead();
 		}
 		if (!_isRedTurn && localPlayerType==ChessPlayerType.Red) {
-			CameraRigManager.LocalPlayerInstance.SendMessage("ApplyDamage");
+			OnPureDead();
 		}
 		ChessmanManager.chessman[id]._dead = true;
 		ChessmanManager.chessman[id].go.GetComponent<ChessmanController> ().SwitchDead ();

@@ -106,6 +106,14 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
         DontDestroyOnLoad(this.gameObject);
     }
 
+	private void OnEnable() {
+		NetworkTurn.OnPureDead += ApplyDamage;
+	}
+
+	private void OnDisable() {
+		NetworkTurn.OnPureDead -= ApplyDamage;
+	}
+
     // Use this for initialization
     void Start () {
 
@@ -146,14 +154,17 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
 	}
     #endregion
 
-    #region Public Methods	//公共方法区域
+    #region Private Methods	//私有方法区域
 
-	public void	ApplyDamage(){
+	private void ApplyDamage(){
+		Debug.Log ("ApplyDamage"+Health);
 		if (Health>0) {
             Health -=1f ;
+			Debug.Log (Health);
 		}
 	}
     #endregion
+
     #region IPunObservable implementation
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

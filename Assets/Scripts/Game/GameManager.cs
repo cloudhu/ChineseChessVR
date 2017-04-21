@@ -98,7 +98,7 @@ public class GameManager : Photon.MonoBehaviour {
 
 	#region Private Variables
 
-	private GameObject instance;
+	//private GameObject instance;
 
 
     #endregion

@@ -100,6 +100,7 @@ public class ChessmanController : VRTK_InteractableObject {
 
 
     #region MonoBehaviour CallBacks //回调函数区域
+
     // Use this for initialization
     void Start () {
 		PlaySound (spawnMusic);

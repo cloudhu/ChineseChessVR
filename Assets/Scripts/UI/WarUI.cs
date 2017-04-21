@@ -99,6 +99,15 @@ public class WarUI : MonoBehaviour {
 
 
     #region MonoBehaviour CallBacks //回调函数区域
+
+	private void OnEnable() {
+		NetworkTurn.OnConfirmedSelect += NetworkTurn_SelectedChessman;
+	}
+
+	private void OnDisable() {
+		NetworkTurn.OnConfirmedSelect -= NetworkTurn_SelectedChessman;
+	}
+
     // Use this for initialization
     void Start()
     {
@@ -120,16 +129,6 @@ public class WarUI : MonoBehaviour {
 		if (isVisible && CameraRigManager.LocalPlayerInstance != null)
 		{
 			transform.LookAt(CameraRigManager.LocalPlayerInstance.transform);
-			if (NetworkTurn.Instance._selectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
-
-				fontColor = Color.yellow;
-				fontSize = 24;
-				UpdateText("Selected");
-			} else {
-				fontColor = Color.green;
-				fontSize = 16;
-				UpdateText("Select");
-			}
 		}
 			
     }
@@ -155,8 +154,6 @@ public class WarUI : MonoBehaviour {
         SetContainer();
         SetText("UITextFront");
         SetText("UITextReverse");
-
-
     }
 
 	/// <summary>
@@ -172,6 +169,19 @@ public class WarUI : MonoBehaviour {
     #endregion
 
     #region Private Methods //私有方法
+
+	private void NetworkTurn_SelectedChessman(int SelectedId){
+		if (SelectedId == chessmanId) {	//如果选中棋子则更新UI文本显示
+
+			fontColor = Color.yellow;
+			fontSize = 24;
+			UpdateText("Selected");
+		} else {
+			fontColor = Color.green;
+			fontSize = 16;
+			UpdateText("Select");
+		}
+	}
 
     private void SetContainer()
     {

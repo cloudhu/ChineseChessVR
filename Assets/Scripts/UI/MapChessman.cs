@@ -77,7 +77,7 @@ public class MapChessman : MonoBehaviour {
 
 
 	#region Private Variables   //私有变量区域
-	private int id;
+	private int chessmanId;
     private Image im;
 	private bool isVisible=true;
 	#endregion
@@ -86,44 +86,36 @@ public class MapChessman : MonoBehaviour {
 	#region MonoBehaviour CallBacks //回调函数区域
 	// Use this for initialization
 	void Start () {
-		id = int.Parse (gameObject.name);
+		chessmanId = int.Parse (gameObject.name);
         im = GetComponent<Image>();
 	}
 
-    // 如果 MonoBehaviour 已启用，则在每一帧都调用 Update
-    private void Update()
-    {
-		if (!isVisible || !gameObject.activeSelf) {
-			return;
-		}
-
-        if (NetworkTurn.Instance._selectedId == id)
-        {
-            im.color = Color.yellow;
-        }
-        else
-            im.color = Color.white;
-    }
-
-	void OnBecameVisible(){
-		isVisible = true;
+	private void OnEnable() {
+		NetworkTurn.OnConfirmedSelect += NetworkTurn_SelectedMapChessman;
 	}
 
-	void OnBecameInvisible(){
-		isVisible = false;
+	private void OnDisable() {
+		NetworkTurn.OnConfirmedSelect -= NetworkTurn_SelectedMapChessman;
 	}
-
+		
     #endregion
 
     #region Public Methods	//公共方法区域
 
     public void trySelectChessman(){
-		ChessmanManager.chessman [id].go.GetComponent<ChessmanController> ().trySelectChessman ();
+		ChessmanManager.chessman [chessmanId].go.GetComponent<ChessmanController> ().trySelectChessman ();
 	}
 	#endregion
 	
 	#region Private Methods	//私有方法区域
-	
+	private void NetworkTurn_SelectedMapChessman(int SelectedId){
+		if (chessmanId == SelectedId)
+		{
+			im.color = Color.yellow;
+		}
+		else
+			im.color = Color.white;
+	}
 	
 	#endregion
 }
