@@ -1,0 +1,836 @@
+fileFormatVersion: 2
+guid: 1eeea274fd7287d4f83fb8181f278cee
+timeCreated: 1471081940
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: RF_Bomb001
+    100002: Rock
+    100004: Rock_frag_001
+    100006: Rock_frag_002
+    100008: Rock_frag_003
+    100010: Rock_frag_004
+    100012: Rock_frag_005
+    100014: Rock_frag_006
+    100016: Rock_frag_007
+    100018: Rock_frag_008
+    100020: Rock_frag_009
+    100022: Rock_frag_010
+    100024: Rock_frag_011
+    100026: Rock_frag_012
+    100028: Rock_frag_013
+    100030: Rock_frag_014
+    100032: Rock_frag_015
+    100034: Rock_frag_016
+    100036: Rock_frag_017
+    100038: Rock_frag_018
+    100040: Rock_frag_019
+    100042: Rock_frag_020
+    100044: Rock_frag_021
+    100046: Rock_frag_022
+    100048: Rock_frag_023
+    100050: Rock_frag_024
+    100052: Rock_frag_025
+    100054: Rock_frag_026
+    100056: Rock_frag_027
+    100058: Rock_frag_028
+    100060: Rock_frag_029
+    100062: Rock_frag_030
+    100064: Rock_frag_031
+    100066: Rock_frag_032
+    100068: Rock_frag_033
+    100070: Rock_frag_034
+    100072: Rock_frag_035
+    100074: Rock_frag_036
+    100076: Rock_frag_037
+    100078: Rock_frag_038
+    100080: Rock_frag_039
+    100082: Rock_frag_040
+    100084: Rock_frag_041
+    100086: Rock_frag_042
+    100088: Rock_frag_043
+    100090: Rock_frag_044
+    100092: Rock_frag_045
+    100094: Rock_frag_046
+    100096: Rock_frag_047
+    100098: Rock_frag_048
+    100100: Rock_frag_049
+    100102: Rock_frag_050
+    100104: Rock_frag_051
+    100106: Rock_frag_052
+    100108: Rock_frag_053
+    100110: Rock_frag_054
+    100112: Rock_frag_055
+    100114: Rock_frag_056
+    100116: Rock_frag_057
+    100118: Rock_frag_058
+    100120: Rock_frag_059
+    100122: Rock_frag_060
+    100124: Rock_frag_061
+    100126: Rock_frag_062
+    100128: Rock_frag_063
+    100130: Rock_frag_064
+    100132: Rock_frag_065
+    100134: Rock_frag_066
+    100136: Rock_frag_067
+    100138: Rock_frag_068
+    100140: Rock_frag_069
+    100142: Rock_frag_070
+    100144: Rock_frag_071
+    100146: Rock_frag_072
+    100148: Rock_frag_073
+    100150: Rock_frag_074
+    100152: Rock_frag_075
+    100154: Rock_frag_076
+    100156: Rock_frag_077
+    100158: Rock_frag_078
+    100160: Rock_Master
+    100162: //RootNode
+    100164: Collider
+    400000: RF_Bomb001
+    400002: Rock
+    400004: Rock_frag_001
+    400006: Rock_frag_002
+    400008: Rock_frag_003
+    400010: Rock_frag_004
+    400012: Rock_frag_005
+    400014: Rock_frag_006
+    400016: Rock_frag_007
+    400018: Rock_frag_008
+    400020: Rock_frag_009
+    400022: Rock_frag_010
+    400024: Rock_frag_011
+    400026: Rock_frag_012
+    400028: Rock_frag_013
+    400030: Rock_frag_014
+    400032: Rock_frag_015
+    400034: Rock_frag_016
+    400036: Rock_frag_017
+    400038: Rock_frag_018
+    400040: Rock_frag_019
+    400042: Rock_frag_020
+    400044: Rock_frag_021
+    400046: Rock_frag_022
+    400048: Rock_frag_023
+    400050: Rock_frag_024
+    400052: Rock_frag_025
+    400054: Rock_frag_026
+    400056: Rock_frag_027
+    400058: Rock_frag_028
+    400060: Rock_frag_029
+    400062: Rock_frag_030
+    400064: Rock_frag_031
+    400066: Rock_frag_032
+    400068: Rock_frag_033
+    400070: Rock_frag_034
+    400072: Rock_frag_035
+    400074: Rock_frag_036
+    400076: Rock_frag_037
+    400078: Rock_frag_038
+    400080: Rock_frag_039
+    400082: Rock_frag_040
+    400084: Rock_frag_041
+    400086: Rock_frag_042
+    400088: Rock_frag_043
+    400090: Rock_frag_044
+    400092: Rock_frag_045
+    400094: Rock_frag_046
+    400096: Rock_frag_047
+    400098: Rock_frag_048
+    400100: Rock_frag_049
+    400102: Rock_frag_050
+    400104: Rock_frag_051
+    400106: Rock_frag_052
+    400108: Rock_frag_053
+    400110: Rock_frag_054
+    400112: Rock_frag_055
+    400114: Rock_frag_056
+    400116: Rock_frag_057
+    400118: Rock_frag_058
+    400120: Rock_frag_059
+    400122: Rock_frag_060
+    400124: Rock_frag_061
+    400126: Rock_frag_062
+    400128: Rock_frag_063
+    400130: Rock_frag_064
+    400132: Rock_frag_065
+    400134: Rock_frag_066
+    400136: Rock_frag_067
+    400138: Rock_frag_068
+    400140: Rock_frag_069
+    400142: Rock_frag_070
+    400144: Rock_frag_071
+    400146: Rock_frag_072
+    400148: Rock_frag_073
+    400150: Rock_frag_074
+    400152: Rock_frag_075
+    400154: Rock_frag_076
+    400156: Rock_frag_077
+    400158: Rock_frag_078
+    400160: Rock_Master
+    400162: //RootNode
+    400164: Collider
+    2300000: Rock
+    2300002: Rock_frag_001
+    2300004: Rock_frag_002
+    2300006: Rock_frag_003
+    2300008: Rock_frag_004
+    2300010: Rock_frag_005
+    2300012: Rock_frag_006
+    2300014: Rock_frag_007
+    2300016: Rock_frag_008
+    2300018: Rock_frag_009
+    2300020: Rock_frag_010
+    2300022: Rock_frag_011
+    2300024: Rock_frag_012
+    2300026: Rock_frag_013
+    2300028: Rock_frag_014
+    2300030: Rock_frag_015
+    2300032: Rock_frag_016
+    2300034: Rock_frag_017
+    2300036: Rock_frag_018
+    2300038: Rock_frag_019
+    2300040: Rock_frag_020
+    2300042: Rock_frag_021
+    2300044: Rock_frag_022
+    2300046: Rock_frag_023
+    2300048: Rock_frag_024
+    2300050: Rock_frag_025
+    2300052: Rock_frag_026
+    2300054: Rock_frag_027
+    2300056: Rock_frag_028
+    2300058: Rock_frag_029
+    2300060: Rock_frag_030
+    2300062: Rock_frag_031
+    2300064: Rock_frag_032
+    2300066: Rock_frag_033
+    2300068: Rock_frag_034
+    2300070: Rock_frag_035
+    2300072: Rock_frag_036
+    2300074: Rock_frag_037
+    2300076: Rock_frag_038
+    2300078: Rock_frag_039
+    2300080: Rock_frag_040
+    2300082: Rock_frag_041
+    2300084: Rock_frag_042
+    2300086: Rock_frag_043
+    2300088: Rock_frag_044
+    2300090: Rock_frag_045
+    2300092: Rock_frag_046
+    2300094: Rock_frag_047
+    2300096: Rock_frag_048
+    2300098: Rock_frag_049
+    2300100: Rock_frag_050
+    2300102: Rock_frag_051
+    2300104: Rock_frag_052
+    2300106: Rock_frag_053
+    2300108: Rock_frag_054
+    2300110: Rock_frag_055
+    2300112: Rock_frag_056
+    2300114: Rock_frag_057
+    2300116: Rock_frag_058
+    2300118: Rock_frag_059
+    2300120: Rock_frag_060
+    2300122: Rock_frag_061
+    2300124: Rock_frag_062
+    2300126: Rock_frag_063
+    2300128: Rock_frag_064
+    2300130: Rock_frag_065
+    2300132: Rock_frag_066
+    2300134: Rock_frag_067
+    2300136: Rock_frag_068
+    2300138: Rock_frag_069
+    2300140: Rock_frag_070
+    2300142: Rock_frag_071
+    2300144: Rock_frag_072
+    2300146: Rock_frag_073
+    2300148: Rock_frag_074
+    2300150: Rock_frag_075
+    2300152: Rock_frag_076
+    2300154: Rock_frag_077
+    2300156: Rock_frag_078
+    2300158: Collider
+    3300000: Rock
+    3300002: Rock_frag_001
+    3300004: Rock_frag_002
+    3300006: Rock_frag_003
+    3300008: Rock_frag_004
+    3300010: Rock_frag_005
+    3300012: Rock_frag_006
+    3300014: Rock_frag_007
+    3300016: Rock_frag_008
+    3300018: Rock_frag_009
+    3300020: Rock_frag_010
+    3300022: Rock_frag_011
+    3300024: Rock_frag_012
+    3300026: Rock_frag_013
+    3300028: Rock_frag_014
+    3300030: Rock_frag_015
+    3300032: Rock_frag_016
+    3300034: Rock_frag_017
+    3300036: Rock_frag_018
+    3300038: Rock_frag_019
+    3300040: Rock_frag_020
+    3300042: Rock_frag_021
+    3300044: Rock_frag_022
+    3300046: Rock_frag_023
+    3300048: Rock_frag_024
+    3300050: Rock_frag_025
+    3300052: Rock_frag_026
+    3300054: Rock_frag_027
+    3300056: Rock_frag_028
+    3300058: Rock_frag_029
+    3300060: Rock_frag_030
+    3300062: Rock_frag_031
+    3300064: Rock_frag_032
+    3300066: Rock_frag_033
+    3300068: Rock_frag_034
+    3300070: Rock_frag_035
+    3300072: Rock_frag_036
+    3300074: Rock_frag_037
+    3300076: Rock_frag_038
+    3300078: Rock_frag_039
+    3300080: Rock_frag_040
+    3300082: Rock_frag_041
+    3300084: Rock_frag_042
+    3300086: Rock_frag_043
+    3300088: Rock_frag_044
+    3300090: Rock_frag_045
+    3300092: Rock_frag_046
+    3300094: Rock_frag_047
+    3300096: Rock_frag_048
+    3300098: Rock_frag_049
+    3300100: Rock_frag_050
+    3300102: Rock_frag_051
+    3300104: Rock_frag_052
+    3300106: Rock_frag_053
+    3300108: Rock_frag_054
+    3300110: Rock_frag_055
+    3300112: Rock_frag_056
+    3300114: Rock_frag_057
+    3300116: Rock_frag_058
+    3300118: Rock_frag_059
+    3300120: Rock_frag_060
+    3300122: Rock_frag_061
+    3300124: Rock_frag_062
+    3300126: Rock_frag_063
+    3300128: Rock_frag_064
+    3300130: Rock_frag_065
+    3300132: Rock_frag_066
+    3300134: Rock_frag_067
+    3300136: Rock_frag_068
+    3300138: Rock_frag_069
+    3300140: Rock_frag_070
+    3300142: Rock_frag_071
+    3300144: Rock_frag_072
+    3300146: Rock_frag_073
+    3300148: Rock_frag_074
+    3300150: Rock_frag_075
+    3300152: Rock_frag_076
+    3300154: Rock_frag_077
+    3300156: Rock_frag_078
+    3300158: Collider
+    4300000: Rock
+    4300002: Rock_frag_001
+    4300004: Rock_frag_002
+    4300006: Rock_frag_003
+    4300008: Rock_frag_004
+    4300010: Rock_frag_005
+    4300012: Rock_frag_006
+    4300014: Rock_frag_007
+    4300016: Rock_frag_008
+    4300018: Rock_frag_009
+    4300020: Rock_frag_010
+    4300022: Rock_frag_011
+    4300024: Rock_frag_012
+    4300026: Rock_frag_013
+    4300028: Rock_frag_014
+    4300030: Rock_frag_015
+    4300032: Rock_frag_016
+    4300034: Rock_frag_017
+    4300036: Rock_frag_018
+    4300038: Rock_frag_019
+    4300040: Rock_frag_020
+    4300042: Rock_frag_021
+    4300044: Rock_frag_022
+    4300046: Rock_frag_023
+    4300048: Rock_frag_024
+    4300050: Rock_frag_025
+    4300052: Rock_frag_026
+    4300054: Rock_frag_027
+    4300056: Rock_frag_028
+    4300058: Rock_frag_029
+    4300060: Rock_frag_030
+    4300062: Rock_frag_031
+    4300064: Rock_frag_032
+    4300066: Rock_frag_033
+    4300068: Rock_frag_034
+    4300070: Rock_frag_035
+    4300072: Rock_frag_036
+    4300074: Rock_frag_037
+    4300076: Rock_frag_038
+    4300078: Rock_frag_039
+    4300080: Rock_frag_040
+    4300082: Rock_frag_041
+    4300084: Rock_frag_042
+    4300086: Rock_frag_043
+    4300088: Rock_frag_044
+    4300090: Rock_frag_045
+    4300092: Rock_frag_046
+    4300094: Rock_frag_047
+    4300096: Rock_frag_048
+    4300098: Rock_frag_049
+    4300100: Rock_frag_050
+    4300102: Rock_frag_051
+    4300104: Rock_frag_052
+    4300106: Rock_frag_053
+    4300108: Rock_frag_054
+    4300110: Rock_frag_055
+    4300112: Rock_frag_056
+    4300114: Rock_frag_057
+    4300116: Rock_frag_058
+    4300118: Rock_frag_059
+    4300120: Rock_frag_060
+    4300122: Rock_frag_061
+    4300124: Rock_frag_062
+    4300126: Rock_frag_063
+    4300128: Rock_frag_064
+    4300130: Rock_frag_065
+    4300132: Rock_frag_066
+    4300134: Rock_frag_067
+    4300136: Rock_frag_068
+    4300138: Rock_frag_069
+    4300140: Rock_frag_070
+    4300142: Rock_frag_071
+    4300144: Rock_frag_072
+    4300146: Rock_frag_073
+    4300148: Rock_frag_074
+    4300150: Rock_frag_075
+    4300152: Rock_frag_076
+    4300154: Rock_frag_077
+    4300156: Rock_frag_078
+    4300158: Collider
+    7400000: Explosion
+    7400002: ReverseExplosion
+    9500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Explosion
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 200
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Rock_frag_001
+        weight: 1
+      - path: Rock_frag_002
+        weight: 1
+      - path: Rock_frag_003
+        weight: 1
+      - path: Rock_frag_004
+        weight: 1
+      - path: Rock_frag_005
+        weight: 1
+      - path: Rock_frag_006
+        weight: 1
+      - path: Rock_frag_007
+        weight: 1
+      - path: Rock_frag_008
+        weight: 1
+      - path: Rock_frag_009
+        weight: 1
+      - path: Rock_frag_010
+        weight: 1
+      - path: Rock_frag_011
+        weight: 1
+      - path: Rock_frag_012
+        weight: 1
+      - path: Rock_frag_013
+        weight: 1
+      - path: Rock_frag_014
+        weight: 1
+      - path: Rock_frag_015
+        weight: 1
+      - path: Rock_frag_016
+        weight: 1
+      - path: Rock_frag_017
+        weight: 1
+      - path: Rock_frag_018
+        weight: 1
+      - path: Rock_frag_019
+        weight: 1
+      - path: Rock_frag_020
+        weight: 1
+      - path: Rock_frag_021
+        weight: 1
+      - path: Rock_frag_022
+        weight: 1
+      - path: Rock_frag_023
+        weight: 1
+      - path: Rock_frag_024
+        weight: 1
+      - path: Rock_frag_025
+        weight: 1
+      - path: Rock_frag_026
+        weight: 1
+      - path: Rock_frag_027
+        weight: 1
+      - path: Rock_frag_028
+        weight: 1
+      - path: Rock_frag_029
+        weight: 1
+      - path: Rock_frag_030
+        weight: 1
+      - path: Rock_frag_031
+        weight: 1
+      - path: Rock_frag_032
+        weight: 1
+      - path: Rock_frag_033
+        weight: 1
+      - path: Rock_frag_034
+        weight: 1
+      - path: Rock_frag_035
+        weight: 1
+      - path: Rock_frag_036
+        weight: 1
+      - path: Rock_frag_037
+        weight: 1
+      - path: Rock_frag_038
+        weight: 1
+      - path: Rock_frag_039
+        weight: 1
+      - path: Rock_frag_040
+        weight: 1
+      - path: Rock_frag_041
+        weight: 1
+      - path: Rock_frag_042
+        weight: 1
+      - path: Rock_frag_043
+        weight: 1
+      - path: Rock_frag_044
+        weight: 1
+      - path: Rock_frag_045
+        weight: 1
+      - path: Rock_frag_046
+        weight: 1
+      - path: Rock_frag_047
+        weight: 1
+      - path: Rock_frag_048
+        weight: 1
+      - path: Rock_frag_049
+        weight: 1
+      - path: Rock_frag_050
+        weight: 1
+      - path: Rock_frag_051
+        weight: 1
+      - path: Rock_frag_052
+        weight: 1
+      - path: Rock_frag_053
+        weight: 1
+      - path: Rock_frag_054
+        weight: 1
+      - path: Rock_frag_055
+        weight: 1
+      - path: Rock_frag_056
+        weight: 1
+      - path: Rock_frag_057
+        weight: 1
+      - path: Rock_frag_058
+        weight: 1
+      - path: Rock_frag_059
+        weight: 1
+      - path: Rock_frag_060
+        weight: 1
+      - path: Rock_frag_061
+        weight: 1
+      - path: Rock_frag_062
+        weight: 1
+      - path: Rock_frag_063
+        weight: 1
+      - path: Rock_frag_064
+        weight: 1
+      - path: Rock_frag_065
+        weight: 1
+      - path: Rock_frag_066
+        weight: 1
+      - path: Rock_frag_067
+        weight: 1
+      - path: Rock_frag_068
+        weight: 1
+      - path: Rock_frag_069
+        weight: 1
+      - path: Rock_frag_070
+        weight: 1
+      - path: Rock_frag_071
+        weight: 1
+      - path: Rock_frag_072
+        weight: 1
+      - path: Rock_frag_073
+        weight: 1
+      - path: Rock_frag_074
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ReverseExplosion
+      takeName: Take 001
+      firstFrame: 201
+      lastFrame: 400
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Rock_frag_001
+        weight: 1
+      - path: Rock_frag_002
+        weight: 1
+      - path: Rock_frag_003
+        weight: 1
+      - path: Rock_frag_004
+        weight: 1
+      - path: Rock_frag_005
+        weight: 1
+      - path: Rock_frag_006
+        weight: 1
+      - path: Rock_frag_007
+        weight: 1
+      - path: Rock_frag_008
+        weight: 1
+      - path: Rock_frag_009
+        weight: 1
+      - path: Rock_frag_010
+        weight: 1
+      - path: Rock_frag_011
+        weight: 1
+      - path: Rock_frag_012
+        weight: 1
+      - path: Rock_frag_013
+        weight: 1
+      - path: Rock_frag_014
+        weight: 1
+      - path: Rock_frag_015
+        weight: 1
+      - path: Rock_frag_016
+        weight: 1
+      - path: Rock_frag_017
+        weight: 1
+      - path: Rock_frag_018
+        weight: 1
+      - path: Rock_frag_019
+        weight: 1
+      - path: Rock_frag_020
+        weight: 1
+      - path: Rock_frag_021
+        weight: 1
+      - path: Rock_frag_022
+        weight: 1
+      - path: Rock_frag_023
+        weight: 1
+      - path: Rock_frag_024
+        weight: 1
+      - path: Rock_frag_025
+        weight: 1
+      - path: Rock_frag_026
+        weight: 1
+      - path: Rock_frag_027
+        weight: 1
+      - path: Rock_frag_028
+        weight: 1
+      - path: Rock_frag_029
+        weight: 1
+      - path: Rock_frag_030
+        weight: 1
+      - path: Rock_frag_031
+        weight: 1
+      - path: Rock_frag_032
+        weight: 1
+      - path: Rock_frag_033
+        weight: 1
+      - path: Rock_frag_034
+        weight: 1
+      - path: Rock_frag_035
+        weight: 1
+      - path: Rock_frag_036
+        weight: 1
+      - path: Rock_frag_037
+        weight: 1
+      - path: Rock_frag_038
+        weight: 1
+      - path: Rock_frag_039
+        weight: 1
+      - path: Rock_frag_040
+        weight: 1
+      - path: Rock_frag_041
+        weight: 1
+      - path: Rock_frag_042
+        weight: 1
+      - path: Rock_frag_043
+        weight: 1
+      - path: Rock_frag_044
+        weight: 1
+      - path: Rock_frag_045
+        weight: 1
+      - path: Rock_frag_046
+        weight: 1
+      - path: Rock_frag_047
+        weight: 1
+      - path: Rock_frag_048
+        weight: 1
+      - path: Rock_frag_049
+        weight: 1
+      - path: Rock_frag_050
+        weight: 1
+      - path: Rock_frag_051
+        weight: 1
+      - path: Rock_frag_052
+        weight: 1
+      - path: Rock_frag_053
+        weight: 1
+      - path: Rock_frag_054
+        weight: 1
+      - path: Rock_frag_055
+        weight: 1
+      - path: Rock_frag_056
+        weight: 1
+      - path: Rock_frag_057
+        weight: 1
+      - path: Rock_frag_058
+        weight: 1
+      - path: Rock_frag_059
+        weight: 1
+      - path: Rock_frag_060
+        weight: 1
+      - path: Rock_frag_061
+        weight: 1
+      - path: Rock_frag_062
+        weight: 1
+      - path: Rock_frag_063
+        weight: 1
+      - path: Rock_frag_064
+        weight: 1
+      - path: Rock_frag_065
+        weight: 1
+      - path: Rock_frag_066
+        weight: 1
+      - path: Rock_frag_067
+        weight: 1
+      - path: Rock_frag_068
+        weight: 1
+      - path: Rock_frag_069
+        weight: 1
+      - path: Rock_frag_070
+        weight: 1
+      - path: Rock_frag_071
+        weight: 1
+      - path: Rock_frag_072
+        weight: 1
+      - path: Rock_frag_073
+        weight: 1
+      - path: Rock_frag_074
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 1
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

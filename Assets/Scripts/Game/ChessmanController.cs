@@ -58,10 +58,10 @@
 //中文注释：胡良云（CloudHu） 3/24/2017
 
 // --------------------------------------------------------------------------------------------------------------------
+using Lean;
 using System.Collections;
 using UnityEngine;
 using VRTK;
-using Lean;
 
 /// <summary>
 /// FileName: ChessmanController.cs
@@ -76,7 +76,7 @@ public class ChessmanController : VRTK_InteractableObject {
 
     #region Public Variables  //公共变量区域
     [Tooltip("棋子的音效")]
-	public AudioClip spawnMusic,awakeMusic,ArrivalAC,RunAC,DieAC;
+	public AudioClip spawnMusic,awakeMusic,ArrivalAC,RunAC,DieAC,attack;
 
     [Tooltip("战斗UI游戏对象预设")]
     public GameObject warUiPrefab;
@@ -84,32 +84,37 @@ public class ChessmanController : VRTK_InteractableObject {
     [Tooltip("选中棋子的id")]
     public int ChessmanId;
 
+    [Tooltip("攻击特效预设")]
+    public GameObject attackEffectPrefab;
+
+    [Tooltip("选择特效预设")]
+    public GameObject selectedEffectPrefab;
     #endregion
 
 
     #region Private Variables   //私有变量区域
-	AudioSource As;
-	Animator ani;
-
-	private LeanPool pointerPool; //指针对象池 
-	float step=3f;	//单位步长
-    private float pointerHeight = 1.6f;
-    private ChessmanManager chessmanManager;
-	bool isRed;
+    private AudioSource As;  //音源组件
+    private Animator ani;   //动画组件
+    private ChessmanManager chessmanManager;    //棋子总管
+    private bool isRed; //是否是红方,true是红色
+    private GameObject attackEffect;    //攻击特效
+    private GameObject SelectEffect;    //选择特效
+    private bool isKilling = false;     //是否击杀
+    private Vector3 targetPosition;     //目标位置
+    Transform enemyKingTransform;       //敌方将帅
     #endregion
 
 
     #region MonoBehaviour CallBacks //回调函数区域
 
     // Use this for initialization
-    void Start () {
-		PlaySound (spawnMusic);
+    void Start () {   
         ChessmanId =int.Parse(this.gameObject.name);
 		isRed = ChessmanId<16;
 		ani = transform.GetComponent<Animator> ();
-		if (this.As == null) this.As = FindObjectOfType<AudioSource>();
+        if (this.As == null) this.As = gameObject.AddComponent<AudioSource>();
+        PlaySound(spawnMusic);
 
-		pointerPool = transform.parent.GetComponent<LeanPool> ();	//获取指针的对象池组件
         chessmanManager= transform.parent.GetComponent<ChessmanManager>();
         //创建战斗UI
         if (this.warUiPrefab != null)
@@ -130,6 +135,7 @@ public class ChessmanController : VRTK_InteractableObject {
     public override void StartUsing(GameObject usingObject)
 	{
 		base.StartUsing(usingObject);
+        //Debug.Log(usingObject + "Using");
 		trySelectChessman ();
 	}
 
@@ -139,44 +145,65 @@ public class ChessmanController : VRTK_InteractableObject {
 
 	}
 
+    /// <summary>
+    /// 尝试选择棋子
+    /// </summary>
 	public void trySelectChessman(){
 		if (NetworkTurn.Instance._selectedId != ChessmanId) {
 			NetworkTurn.Instance.OnSelectChessman(ChessmanId, transform.localPosition.x, transform.localPosition.z);
+            //Debug.Log(ChessmanId + "trying");
 		}
 	}
 
+    /// <summary>
+    /// 确认选择棋子
+    /// </summary>
 	public void SelectedChessman(){
         
 		Search ();
-		PlaySound (awakeMusic);
-		ani.SetTrigger ("TH Sword Jump");
-	}
+        AISelectedChessman();
+    }
 
-	/// <summary>
-	/// 设置目标位置.
-	/// </summary>
-	/// <param name="targetPosition">目标位置.</param>
-	public void SetTarget(float x,float z){
-		Vector3 targetPosition = new Vector3 (x, 0.57f, z);
-		chessmanManager.hidePointer ();
-		Hashtable ht = new Hashtable ();
-		ht.Add ("position", targetPosition);
-		//ht.Add ("orienttopath", true);
-		ht.Add ("onstart", "Move");
-		ht.Add ("oncomplete","Stop");
-		ht.Add ("islocal",true);
-		ht.Add ("speed", 2.0f);
-		iTween.MoveTo (gameObject, ht);
-		ht.Clear ();
-		float _x = z == 0 ? 0 : (z / 3f) * 58f;
-		float _y = x == 0 ? 0 : (x / 3f) * 58f;
-		targetPosition = new Vector3 (_x,_y,0);
-		ht.Add ("position", targetPosition);
-		ht.Add ("islocal",true);
-		ht.Add ("speed", 3.0f);
-		iTween.MoveTo (ChessMap.chessman[ChessmanId].go,ht);
-		ChessmanManager.chessman[ChessmanId]._x = x;
-		ChessmanManager.chessman[ChessmanId]._z = z;
+    /// <summary>
+    /// AI选择棋子
+    /// </summary>
+    public void AISelectedChessman()
+    {
+        PlaySound(awakeMusic);
+        if (SelectEffect == null)
+        {
+            SelectEffect = Instantiate(selectedEffectPrefab, transform.parent, false) as GameObject;
+        }
+        SelectEffect.transform.localPosition = transform.localPosition;
+        if (!attackEffect.activeSelf) attackEffect.SetActive(true);
+        ani.SetTrigger("TH Sword Jump");
+        if (enemyKingTransform == null)
+        {
+            if (isRed)
+            {
+                enemyKingTransform = ChessmanManager.chessman[GlobalConst.B_KING].go.transform;
+            }
+            else
+                enemyKingTransform = ChessmanManager.chessman[GlobalConst.R_KING].go.transform;
+        }
+    }
+
+    /// <summary>
+    /// 设置目标位置.
+    /// </summary>
+    /// <param name="targetPosition">目标位置.</param>
+    public void SetTarget(float x,float z,int killId){
+		targetPosition = new Vector3 (x, 0.57f, z);
+        if (killId!=GlobalConst.NOCHESS)
+        {
+            Attack();
+            isKilling = true;
+        }
+        if (!isKilling)
+        {
+            MovingTo();
+        }
+
 	}
 
 	/// <summary>
@@ -185,44 +212,116 @@ public class ChessmanController : VRTK_InteractableObject {
 	public void SwitchDead()
 	{
 		HitHapticPulse (500);
-		ani.SetTrigger ("TH Sword Die");
-        PlaySound(DieAC);
+        
+        ani.SetTrigger("TH Sword Take Damage");
+        Invoke("DelayDead", 3f);
 	}
 
+    void DelayDead()
+    {
+        HitHapticPulse(500);
+        ani.SetTrigger("TH Sword Die");
+        PlaySound(DieAC);
+        Invoke("PureDead", 1.5f);
+    }
     #endregion
 
 
     #region Private Methods //私有方法
 
+    void Attack()
+    {
+        switch (ChessmanManager.chessman[ChessmanId]._type)
+        {
+            case ChessmanManager.Chessman.TYPE.KING:
+                LightningCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.GUARD:
+                DragonCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.ELEPHANT:
+                DragonCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.HORSE:
+                DragonCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.ROOK:
+                DragonCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.CANNON:
+                DragonCall();
+                break;
+            case ChessmanManager.Chessman.TYPE.PAWN:
+                DragonCall();
+                break;
+            default:
+                break;
+        }
+    }
+
     void Search(){
 		chessmanManager.hidePointer ();
-		float x = ChessmanManager.chessman[ChessmanId]._x;	//棋子位置x
-		float z= ChessmanManager.chessman[ChessmanId]._z;
+		int x = (int)ChessmanManager.chessman[ChessmanId]._x;	//棋子位置x
+        x = x == 0 ? 0 : x / 3; //换算成棋盘坐标
+		int z = (int)ChessmanManager.chessman[ChessmanId]._z;
+        z = z == 0 ? 0 : z / 3;        
 		switch (ChessmanManager.chessman[ChessmanId]._type)
 		{
 		case ChessmanManager.Chessman.TYPE.KING:
-			ShowKingWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_KingMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.GUARD:
-			ShowGuardWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_GuardMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.ELEPHANT:
-			ShowElephantWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_ElephantMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.HORSE:
-			ShowHorseWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_HorseMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.ROOK:
-			ShowRookWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_RookMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.CANNON:
-			ShowRookWay(x,z);
-			break;
+                ChessMoveGenerator.Gen_CannonMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                break;
 		case ChessmanManager.Chessman.TYPE.PAWN:
-			ShowPawnWay(x,z);
+                if (isRed)
+                {
+                    ChessMoveGenerator.Gen_RPawnMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                }
+                else
+                {
+                    ChessMoveGenerator.Gen_BPawnMove(GlobalConst.Instance.ChessBoard, x, z, 100);
+                }
 			break;
 		}
 	}
+
+    void MovingTo()
+    {
+        chessmanManager.hidePointer();
+        transform.LookAt(targetPosition);
+        Hashtable ht = new Hashtable();
+        ht.Add("position", targetPosition);
+        //ht.Add ("orienttopath", true);
+        ht.Add("onstart", "Move");
+        ht.Add("oncomplete", "Stop");
+        ht.Add("islocal", true);
+        ht.Add("speed", 2.0f);
+        iTween.MoveTo(gameObject, ht);
+        ht.Clear();
+        //换算成UI棋盘地图上的坐标
+        float _x = targetPosition.z == 0 ? 0-234f : (targetPosition.z / 3f) * 58f-234f;
+        float _y = targetPosition.x == 0 ? 0-248f : (targetPosition.x / 3f) * 56f-248f;
+        Vector3 targetPos = new Vector3(_x, _y, 0);
+        ht.Add("position", targetPos);
+        ht.Add("islocal", true);
+        ht.Add("time", 0.5f);
+        iTween.MoveTo(ChessMap.chessman[ChessmanId].go, ht);
+        ChessmanManager.chessman[ChessmanId]._x = targetPosition.x;
+        ChessmanManager.chessman[ChessmanId]._z = targetPosition.z;
+    }
 
 	void Move(){
 		ani.SetBool ("TH Sword Run",true);
@@ -231,19 +330,71 @@ public class ChessmanController : VRTK_InteractableObject {
 
 	void Stop(){
 		ani.SetBool ("TH Sword Run",false);
+        transform.LookAt(enemyKingTransform);
 		PlaySound (ArrivalAC);
 	}
 		
+    /// <summary>
+    /// 死亡动画结束后调用
+    /// </summary>
 	void PureDead(){
 		ChessMap.chessman [ChessmanId].go.SetActive (false);
 		gameObject.SetActive (false);
 	}
 
-	/// <summary>
-	/// 播放音效
-	/// </summary>
-	/// <param name="ac">声音</param>
-	void PlaySound(AudioClip Ac)
+    void LightningCall()
+    {
+        PlaySound(attack);
+        if (attackEffect == null)
+        {
+            attackEffect = Instantiate(attackEffectPrefab, transform, false) as GameObject;
+        }
+        if (!attackEffect.activeSelf) attackEffect.SetActive(true);
+        ani.SetBool("TH Sword Idle", false);
+        ani.SetBool("Wave Hand", true);
+        Invoke("WaveHandEnd", 5f);
+    }
+
+    /// <summary>
+    /// 召唤神龙特效
+    /// </summary>
+    void DragonCall()
+    {
+        
+        if (attackEffect == null)
+        {
+            attackEffect = Instantiate(attackEffectPrefab, transform.parent,false) as GameObject;
+        }
+        attackEffect.transform.localPosition = targetPosition;
+        if (!attackEffect.activeSelf) attackEffect.SetActive(true);
+        ani.SetTrigger("TH Sword Cast Spell");
+        PlaySound(attack);
+        Invoke("SwordCastSpellEnd", 5f);
+    }
+
+    void WaveHandEnd()
+    {
+        ani.SetBool("Wave Hand", false);
+        ani.SetBool("TH Sword Idle", true);
+        attackEffect.SetActive(false);
+        isKilling = false;
+        MovingTo();
+    }
+
+    /// <summary>
+    /// TH Sword Cast Spell动画结束后调用
+    /// </summary>
+    void SwordCastSpellEnd()
+    {
+        //Debug.Log("SwordCastSpellEnd");
+        MovingTo();
+        isKilling = false;
+    }
+    /// <summary>
+    /// 播放音效
+    /// </summary>
+    /// <param name="ac">声音</param>
+    void PlaySound(AudioClip Ac)
 	{
 
 		if (Ac!=null && !As.isPlaying)
@@ -266,330 +417,6 @@ public class ChessmanController : VRTK_InteractableObject {
 		SteamVR_Controller.Input(deviceIndex1).TriggerHapticPulse(duration);
 	}
 		
-	#endregion
-
-	#region ToolMethods
-
-	/// <summary>
-	/// Shows the king way.将帅的路径，总结为十字路口
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	void ShowKingWay(float x,float z){
-		/*
-		1.将帅被限制在九宫格内移动
-		2.移动的步长为一格，一格的距离为3
-		3.将帅不能在一条直线上面对面（中间无棋子遮挡）,如一方占据中路三线中的一线,在无遮挡的情况下,另一方必须回避该线,否则会被对方秒杀
-		*/
-		if (Mathf.Abs(x)>13.5f || Mathf.Abs(z)>3f || Mathf.Abs(x)<7.5f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-		float xStep = step;
-		float otherKingZ=ChessmanManager.chessman[0]._z;	//另外一个将帅的Z轴值
-		if (isRed) {
-			otherKingZ=ChessmanManager.chessman[16]._z;
-			xStep = -step; //红方取反
-		}
-		float absX = Mathf.Abs (x);
-        
-		if (absX>7.5f) {	//正前方指针
-		    GameObject go=pointerPool.FastSpawn (new Vector3 (x+xStep, pointerHeight, z),Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go);
-        }
-		if (absX<13.5f) {	//正后方
-			GameObject go=pointerPool.FastSpawn (new Vector3 (x-xStep, pointerHeight, z),Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go);
-        }
-
-		if (z>-step && (z-step)!=otherKingZ) {		//左
-			GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z-step),Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go);
-        }
-
-		if (z<step && (z+step)!=otherKingZ) {	//右
-			GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z+step),Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go);
-        }
-	}
-
-	/// <summary>
-	/// Shows the guard way.士的路径，斜十字算法
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	void ShowGuardWay(float x,float z){
-		/* 
-         * 1.目标位置在九宫格内 
-         * 2.只许沿着九宫中的斜线行走一步（方格的对角线） 
-        */
-		if (Mathf.Abs(x)>13.5f || Mathf.Abs(z)>3f || Mathf.Abs(x)<7.5f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-		if (z != 0f) {
-			if (isRed) {
-				GameObject go=pointerPool.FastSpawn (new Vector3 (10.5f, pointerHeight, 0f), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            } else {
-				GameObject go=pointerPool.FastSpawn (new Vector3 (-10.5f, pointerHeight, 0f), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-		} else {
-			GameObject go=pointerPool.FastSpawn (new Vector3 (x+step, pointerHeight, -step), Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go);
-            GameObject go1=pointerPool.FastSpawn (new Vector3 (x-step, pointerHeight, -step), Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go1);
-            GameObject go2=pointerPool.FastSpawn (new Vector3 (x+step, pointerHeight, step), Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go2);
-            GameObject go3=pointerPool.FastSpawn (new Vector3 (x-step, pointerHeight, step), Quaternion.identity,transform.parent) as GameObject;
-            chessmanManager.spawnedPointers.Add(go3);
-        }
-	}
-
-    /// <summary>
-    /// 象采用探测方法
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="z"></param>
-	void ShowElephantWay(float x,float z){
-        /* 
-         * 1.目标位置不能越过河界走入对方的领地 
-         * 2.只能斜走（两步），可以使用汉字中的田字形象地表述：田字格的对角线，即俗称象（相）走田字 
-         * 3.当象（相）行走的路线中，及田字中心有棋子时（无论己方或者是对方的棋子），则不允许走过去，俗称：塞象（相）眼。 
-        */
-		if (Mathf.Abs(x)>13.5f || Mathf.Abs(z)>12f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-        float xStep = step;
-        if (isRed)
-        {
-            xStep = -step;
-        }
-
-		if (z == 0f)
-		{
-
-			GameObject go=pointerPool.FastSpawn(new Vector3(x + xStep, pointerHeight, z - step), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go, new Vector3(x + 2 * xStep, pointerHeight, z - 2 * step));
-			GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, pointerHeight, z + step), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go1, new Vector3(x + 2 * xStep, pointerHeight, z + 2 * step));
-
-			GameObject go2 = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z - step), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go2, new Vector3(x - 2 * xStep, pointerHeight, z - 2 * step));
-			GameObject go3 = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z + step), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go3, new Vector3(x - 2 * xStep, pointerHeight, z + 2 * step));
-
-			return;
-		}
-
-		if (Mathf.Abs (z)==6f)
-        {
-
-            if (Mathf.Abs(x)== 13.5f)
-            {
-				GameObject go = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z-step), Quaternion.identity,transform.parent) as GameObject;
-                movePointer(go, new Vector3(x+2*xStep, pointerHeight, z-2*step));
-				GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, pointerHeight, z+step), Quaternion.identity,transform.parent) as GameObject;
-                movePointer(go1, new Vector3(x + 2 * xStep, pointerHeight, z + 2*step));
-            }
-            else
-            {
-				GameObject go = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z - step), Quaternion.identity,transform.parent) as GameObject;
-                movePointer(go, new Vector3(x - 2 * xStep, pointerHeight, z - 2 * step));
-				GameObject go1 = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z + step), Quaternion.identity,transform.parent) as GameObject;
-                movePointer(go1, new Vector3(x - 2 * xStep, pointerHeight, z + 2 * step));
-            }
-            return;
-        }
-		float zStep = step;
-		if (z>0) {
-			zStep = -step;
-		}
-		if (Mathf.Abs (z) == 12f)
-        {
-			GameObject go = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z - zStep), Quaternion.identity,transform.parent) as GameObject;
-            movePointer(go, new Vector3(x - 2 * xStep, pointerHeight, z - 2 * zStep));
-			GameObject go1 = pointerPool.FastSpawn(new Vector3(x + xStep, pointerHeight, z - zStep), Quaternion.identity,transform.parent) as GameObject;
-            movePointer(go1, new Vector3(x + 2 * xStep, pointerHeight, z - 2 * zStep));
-        }
-			
-    }
-
-	/// <summary>
-	/// Shows the horse way.马走日算法，详细的参考Tower象棋规范文档中的图例
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	void ShowHorseWay(float x,float z){
-        /* 
-        * 1.马走日字（斜对角线） 
-        * 2.可以将马走日分解为：先一步直走（或一横）再一步斜走 
-        * 3.如果在要去的方向，第一步直行处（或者横行）有别的棋子挡住，则不许走过去（俗称：蹩马腿） 
-        */
-
-        float absX = Mathf.Abs(x);
-		float absZ = Mathf.Abs(z);
-		if (absX>13.5f || absZ>12f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-
-        float xStep = step;
-
-		if (x>0) //过河取反
-        {
-            xStep = -step;
-        }
-
-		float zStep = step;
-		if (z>=0) {
-			zStep = -step;
-		}
-
-		if (absZ==12f) {
-
-			GameObject go = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject as GameObject;
-			movePointer(go, new Vector3(x+2*xStep, pointerHeight, z + zStep));
-			GameObject go1 = pointerPool.FastSpawn(new Vector3(x, pointerHeight, z+zStep), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go1, new Vector3(x+xStep, pointerHeight, z+2*zStep));
-
-			if (absX<13.5f) {
-				GameObject go2 = pointerPool.FastSpawn(new Vector3(x, pointerHeight, z+zStep), Quaternion.identity,transform.parent) as GameObject;
-				movePointer(go2, new Vector3(x-xStep, pointerHeight, z+2*zStep));
-			}
-
-			if (absX<10.5f) {
-                GameObject go3 = pointerPool.FastSpawn(new Vector3(x - xStep, pointerHeight, z), Quaternion.identity, transform.parent) as GameObject;
-				movePointer(go3, new Vector3(x-2*xStep, pointerHeight, z - zStep));
-			}
-		}else {
-			GameObject go = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go, new Vector3(x+2*xStep, pointerHeight, z - step));
-			GameObject go1 = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-			movePointer(go1, new Vector3(x+2*xStep, pointerHeight, z+step));
-			if (absZ<9f) {
-				GameObject go2 = pointerPool.FastSpawn(new Vector3(x, pointerHeight, z-step), Quaternion.identity,transform.parent) as GameObject;
-				movePointer(go2, new Vector3(x+xStep, pointerHeight, z - 2*step));
-				GameObject go3 = pointerPool.FastSpawn(new Vector3(x, pointerHeight, z+step), Quaternion.identity,transform.parent) as GameObject;
-				movePointer(go3, new Vector3(x+xStep, pointerHeight, z + 2*step));
-				if (absX<13.5f) {
-					GameObject go4 = pointerPool.FastSpawn(new Vector3(x, pointerHeight, z-step), Quaternion.identity,transform.parent) as GameObject;
-					movePointer(go4, new Vector3(x-xStep, pointerHeight, z -2*step));
-					GameObject go5 = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z+step), Quaternion.identity,transform.parent) as GameObject;
-					movePointer(go5, new Vector3(x-xStep, pointerHeight, z+2*step));
-				}
-			}
-			if (absX<10.5f) {
-				GameObject go6 = pointerPool.FastSpawn(new Vector3(x-xStep, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-				movePointer(go6, new Vector3(x-2*xStep, pointerHeight, z - step));
-				GameObject go7 = pointerPool.FastSpawn(new Vector3(x+xStep, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-				movePointer(go7, new Vector3(x-2*xStep, pointerHeight, z+step));
-			}
-		}
-			
-    }
-
-	/// <summary>
-	/// Shows the rook way.先横向纵向生成指针，再剔除多余的
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	void ShowRookWay(float x,float z){
-		/* 
-         * 1.每行一步棋可以上、下直线行走（进、退）；左、右横走 
-         * 2.中间不能隔棋子 
-         * 3.行棋步数不限 
-         */
-
-		if (Mathf.Abs(x)>13.5f || Mathf.Abs(z)>12f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-
-		for (int i = 1; i < 10; i++) {	//循环生成指针
-			if (Mathf.Abs(x+step*i)<16.5f) {
-				GameObject go=pointerPool.FastSpawn(new Vector3(x+step*i, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-			if (Mathf.Abs(x-step*i)<16.5f) {
-				GameObject go=pointerPool.FastSpawn(new Vector3(x-step*i, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-			if (Mathf.Abs(z+step*i)<15f) {
-				GameObject go=pointerPool.FastSpawn(new Vector3(x, pointerHeight, z+step*i), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-			if (Mathf.Abs(z-step*i)<15f) {
-				GameObject go=pointerPool.FastSpawn(new Vector3(x, pointerHeight, z-step*i), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-		}
-        //Debug.Log(chessmanManager.DetectedObstacles.Count.ToString() + "++++");
-        
-
-	}		
-
-	/// <summary>
-	/// Shows the pawn way.
-	/// </summary>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	void ShowPawnWay(float x,float z){
-		/* 
-         * 0.不能后退，且每次直走一步
-         * 1.在没有过河界前，只能向前，不能横着走
-         * 2.过了河界之后，每行一步棋可以向前直走，或者横走（左、右）一步
-         */
-		if (Mathf.Abs(x)>13.5f || Mathf.Abs(z)>12f) {
-			Debug.LogError ("越界棋子：" + gameObject);
-			return;
-		}
-
-		if (isRed) {
-			if (x > -13.5f) {
-				GameObject go=pointerPool.FastSpawn (new Vector3 (x - step, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-			if (x < 0) {
-				if (z > -12f) {
-					GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z - step), Quaternion.identity,transform.parent) as GameObject;
-                    chessmanManager.spawnedPointers.Add(go);
-                }
-				if (z < 12f) {
-					GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z + step), Quaternion.identity,transform.parent) as GameObject;
-                    chessmanManager.spawnedPointers.Add(go);
-                }
-				
-			}
-		} else {
-			if (x < 13.5f) {
-				GameObject go=pointerPool.FastSpawn (new Vector3 (x + step, pointerHeight, z), Quaternion.identity,transform.parent) as GameObject;
-                chessmanManager.spawnedPointers.Add(go);
-            }
-			if (x > 0) {
-				if (z > -12f) {
-					GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z - step), Quaternion.identity,transform.parent) as GameObject;
-                    chessmanManager.spawnedPointers.Add(go);
-                }
-				if (z < 12f) {
-					GameObject go=pointerPool.FastSpawn (new Vector3 (x, pointerHeight, z + step), Quaternion.identity,transform.parent) as GameObject;
-                    chessmanManager.spawnedPointers.Add(go);
-                }
-			}
-		}
-	}
-
-    void movePointer(GameObject go,Vector3 position)
-    {
-        chessmanManager.spawnedPointers.Add(go);
-        Hashtable ht = new Hashtable();
-        ht.Add("position", position);
-        ht.Add("islocal", true);
-        ht.Add("time", 0.2f);
-        iTween.MoveTo(go, ht);
-    }
 	#endregion
 	
 }

@@ -157,10 +157,10 @@ public class CameraRigManager : Photon.PunBehaviour, IPunObservable
     #region Private Methods	//私有方法区域
 
 	private void ApplyDamage(){
-		Debug.Log ("ApplyDamage"+Health);
+		//Debug.Log ("ApplyDamage"+Health);
 		if (Health>0) {
             Health -=1f ;
-			Debug.Log (Health);
+			//Debug.Log (Health);
 		}
 	}
     #endregion

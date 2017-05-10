@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 231d45dba8bff13478d80904318e7bc4
-timeCreated: 1482476435
-licenseType: Store
+timeCreated: 1493202964
+licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -447,7 +447,7 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
-    hasTranslationDoF: 0
+    hasTranslationDoF: 1
     hasExtraRoot: 0
     skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}

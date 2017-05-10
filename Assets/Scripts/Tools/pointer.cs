@@ -74,7 +74,8 @@ public class pointer : VRTK_InteractableObject
 {
 
     #region Public Variables  //公共变量区域
-
+    [Tooltip("音效")]
+    public AudioClip spawnMusic, despawnMusic;
 
     #endregion
 
@@ -82,10 +83,29 @@ public class pointer : VRTK_InteractableObject
     #region Private Variables   //私有变量区域
     private ChessmanManager chessmanManager;
     private LeanPool pointerPool; //指针对象池 
+    AudioSource source;
+
     #endregion
 
 
     #region MonoBehaviour CallBacks //回调函数区域
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        if (source == null)
+        {
+            source = gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+        }
+        PlaySound(spawnMusic);
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        PlaySound(despawnMusic);
+    }
 
     void Start(){
         pointerPool = transform.parent.GetComponent<LeanPool>();    //获取指针的对象池组件
@@ -97,17 +117,30 @@ public class pointer : VRTK_InteractableObject
 		if (other.CompareTag("Chessman")) { //如果碰到棋子，则回收
 			if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
             if (chessmanManager == null) chessmanManager = transform.parent.GetComponent<ChessmanManager>();
-
-            chessmanManager.DetectedObstacles.Add (other.gameObject);
+            GameObject go = other.transform.parent.gameObject;
+            chessmanManager.DetectedObstacles.Add (go);
             //Debug.Log(chessmanManager.DetectedObstacles.Count.ToString() + "++++");
+            
             chessmanManager.spawnedPointers.Remove(gameObject);
-            chessmanManager.TrimPointer();
             pointerPool.FastDespawn(gameObject);
             
         }
 
     }
 
+    /// <summary>
+    /// 播放音效
+    /// </summary>
+    /// <param name="ac">声音</param>
+    void PlaySound(AudioClip Ac)
+    {
+
+        if (Ac != null && !source.isPlaying)
+        {
+            source.PlayOneShot(Ac);
+        }
+
+    }
     #endregion
 
     #region Public Methods	//公共方法区域
@@ -115,7 +148,7 @@ public class pointer : VRTK_InteractableObject
     public override void StartUsing(GameObject usingObject)
     {
         base.StartUsing(usingObject);
-		NetworkTurn.Instance.OnSelectChessman(-1, transform.localPosition.x, transform.localPosition.z);
+		NetworkTurn.Instance.OnSelectChessman(GlobalConst.NOCHESS, transform.localPosition.x, transform.localPosition.z);
 
 		if(pointerPool==null) pointerPool = transform.parent.GetComponent<LeanPool>();
 
@@ -130,6 +163,5 @@ public class pointer : VRTK_InteractableObject
         base.StopUsing(usingObject);
 
     }
-
     #endregion
 }

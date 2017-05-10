@@ -79,7 +79,6 @@ public class MapChessman : MonoBehaviour {
 	#region Private Variables   //私有变量区域
 	private int chessmanId;
     private Image im;
-	private bool isVisible=true;
 	#endregion
 	
 	
@@ -109,12 +108,20 @@ public class MapChessman : MonoBehaviour {
 	
 	#region Private Methods	//私有方法区域
 	private void NetworkTurn_SelectedMapChessman(int SelectedId){
-		if (chessmanId == SelectedId)
+        if (im == null)
+        {
+            im = GetComponent<Image>();
+        }
+        if (chessmanId == SelectedId)
 		{
 			im.color = Color.yellow;
 		}
-		else
-			im.color = Color.white;
+        else
+        {
+
+            im.color = Color.white;
+        }
+			
 	}
 	
 	#endregion

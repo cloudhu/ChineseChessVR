@@ -93,6 +93,42 @@ public class ChessMap : MonoBehaviour {
     //初始化32个棋子
     public static Chessman[] chessman = new Chessman[32];
 
+    //每个点上的棋子的类型  
+    public static ChessmanPos[] pos = {
+                new ChessmanPos(0,504f,Chessman.TYPE.ROOK),
+                new ChessmanPos(58f,504f,Chessman.TYPE.HORSE),
+                new ChessmanPos(116f,504f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(174f,504f,Chessman.TYPE.GUARD),
+                new ChessmanPos(232f,504f,Chessman.TYPE.KING),
+                new ChessmanPos(290f,504f,Chessman.TYPE.GUARD),
+                new ChessmanPos(348f,504f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(406f,504f,Chessman.TYPE.HORSE),
+                new ChessmanPos(464f,504f,Chessman.TYPE.ROOK),
+                new ChessmanPos(58f,392f,Chessman.TYPE.CANNON),
+                new ChessmanPos(406f,392f,Chessman.TYPE.CANNON),
+                new ChessmanPos(0,336f,Chessman.TYPE.PAWN),
+                new ChessmanPos(116f,336f,Chessman.TYPE.PAWN),
+                new ChessmanPos(232f,336f,Chessman.TYPE.PAWN),
+                new ChessmanPos(348f,336f,Chessman.TYPE.PAWN),
+                new ChessmanPos(464f,336f,Chessman.TYPE.PAWN),
+                new ChessmanPos(0,0,Chessman.TYPE.ROOK),
+                new ChessmanPos(58f,0,Chessman.TYPE.HORSE),
+                new ChessmanPos(116f,0,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(174f,0,Chessman.TYPE.GUARD),
+                new ChessmanPos(232f,0,Chessman.TYPE.KING),
+                new ChessmanPos(290f,0,Chessman.TYPE.GUARD),
+                new ChessmanPos(348f,0,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(406f,0,Chessman.TYPE.HORSE),
+                new ChessmanPos(464f,0,Chessman.TYPE.ROOK),
+                new ChessmanPos(58f,112f,Chessman.TYPE.CANNON),
+                new ChessmanPos(406f,112f,Chessman.TYPE.CANNON),
+                new ChessmanPos(0f,168f,Chessman.TYPE.PAWN),
+                new ChessmanPos(116f,168f,Chessman.TYPE.PAWN),
+                new ChessmanPos(232f,168f,Chessman.TYPE.PAWN),
+                new ChessmanPos(348f,168f,Chessman.TYPE.PAWN),
+                new ChessmanPos(464f,168f,Chessman.TYPE.PAWN),
+            };
+
     public struct Chessman
     {
         public enum TYPE { KING, GUARD, ELEPHANT, HORSE, ROOK, CANNON, PAWN };
@@ -115,41 +151,10 @@ public class ChessMap : MonoBehaviour {
         {
             _id = id;
             _red = id < 16;
+            _x = pos[id].x;
+            _z = pos[id].z;
+            _type = pos[id].type;
 
-            //每个点上的棋子的类型  
-            ChessmanPos[] pos = {
-                new ChessmanPos(0,260f,Chessman.TYPE.KING),
-                new ChessmanPos(58f,260f,Chessman.TYPE.GUARD),
-                new ChessmanPos(-58f,260f,Chessman.TYPE.GUARD),
-                new ChessmanPos(116f,260f,Chessman.TYPE.ELEPHANT),
-                new ChessmanPos(-116f,260f,Chessman.TYPE.ELEPHANT),
-                new ChessmanPos(174f,260f,Chessman.TYPE.HORSE),
-                new ChessmanPos(-174f,260f,Chessman.TYPE.HORSE),
-                new ChessmanPos(232f,260f,Chessman.TYPE.ROOK),
-                new ChessmanPos(-232f,260f,Chessman.TYPE.ROOK),
-
-                new ChessmanPos(174f,145f,Chessman.TYPE.CANNON),
-                new ChessmanPos(-174f,145f,Chessman.TYPE.CANNON),
-
-                new ChessmanPos(232f,87f,Chessman.TYPE.PAWN),
-                new ChessmanPos(116f,87f,Chessman.TYPE.PAWN),
-                new ChessmanPos(0,87f,Chessman.TYPE.PAWN),
-                new ChessmanPos(-116f,87f,Chessman.TYPE.PAWN),
-                new ChessmanPos(-232f,87f,Chessman.TYPE.PAWN),
-            };
-            //红方阵营和黑方对称
-            if (id < 16)
-            {
-                _x = pos[id].x;
-                _z = pos[id].z;
-                _type = pos[id].type;
-            }
-            else
-            {
-                _x = pos[id - 16].x;
-                _z = -pos[id - 16].z;
-                _type = pos[id - 16].type;
-            }
         }
     }
 
@@ -244,14 +249,26 @@ public class ChessMap : MonoBehaviour {
         for (int i = 0; i < 32; i++)
         {
             chessman[i].init(i);
-			GameObject ChessMan = GetPrefab(i, chessman[i]._type);
-            //Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-			ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
+            if (chessman[i].go==null)
+            {
+                GameObject ChessMan = GetPrefab(i, chessman[i]._type);
+                //Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
+                ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
 
-            ChessMan.name = i.ToString();
-            ChessMan.transform.SetParent(transform, false);
-            ChessMan.GetComponent<RectTransform>().localPosition= new Vector3(chessman[i]._x, chessman[i]._z, 0);
-			chessman [i].go = ChessMan;
+                ChessMan.name = i.ToString();
+                ChessMan.transform.SetParent(transform, false);
+                ChessMan.GetComponent<RectTransform>().localPosition = new Vector3(chessman[i]._x-234f, chessman[i]._z-248f, 0);
+                chessman[i].go = ChessMan;
+            }
+            else
+            {
+                if (!chessman[i].go.activeSelf)
+                {
+                    chessman[i].go.SetActive(true);
+                }
+                chessman[i].go.GetComponent<RectTransform>().localPosition = new Vector3(ChessMap.chessman[i]._x-234f, ChessMap.chessman[i]._z-248f, 0);
+            }
+
         }
     }
     #endregion

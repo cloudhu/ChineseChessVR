@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: IceReflectionMobile
+  m_Shader: {fileID: 4800000, guid: e72f68d80aad10a4bb3b4330aae3d71c, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 2800000, guid: 88ff7575bffeb7e498b8c4ee156fe11a, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 2157832aa670e3e4597b8d6bfbad0374, type: 3}
+          m_Scale: {x: 0.2, y: 0.3}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Cube
+        second:
+          m_Texture: {fileID: 8900000, guid: c1ad01f33e5dc4d40ae09cf74ba9d47f, type: 2}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMapGlass
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Cutoff
+        second: 0
+      data:
+        first:
+          name: _Shininess
+        second: 0.145
+      data:
+        first:
+          name: _Smoothness
+        second: 0.01
+      data:
+        first:
+          name: _Metallic
+        second: 0.01
+      data:
+        first:
+          name: _FPOW
+        second: 5
+      data:
+        first:
+          name: _R0
+        second: -0.1
+      data:
+        first:
+          name: _BumpAmt
+        second: 500
+      data:
+        first:
+          name: _RefractiveStrength
+        second: -1.5
+      data:
+        first:
+          name: _ReflectionStrength
+        second: 2.3571427
+      data:
+        first:
+          name: _Opacity
+        second: 1
+      data:
+        first:
+          name: _LightStr
+        second: 1
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 0.9264706, g: 0.954361, b: 1, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _ReflectColor
+        second: {r: 0.46566826, g: 0.5651507, b: 0.72794116, a: 1}

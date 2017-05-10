@@ -1,0 +1,646 @@
+fileFormatVersion: 2
+guid: db0e640233be68c438bfcd895c7787f9
+timeCreated: 1469848606
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Bone001
+    100002: Bone002
+    100004: Bone003
+    100006: Bone004
+    100008: Bone005
+    100010: Bone006
+    100012: Bone007
+    100014: Bone008
+    100016: Bone009
+    100018: Bone010
+    100020: Bone011
+    100022: Bone020
+    100024: Bone021
+    100026: Bone022
+    100028: Bone023
+    100030: Bone024
+    100032: Bone025
+    100034: Bone026
+    100036: default
+    100038: //RootNode
+    100040: Dummy001
+    100042: Dummy002
+    100044: Dummy003
+    100046: Helix001
+    100048: Helix002
+    100050: Helix003
+    100052: Line001
+    100054: Object001
+    100056: Sphere001
+    100058: Box001_frag_004
+    100060: Box001_frag_005
+    100062: Box001_frag_006
+    100064: Box001_frag_008
+    100066: Box001_frag_009
+    100068: Box001_frag_010
+    100070: Box001_frag_012
+    100072: Box001_frag_015
+    100074: Box001_frag_016
+    100076: Box001_frag_017
+    100078: Box001_frag_018
+    100080: Box001_frag_019
+    100082: Box001_frag_020
+    100084: Box001_frag_021
+    100086: Box001_frag_022
+    100088: Box001_frag_023
+    100090: Box001_frag_024
+    100092: Box001_frag_025
+    100094: Box001_frag_027
+    100096: Box001_frag_028
+    100098: Box001_frag_032
+    100100: Box001_frag_033
+    100102: Box001_frag_035
+    100104: Box001_frag_036
+    100106: Box001_frag_040
+    100108: Box001_frag_043
+    100110: Box001_frag_044
+    100112: Box001_frag_045
+    100114: Box001_frag_046
+    100116: Box001_frag_047
+    100118: Box001_frag_048
+    100120: Box001_frag_049
+    100122: Box001_frag_050
+    100124: Box001_frag_053
+    100126: Box001_frag_054
+    100128: Box001_frag_055
+    100130: Box001_frag_056
+    100132: Box001_frag_059
+    100134: Box001_frag_060
+    100136: Box001_frag_061
+    100138: Box001_frag_062
+    100140: Box001_frag_063
+    100142: Box001_frag_064
+    100144: Box001_frag_065
+    100146: Box001_frag_066
+    100148: Box001_frag_068
+    100150: Box001_frag_069
+    100152: Box001_frag_070
+    100154: Box001_frag_071
+    100156: Box001_frag_072
+    100158: Box001_frag_074
+    100160: Box001_frag_076
+    100162: Box001_frag_077
+    100164: Box001_frag_078
+    100166: Box001_frag_079
+    400000: Bone001
+    400002: Bone002
+    400004: Bone003
+    400006: Bone004
+    400008: Bone005
+    400010: Bone006
+    400012: Bone007
+    400014: Bone008
+    400016: Bone009
+    400018: Bone010
+    400020: Bone011
+    400022: Bone020
+    400024: Bone021
+    400026: Bone022
+    400028: Bone023
+    400030: Bone024
+    400032: Bone025
+    400034: Bone026
+    400036: default
+    400038: //RootNode
+    400040: Dummy001
+    400042: Dummy002
+    400044: Dummy003
+    400046: Helix001
+    400048: Helix002
+    400050: Helix003
+    400052: Line001
+    400054: Object001
+    400056: Sphere001
+    400058: Box001_frag_004
+    400060: Box001_frag_005
+    400062: Box001_frag_006
+    400064: Box001_frag_008
+    400066: Box001_frag_009
+    400068: Box001_frag_010
+    400070: Box001_frag_012
+    400072: Box001_frag_015
+    400074: Box001_frag_016
+    400076: Box001_frag_017
+    400078: Box001_frag_018
+    400080: Box001_frag_019
+    400082: Box001_frag_020
+    400084: Box001_frag_021
+    400086: Box001_frag_022
+    400088: Box001_frag_023
+    400090: Box001_frag_024
+    400092: Box001_frag_025
+    400094: Box001_frag_027
+    400096: Box001_frag_028
+    400098: Box001_frag_032
+    400100: Box001_frag_033
+    400102: Box001_frag_035
+    400104: Box001_frag_036
+    400106: Box001_frag_040
+    400108: Box001_frag_043
+    400110: Box001_frag_044
+    400112: Box001_frag_045
+    400114: Box001_frag_046
+    400116: Box001_frag_047
+    400118: Box001_frag_048
+    400120: Box001_frag_049
+    400122: Box001_frag_050
+    400124: Box001_frag_053
+    400126: Box001_frag_054
+    400128: Box001_frag_055
+    400130: Box001_frag_056
+    400132: Box001_frag_059
+    400134: Box001_frag_060
+    400136: Box001_frag_061
+    400138: Box001_frag_062
+    400140: Box001_frag_063
+    400142: Box001_frag_064
+    400144: Box001_frag_065
+    400146: Box001_frag_066
+    400148: Box001_frag_068
+    400150: Box001_frag_069
+    400152: Box001_frag_070
+    400154: Box001_frag_071
+    400156: Box001_frag_072
+    400158: Box001_frag_074
+    400160: Box001_frag_076
+    400162: Box001_frag_077
+    400164: Box001_frag_078
+    400166: Box001_frag_079
+    2300000: Sphere001
+    2300002: Box001_frag_004
+    2300004: Box001_frag_005
+    2300006: Box001_frag_006
+    2300008: Box001_frag_008
+    2300010: Box001_frag_009
+    2300012: Box001_frag_010
+    2300014: Box001_frag_012
+    2300016: Box001_frag_015
+    2300018: Box001_frag_016
+    2300020: Box001_frag_017
+    2300022: Box001_frag_018
+    2300024: Box001_frag_019
+    2300026: Box001_frag_020
+    2300028: Box001_frag_021
+    2300030: Box001_frag_022
+    2300032: Box001_frag_023
+    2300034: Box001_frag_024
+    2300036: Box001_frag_025
+    2300038: Box001_frag_027
+    2300040: Box001_frag_028
+    2300042: Box001_frag_032
+    2300044: Box001_frag_033
+    2300046: Box001_frag_035
+    2300048: Box001_frag_036
+    2300050: Box001_frag_040
+    2300052: Box001_frag_043
+    2300054: Box001_frag_044
+    2300056: Box001_frag_045
+    2300058: Box001_frag_046
+    2300060: Box001_frag_047
+    2300062: Box001_frag_048
+    2300064: Box001_frag_049
+    2300066: Box001_frag_050
+    2300068: Box001_frag_053
+    2300070: Box001_frag_054
+    2300072: Box001_frag_055
+    2300074: Box001_frag_056
+    2300076: Box001_frag_059
+    2300078: Box001_frag_060
+    2300080: Box001_frag_061
+    2300082: Box001_frag_062
+    2300084: Box001_frag_063
+    2300086: Box001_frag_064
+    2300088: Box001_frag_065
+    2300090: Box001_frag_066
+    2300092: Box001_frag_068
+    2300094: Box001_frag_069
+    2300096: Box001_frag_070
+    2300098: Box001_frag_071
+    2300100: Box001_frag_072
+    2300102: Box001_frag_074
+    2300104: Box001_frag_076
+    2300106: Box001_frag_077
+    2300108: Box001_frag_078
+    2300110: Box001_frag_079
+    3300000: Sphere001
+    3300002: Box001_frag_004
+    3300004: Box001_frag_005
+    3300006: Box001_frag_006
+    3300008: Box001_frag_008
+    3300010: Box001_frag_009
+    3300012: Box001_frag_010
+    3300014: Box001_frag_012
+    3300016: Box001_frag_015
+    3300018: Box001_frag_016
+    3300020: Box001_frag_017
+    3300022: Box001_frag_018
+    3300024: Box001_frag_019
+    3300026: Box001_frag_020
+    3300028: Box001_frag_021
+    3300030: Box001_frag_022
+    3300032: Box001_frag_023
+    3300034: Box001_frag_024
+    3300036: Box001_frag_025
+    3300038: Box001_frag_027
+    3300040: Box001_frag_028
+    3300042: Box001_frag_032
+    3300044: Box001_frag_033
+    3300046: Box001_frag_035
+    3300048: Box001_frag_036
+    3300050: Box001_frag_040
+    3300052: Box001_frag_043
+    3300054: Box001_frag_044
+    3300056: Box001_frag_045
+    3300058: Box001_frag_046
+    3300060: Box001_frag_047
+    3300062: Box001_frag_048
+    3300064: Box001_frag_049
+    3300066: Box001_frag_050
+    3300068: Box001_frag_053
+    3300070: Box001_frag_054
+    3300072: Box001_frag_055
+    3300074: Box001_frag_056
+    3300076: Box001_frag_059
+    3300078: Box001_frag_060
+    3300080: Box001_frag_061
+    3300082: Box001_frag_062
+    3300084: Box001_frag_063
+    3300086: Box001_frag_064
+    3300088: Box001_frag_065
+    3300090: Box001_frag_066
+    3300092: Box001_frag_068
+    3300094: Box001_frag_069
+    3300096: Box001_frag_070
+    3300098: Box001_frag_071
+    3300100: Box001_frag_072
+    3300102: Box001_frag_074
+    3300104: Box001_frag_076
+    3300106: Box001_frag_077
+    3300108: Box001_frag_078
+    3300110: Box001_frag_079
+    4300000: default
+    4300002: Sphere001
+    4300004: Box001_frag_004
+    4300006: Box001_frag_005
+    4300008: Box001_frag_006
+    4300010: Box001_frag_008
+    4300012: Box001_frag_009
+    4300014: Box001_frag_010
+    4300016: Box001_frag_012
+    4300018: Box001_frag_015
+    4300020: Box001_frag_016
+    4300022: Box001_frag_017
+    4300024: Box001_frag_018
+    4300026: Box001_frag_019
+    4300028: Box001_frag_020
+    4300030: Box001_frag_021
+    4300032: Box001_frag_022
+    4300034: Box001_frag_023
+    4300036: Box001_frag_024
+    4300038: Box001_frag_025
+    4300040: Box001_frag_027
+    4300042: Box001_frag_028
+    4300044: Box001_frag_032
+    4300046: Box001_frag_033
+    4300048: Box001_frag_035
+    4300050: Box001_frag_036
+    4300052: Box001_frag_040
+    4300054: Box001_frag_043
+    4300056: Box001_frag_044
+    4300058: Box001_frag_045
+    4300060: Box001_frag_046
+    4300062: Box001_frag_047
+    4300064: Box001_frag_048
+    4300066: Box001_frag_049
+    4300068: Box001_frag_050
+    4300070: Box001_frag_053
+    4300072: Box001_frag_054
+    4300074: Box001_frag_055
+    4300076: Box001_frag_056
+    4300078: Box001_frag_059
+    4300080: Box001_frag_060
+    4300082: Box001_frag_061
+    4300084: Box001_frag_062
+    4300086: Box001_frag_063
+    4300088: Box001_frag_064
+    4300090: Box001_frag_065
+    4300092: Box001_frag_066
+    4300094: Box001_frag_068
+    4300096: Box001_frag_069
+    4300098: Box001_frag_070
+    4300100: Box001_frag_079
+    4300102: Box001_frag_071
+    4300104: Box001_frag_072
+    4300106: Box001_frag_074
+    4300108: Box001_frag_076
+    4300110: Box001_frag_077
+    4300112: Box001_frag_078
+    7400000: Take 001
+    7400002: Take 001 //// Dummy001
+    7400004: Take 001 //// Line001
+    7400006: Take 001 //// Bone001
+    7400008: Take 001 //// Bone002
+    7400010: Take 001 //// Bone003
+    7400012: Take 001 //// Bone004
+    7400014: Take 001 //// Bone005
+    7400016: Take 001 //// Bone006
+    7400018: Take 001 //// Bone007
+    7400020: Take 001 //// Bone008
+    7400022: Take 001 //// Bone009
+    7400024: Take 001 //// Bone010
+    7400026: Take 001 //// Bone020
+    7400028: Take 001 //// Bone021
+    7400030: Take 001 //// Bone022
+    7400032: Take 001 //// Bone023
+    7400034: Take 001 //// Bone024
+    7400036: Take 001 //// Bone025
+    9500000: //RootNode
+    11100000: //RootNode
+    11100002: Bone001
+    11100004: Bone002
+    11100006: Bone003
+    11100008: Bone004
+    11100010: Bone005
+    11100012: Bone006
+    11100014: Bone007
+    11100016: Bone008
+    11100018: Bone009
+    11100020: Bone010
+    11100022: Bone011
+    11100024: Bone020
+    11100026: Bone021
+    11100028: Bone022
+    11100030: Bone023
+    11100032: Bone024
+    11100034: Bone025
+    11100036: Bone026
+    11100038: default
+    11100040: Dummy001
+    11100042: Dummy002
+    11100044: Dummy003
+    11100046: Helix001
+    11100048: Helix002
+    11100050: Helix003
+    11100052: Line001
+    11100054: Object001
+    11100056: Sphere001
+    13700000: default
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 190
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Box001_frag_004
+        weight: 1
+      - path: Box001_frag_005
+        weight: 1
+      - path: Box001_frag_006
+        weight: 1
+      - path: Box001_frag_008
+        weight: 1
+      - path: Box001_frag_009
+        weight: 1
+      - path: Box001_frag_010
+        weight: 1
+      - path: Box001_frag_012
+        weight: 1
+      - path: Box001_frag_015
+        weight: 1
+      - path: Box001_frag_016
+        weight: 1
+      - path: Box001_frag_017
+        weight: 1
+      - path: Box001_frag_018
+        weight: 1
+      - path: Box001_frag_019
+        weight: 1
+      - path: Box001_frag_020
+        weight: 1
+      - path: Box001_frag_021
+        weight: 1
+      - path: Box001_frag_022
+        weight: 1
+      - path: Box001_frag_023
+        weight: 1
+      - path: Box001_frag_024
+        weight: 1
+      - path: Box001_frag_025
+        weight: 1
+      - path: Box001_frag_027
+        weight: 1
+      - path: Box001_frag_028
+        weight: 1
+      - path: Box001_frag_032
+        weight: 1
+      - path: Box001_frag_033
+        weight: 1
+      - path: Box001_frag_035
+        weight: 1
+      - path: Box001_frag_036
+        weight: 1
+      - path: Box001_frag_040
+        weight: 1
+      - path: Box001_frag_043
+        weight: 1
+      - path: Box001_frag_044
+        weight: 1
+      - path: Box001_frag_045
+        weight: 1
+      - path: Box001_frag_046
+        weight: 1
+      - path: Box001_frag_047
+        weight: 1
+      - path: Box001_frag_048
+        weight: 1
+      - path: Box001_frag_049
+        weight: 1
+      - path: Box001_frag_050
+        weight: 1
+      - path: Box001_frag_053
+        weight: 1
+      - path: Box001_frag_054
+        weight: 1
+      - path: Box001_frag_055
+        weight: 1
+      - path: Box001_frag_056
+        weight: 1
+      - path: Box001_frag_059
+        weight: 1
+      - path: Box001_frag_060
+        weight: 1
+      - path: Box001_frag_061
+        weight: 1
+      - path: Box001_frag_062
+        weight: 1
+      - path: Box001_frag_063
+        weight: 1
+      - path: Box001_frag_064
+        weight: 1
+      - path: Box001_frag_065
+        weight: 1
+      - path: Box001_frag_066
+        weight: 1
+      - path: Box001_frag_068
+        weight: 1
+      - path: Box001_frag_069
+        weight: 1
+      - path: Box001_frag_070
+        weight: 1
+      - path: Box001_frag_071
+        weight: 1
+      - path: Box001_frag_072
+        weight: 1
+      - path: Box001_frag_074
+        weight: 1
+      - path: Box001_frag_076
+        weight: 1
+      - path: Box001_frag_077
+        weight: 1
+      - path: Box001_frag_078
+        weight: 1
+      - path: Box001_frag_079
+        weight: 1
+      - path: default
+        weight: 1
+      - path: Dummy001
+        weight: 1
+      - path: Dummy001/Bone001
+        weight: 1
+      - path: Dummy001/Bone001/Bone002
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006/Bone007
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006/Bone007/Bone008
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006/Bone007/Bone008/Bone009
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006/Bone007/Bone008/Bone009/Bone010
+        weight: 1
+      - path: Dummy001/Bone001/Bone002/Bone003/Bone004/Bone005/Bone006/Bone007/Bone008/Bone009/Bone010/Bone011
+        weight: 1
+      - path: Dummy001/Dummy002
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021/Bone022
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021/Bone022/Bone023
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021/Bone022/Bone023/Bone024
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021/Bone022/Bone023/Bone024/Bone025
+        weight: 1
+      - path: Dummy001/Dummy002/Bone020/Bone021/Bone022/Bone023/Bone024/Bone025/Bone026
+        weight: 1
+      - path: Dummy001/Sphere001
+        weight: 1
+      - path: Line001
+        weight: 1
+      - path: Object001
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.5
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 180
+    normalImportMode: 1
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

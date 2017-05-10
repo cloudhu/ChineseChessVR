@@ -29,8 +29,7 @@ namespace Lean
 		
 		[Tooltip("The prefab the clones will be based on")]
 		public GameObject Prefab;
-		
-		[Tooltip("Should this pool preload some clones?")]
+        [Tooltip("Should this pool preload some clones?")]
 		public int Preload;
 		
 		[Tooltip("Should this pool have a maximum amount of spawnable clones?")]
@@ -190,7 +189,7 @@ namespace Lean
 					// Remove cache entry
 					cache.RemoveAt(index);
 					
-					if (clone != null)
+					if (clone != null && !clone.activeSelf)
 					{
 						// Update transform of clone
 						var cloneTransform = clone.transform;
@@ -211,7 +210,8 @@ namespace Lean
 					}
 					else
 					{
-						Debug.LogError("The " + name + " pool contained a null cache entry");
+                        FastSpawn(position, rotation, parent);
+                        //Debug.LogError("The " + name + " pool contained a null cache entry");
 					}
 				}
 				
@@ -237,7 +237,6 @@ namespace Lean
 		// This will despawn a clone and add it to the cache
 		public void FastDespawn(GameObject clone, float delay = 0.0f)
 		{
-			
 			if (clone != null)
 			{
 				// Delay the despawn?
@@ -273,7 +272,7 @@ namespace Lean
 			}
 			else
 			{
-				//Debug.LogWarning("Attempting to despawn a null clone");
+				Debug.LogWarning("Attempting to despawn a null clone");
 			}
 			
 		}
@@ -399,6 +398,5 @@ namespace Lean
 				break;
 			}
 		}
-
-	}
+    }
 }

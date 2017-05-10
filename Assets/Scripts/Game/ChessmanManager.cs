@@ -60,7 +60,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using Lean;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -99,9 +98,60 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	public GameObject Black_Pawn; 	  //兵 
 
 	//初始化32个棋子
-	public static Chessman[] chessman = new Chessman[32];  
+	public static Chessman[] chessman = new Chessman[32];
 
-	public struct Chessman  
+    /// <summary>  
+    /// 通过棋子的坐标，获得对应的类型，将三个值关联在一起  
+    /// </summary>  
+    public struct ChessmanPos
+    {
+        public float x, z;
+        public Chessman.TYPE type;
+        public ChessmanPos(float _x, float _z, Chessman.TYPE _type)
+        {
+            x = _x;
+            z = _z;
+            type = _type;
+        }
+    }
+
+    //每个点上的棋子的类型  
+    public static ChessmanPos[] pos = {
+                new ChessmanPos(27f,0,Chessman.TYPE.ROOK),
+                new ChessmanPos(27f,3f,Chessman.TYPE.HORSE),
+                new ChessmanPos(27f,6f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(27f,9f,Chessman.TYPE.GUARD),
+                new ChessmanPos(27f,12f,Chessman.TYPE.KING),
+                new ChessmanPos(27f,15f,Chessman.TYPE.GUARD),
+                new ChessmanPos(27f,18f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(27f,21f,Chessman.TYPE.HORSE),
+                new ChessmanPos(27f,24f,Chessman.TYPE.ROOK),
+                new ChessmanPos(21f,3f,Chessman.TYPE.CANNON),
+                new ChessmanPos(21f,21f,Chessman.TYPE.CANNON),
+                new ChessmanPos(18f,0f,Chessman.TYPE.PAWN),
+                new ChessmanPos(18f,6f,Chessman.TYPE.PAWN),
+                new ChessmanPos(18f,12f,Chessman.TYPE.PAWN),
+                new ChessmanPos(18f,18f,Chessman.TYPE.PAWN),
+                new ChessmanPos(18f,24f,Chessman.TYPE.PAWN),
+                new ChessmanPos(0,0,Chessman.TYPE.ROOK),
+                new ChessmanPos(0,3f,Chessman.TYPE.HORSE),
+                new ChessmanPos(0,6f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(0,9f,Chessman.TYPE.GUARD),
+                new ChessmanPos(0,12f,Chessman.TYPE.KING),
+                new ChessmanPos(0,15f,Chessman.TYPE.GUARD),
+                new ChessmanPos(0,18f,Chessman.TYPE.ELEPHANT),
+                new ChessmanPos(0,21f,Chessman.TYPE.HORSE),
+                new ChessmanPos(0,24f,Chessman.TYPE.ROOK),
+                new ChessmanPos(6f,3f,Chessman.TYPE.CANNON),
+                new ChessmanPos(6f,21f,Chessman.TYPE.CANNON),
+                new ChessmanPos(9f,0f,Chessman.TYPE.PAWN),
+                new ChessmanPos(9f,6f,Chessman.TYPE.PAWN),
+                new ChessmanPos(9f,12f,Chessman.TYPE.PAWN),
+                new ChessmanPos(9f,18f,Chessman.TYPE.PAWN),
+                new ChessmanPos(9f,24f,Chessman.TYPE.PAWN),
+            };
+
+    public struct Chessman  
 	{  
 		public enum TYPE { KING, GUARD, ELEPHANT, HORSE, ROOK, CANNON, PAWN };  
 
@@ -127,59 +177,13 @@ public class ChessmanManager : Photon.MonoBehaviour {
 		{  
 			_id = id;  
 			_red = id < 16;  
-			_dead = false;  
+			_dead = false;    
+			_x = pos[id].x;  
+			_z = pos[id].z;  
+			_type = pos[id].type;  
 
-			//每个点上的棋子的类型  
-			ChessmanPos[] pos = {  
-				new ChessmanPos(13.5f,0,Chessman.TYPE.KING),  
-				new ChessmanPos(13.5f,3f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(13.5f,-3f,Chessman.TYPE.GUARD),  
-				new ChessmanPos(13.5f,6f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(13.5f,-6f,Chessman.TYPE.ELEPHANT),  
-				new ChessmanPos(13.5f,9f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(13.5f,-9f,Chessman.TYPE.HORSE),  
-				new ChessmanPos(13.5f,12f,Chessman.TYPE.ROOK),  
-				new ChessmanPos(13.5f,-12f,Chessman.TYPE.ROOK),  
-
-				new ChessmanPos(7.5f,9f,Chessman.TYPE.CANNON),  
-				new ChessmanPos(7.5f,-9f,Chessman.TYPE.CANNON),  
-
-				new ChessmanPos(4.5f,12f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(4.5f,6f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(4.5f,0,Chessman.TYPE.PAWN),  
-				new ChessmanPos(4.5f,-6f,Chessman.TYPE.PAWN),  
-				new ChessmanPos(4.5f,-12f,Chessman.TYPE.PAWN),  
-			};  
-            //红方阵营和黑方对称
-			if (id < 16)  
-			{  
-				_x = pos[id].x;  
-				_z = pos[id].z;  
-				_type = pos[id].type;  
-			}  
-			else  
-			{  
-				_x = -pos[id - 16].x;  
-				_z = pos[id - 16].z;  
-				_type = pos[id - 16].type;  
-			}  
 		}  
 	}  
-
-	/// <summary>  
-	/// 通过棋子的坐标，获得对应的类型，将三个值关联在一起  
-	/// </summary>  
-	public struct ChessmanPos  
-	{  
-		public float x, z;  
-		public Chessman.TYPE type;  
-		public ChessmanPos(float _x, float _z, Chessman.TYPE _type)  
-		{  
-			x = _x;  
-			z = _z;  
-			type = _type;  
-		}  
-	}
 
     #endregion
 
@@ -187,7 +191,6 @@ public class ChessmanManager : Photon.MonoBehaviour {
     #region Private Variables   //私有变量区域
 
     private LeanPool pointerPool; //指针对象池 
-
     #endregion
 
 
@@ -262,41 +265,34 @@ public class ChessmanManager : Photon.MonoBehaviour {
 	/// 初始化棋子  
 	/// </summary>  
 	public void ChessmanInit()  
-	{  
-		chessMap.ChessmanInit ();
+	{
+        GlobalConst.Instance.InitChessBoard();
+        chessMap.ChessmanInit ();
 		for (int i = 0; i < 32; i++)  
 		{  
 			chessman[i].init(i);
+            if (chessman[i].go==null)
+            {
+                GameObject ChessMan = GetPrefab(i, chessman[i]._type);
+                //Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
+                ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
 
-			GameObject ChessMan = GetPrefab(i, chessman[i]._type);
-			//Debug.Log(i+"+++"+prefabs.name+"==="+chessman[i]._x+ " === "+chessman[i]._z);
-			ChessMan = GameObject.Instantiate(ChessMan) as GameObject;
+                ChessMan.name = i.ToString();
+                ChessMan.transform.SetParent(transform, false);
+                ChessMan.transform.localPosition = new Vector3(chessman[i]._x, 0.58f, chessman[i]._z);
+                chessman[i].go = ChessMan;
+            }
+            else
+            {
+                if (!chessman[i].go.activeSelf)
+                {
+                    chessman[i].go.SetActive(true);
+                }
+                chessman[i].go.transform.localPosition = new Vector3(chessman[i]._x, 0.58f, chessman[i]._z);
+            }
+			
+		}
 
-            ChessMan.name = i.ToString(); 
-			ChessMan.transform.SetParent (transform,false);
-			ChessMan.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
-			chessman [i].go = ChessMan;
-		}  
-
-	}
-
-	/// <summary>
-	/// Reinits the chessman.重新初始化棋子
-	/// </summary>
-	public void ReinitChessman(){
-		for (int i = 0; i < 32; i++)  
-		{  
-			chessman[i].init(i);  
-			ChessMap.chessman[i].init(i);  
-			if (!chessman [i].go.activeSelf) {
-				chessman [i].go.SetActive (true);
-			}
-			if (!ChessMap.chessman [i].go.activeSelf) {
-				ChessMap.chessman [i].go.SetActive (true);
-			}
-			chessman [i].go.transform.localPosition = new Vector3 (chessman [i]._x, 0.58f, chessman [i]._z);
-			ChessMap.chessman [i].go.GetComponent<RectTransform>().localPosition= new Vector3(ChessMap.chessman[i]._x, ChessMap.chessman[i]._z, 0);
-		}  
 	}
 
     /// <summary>
@@ -304,128 +300,22 @@ public class ChessmanManager : Photon.MonoBehaviour {
     /// </summary>
     public void hidePointer()
     {
-        if (pointerPool==null)
-        {
-            Debug.LogError(pointerPool + "null!!!");
-            return;
-        }
-        if (spawnedPointers.Count > 0)
-        {
 
+        if (spawnedPointers.Count > 0)
+        {           
             for (int i = 0; i < spawnedPointers.Count; i++)
             {
-                    pointerPool.FastDespawn(spawnedPointers[i]);
-                    //Debug.Log("De" + i + "  " + spawnedPointers[i]);
+                 pointerPool.FastDespawn(spawnedPointers[i]);                               
+                //Debug.Log("FastDespawn" + i + "  " + spawnedPointers[i]);
             }
             spawnedPointers.Clear();
         }
+
         if (DetectedObstacles.Count > 0)
             DetectedObstacles.Clear();
     }
 
-    /// <summary>
-    /// 移除多余的指针
-    /// </summary>
-    public void TrimPointer()
-    {
-        if (this.DetectedObstacles.Count > 0)
-        {
-            float minUp = 16.5f;        //上下左右的阀值，参考Tower象棋规范文档的笛卡尔坐标系
-            float maxDown = -16.5f;
-            float minRight = 15f;
-            float maxLeft = -15f;
-            for (int i = 0; i < this.DetectedObstacles.Count; i++)
-            {
-                int ChessmanId = NetworkTurn.Instance._selectedId;
-                float _z = this.DetectedObstacles[i].transform.localPosition.z;
-                float _x = this.DetectedObstacles[i].transform.localPosition.x;
-                float x = chessman[ChessmanId]._x;  //棋子位置x
-                float z = chessman[ChessmanId]._z;
-
-                if (_z == z)
-                {   //Test: pos(7.5,9) ob1(-13.5,9) maxDown=-13.5f; ob2(-7.5,9) maxDown=-7.5f; ob3(13.5,9) minUp=13.5f;ob4(7.5,-9)  maxLetf=-9f;
-                    if (_x > x)
-                    {
-                        if (_x < minUp)
-                        {
-                            minUp = _x;
-                        }
-                    }
-                    else
-                    {
-                        if (_x > maxDown)
-                        {
-                            maxDown = _x;
-                        }
-                    }
-                    continue;
-                }
-
-                if (_x == x)
-                {
-                    if (_z > z)
-                    {
-                        if (_z < minRight)
-                        {
-                            minRight = _z;
-                        }
-                    }
-                    else
-                    {
-                        if (_z > maxLeft)
-                        {
-                            maxLeft = _z;
-                        }
-                    }
-                }
-            }
-
-           // Debug.Log(this.spawnedPointers.Count.ToString() + "++++");
-            if (this.spawnedPointers.Count > 0)
-            {
-                //剔除阀值外的多余指针
-                for (int i = 0; i < this.spawnedPointers.Count; i++)
-                {
-                    int index = this.spawnedPointers.Count - 1;
-                    if (index >= 0)
-                    {
-                        GameObject go = this.spawnedPointers[index];
-                        float _x = go.transform.localPosition.x;
-                        float _z = go.transform.localPosition.z;
-                        //Debug.Log(index + " " + go + " " + _x + " " + " " + _z + " " + minUp + " " + maxDown + " " + minRight + " " + maxLeft);
-                        if (_x > minUp)
-                        {
-                            pointerPool.FastDespawn(go);
-                            this.spawnedPointers.RemoveAt(index);
-                            continue;
-                        }
-
-                        if (_x < maxDown)
-                        {
-                            pointerPool.FastDespawn(go);
-                            Debug.Log(go);
-                            this.spawnedPointers.RemoveAt(index);
-                            continue;
-                        }
-
-                        if (_z > minRight)
-                        {
-                            pointerPool.FastDespawn(go);
-                            this.spawnedPointers.RemoveAt(index);
-                            continue;
-                        }
-
-                        if (_z < maxLeft)
-                        {
-                            pointerPool.FastDespawn(go);
-                            this.spawnedPointers.RemoveAt(index);
-                        }
-                    }
-
-                }
-            }
-        }
-    }
+    
     #endregion
 
 }

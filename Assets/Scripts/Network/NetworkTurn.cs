@@ -60,12 +60,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using Photon;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
-using System.Collections;
-using VRTK;
-using Lean;
 
 /// <summary>
 /// FileName: NetworkTurn.cs
@@ -75,8 +72,10 @@ using Lean;
 /// DateTime: 3/22/2017
 /// </summary>
 public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
-	
-	#region Public Variables  //公共变量区域
+
+    #region Public Variables  //公共变量区域
+    [Tooltip("人机模式AI接口")]
+    public GameInterface AI;
 	[Tooltip("棋局一回合的时间")]
 	public float TurnTime=120f;
 	[Tooltip("声源组件")]
@@ -94,7 +93,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// 被选中的棋子的ID，若没有被选中的棋子，则ID为-1  
 	/// </summary>  
 	[Tooltip("被选中的棋子的ID")]
-	public int _selectedId=-1;  
+	public int _selectedId = GlobalConst.NOCHESS;  
 
 	[Tooltip("是否是红子的回合,默认红子先行")]
 	public bool _isRedTurn=true;
@@ -218,6 +217,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	private PhotonPlayer local;
 	private PhotonPlayer remote;
+    int nFlag = 1;  //0:人机模式; 2:PVP模式
 
     #endregion
 
@@ -267,7 +267,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 
 
-		if (PhotonNetwork.room.PlayerCount>1)
+		if (PhotonNetwork.room.PlayerCount>1 || nFlag==0)
 		{
 			if (this.turnManager.IsOver)
 			{
@@ -277,13 +277,30 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			if (this.turnManager.Turn > 0  && !IsShowingResults)
 			{
 
-				if (_isRedTurn && localPlayerType==ChessPlayerType.Red) {
-                    LocalPlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
-					RemotePlayerTimeText.text="00:00";
-				} else {
-                    RemotePlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
-					LocalPlayerTimeText.text ="00:00";
-				}
+				if (_isRedTurn) {
+                    if (localPlayerType == ChessPlayerType.Red)
+                    {
+                        LocalPlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+                        RemotePlayerTimeText.text = "00:00";
+                    }
+                    if (localPlayerType == ChessPlayerType.Black)
+                    {
+                        RemotePlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+                        LocalPlayerTimeText.text = "00:00";
+                    }
+                } else {
+                    if (localPlayerType == ChessPlayerType.Red)
+                    {
+                        RemotePlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+                        LocalPlayerTimeText.text = "00:00";
+                    }
+                    if (localPlayerType == ChessPlayerType.Black)
+                    {
+                        LocalPlayerTimeText.text = this.turnManager.RemainingSecondsInTurn.ToString("F1") + "秒";
+                        RemotePlayerTimeText.text = "00:00";
+                    }
+
+                }
 			}
 		}
 
@@ -301,28 +318,36 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="z">The z coordinate坐标.</param>
     public void TryMoveChessman(int killId, float x, float z)
     {
-		if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
+        if (localPlayerType == ChessPlayerType.Guest) {
+            Debug.Log(localPlayerType + "游客只能观看");
+            return;   //游客只能观看
+        }
+        if (killId == GlobalConst.NOCHESS)
+        {
+            if (_selectedId >= 16)    //黑子无法被红方或红色回合内选定
+            {
+                if (localPlayerType == ChessPlayerType.Red || _isRedTurn)
+                {
+                    Debug.Log(_selectedId + "黑子无法被红方或红色回合内选定");
+                    return;
+                }
+            }
+            else    //红子同样无法被其他阵营选定
+            {
+                if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
+                {
+                    Debug.Log(_selectedId + "红子同样无法被其他阵营选定");
+                    return;
+                }
+            }
+        }
 
-		if (_selectedId>=16)    //黑子无法被红方或红色回合内选定
-		{
-			if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
-			{
-				return;
-			}
-		}
-		else    //红子同样无法被其他阵营选定
-		{
-			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
-			{
-				return;
-			}
-		}
 
-		bool ret = CanMove(_selectedId, killId,x,z);
+		bool ret = IsValidMove(_selectedId, killId,x,z);
 
         if (ret)
         {
-			MoveStone(_selectedId, killId, x,z);
+			MovingChessman(_selectedId, killId, x,z);
             OnMoveChessman(_selectedId, killId, x, z);
         }
     }
@@ -332,7 +357,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// </summary>
     public void Judge(){
 		
-        if (ChessmanManager.chessman[0]._dead)  //红方：帅死则输，将死则赢
+        if (ChessmanManager.chessman[GlobalConst.R_KING]._dead)  //红方：帅死则输，将死则赢
         {
 			if (localPlayerType == ChessPlayerType.Red) {
 				result = ResultType.LocalLoss;
@@ -345,7 +370,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             LocalGameStatusText.text = "恭喜黑方获胜！Black Win！";
         }
 
-        if (ChessmanManager.chessman[16]._dead)
+        if (ChessmanManager.chessman[GlobalConst.B_KING]._dead)
         {
 			if (localPlayerType == ChessPlayerType.Black) {
 				result = ResultType.LocalLoss;
@@ -374,9 +399,8 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	public void OnTurnBegins(int turn)
 	{
 		Debug.Log("OnTurnBegins() turn: "+ turn);
-        _selectedId = -1;
-
-		this.LocalTurnText.text = (this.turnManager.Turn).ToString();	//更新回合数
+        CancelSelected(_selectedId);
+        this.LocalTurnText.text = (this.turnManager.Turn).ToString();	//更新回合数
 		RemoteTurnText.text = LocalTurnText.text;
 		this.WinOrLossImage.gameObject.SetActive(false);	//关闭输赢的图片
 		IsShowingResults = false;	//不展示结果
@@ -476,7 +500,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
             if (!photonPlayer.IsLocal)
             {
 				string[] strArr = tmpStr.Split(char.Parse("_"));
-                MoveStone(int.Parse(strArr[0]), int.Parse(strArr[1]), float.Parse(strArr[4]),float.Parse(strArr[5]));
+                MovingChessman(int.Parse(strArr[0]), int.Parse(strArr[1]), float.Parse(strArr[4]),float.Parse(strArr[5]));
             }
         }
         else
@@ -535,12 +559,12 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 			} else {
 				//黑方超时，判输
 				if (localPlayerType==ChessPlayerType.Red) {
-					result = ResultType.LocalLoss;
+					result = ResultType.LocalWin;
 					LocalGameStatusText.text = "对方超时，胜利！";
 					RemoteGameStatusText.text = "失败！";
 				}
 				if (localPlayerType==ChessPlayerType.Black) {
-					result = ResultType.LocalWin;
+					result = ResultType.LocalLoss;
 					LocalGameStatusText.text = "您已超时，判负！";
 					RemoteGameStatusText.text = "胜利！";
 				}
@@ -573,8 +597,9 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		{
 			this.turnManager.BeginTurn();
 		}
+        this.turnManager.isTurnStarted = true;
 
-		if (_isRedTurn) {
+        if (_isRedTurn) {
 
 			if (localPlayerType==ChessPlayerType.Red) {
 				LocalGameStatusText.text = "您的回合开始！";
@@ -606,16 +631,30 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="moveId">选中的棋子</param>
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
-	public void MoveStone(int moveId, int killId,float x,float z)
+	public void MovingChessman(int moveId, int killId,float x,float z)
     {
+        //Debug.Log("红方回合:" + _isRedTurn + "++移动棋子ID:" + moveId + "++目标id:" +killId+"++目标x: "+x+"++目标z:"+z);
+        float _x = ChessmanManager.chessman[moveId]._x;
+        float _z = ChessmanManager.chessman[moveId]._z;
         // 0.保存记录到列表
         SaveStep(moveId, killId, x, z);
 		// 1.若移动到的位置上有棋子，将其吃掉  
         KillChessman(killId);
 		// 2.将移动棋子的路径显示出来  
-		ShowPath(new Vector3(ChessmanManager.chessman[moveId]._x, 1f, ChessmanManager.chessman[moveId]._z), x,z);
+		ShowPath(new Vector3(_x, 1f,_z), x,z);
 		// 3.将棋子移动到目标位置  
-		MoveChessman(moveId, x,z);
+		MoveChessman(moveId, x,z,killId);
+        if (killId==GlobalConst.B_KING || killId==GlobalConst.R_KING)
+        {
+            return;
+        }
+        //换算成AI棋盘矩阵的坐标
+        _x = _x == 0 ? 0 : _x / 3;
+        x = x == 0 ? 0 : x / 3;
+        _z = _z == 0 ? 0 : _z / 3;
+        z = z == 0 ? 0 : z / 3;
+
+        AI.OnMoveChessman(nFlag, (int)_x, (int)_z,(int)x, (int)z);
         
     }
 
@@ -644,7 +683,10 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		}
 		if (result!=ResultType.None) {
 			this.WinOrLossImage.gameObject.SetActive(true);
-			ButtonCanvasGroup.interactable = true;
+            if (nFlag == 2)
+            {
+                ButtonCanvasGroup.interactable = true;
+            }
 		}
 
 	}
@@ -676,6 +718,36 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     
     #region Handling Of Buttons	//处理按钮
 
+    /// <summary>
+    /// 离线模式
+    /// </summary>
+    public void OfflineModeAct(int nPly)
+    {
+        HidePath();
+        chessManManager.hidePointer();
+        _isRedTurn = true;
+        PhotonNetwork.offlineMode = true;
+        nFlag = 0;
+        PlayMusic(welcomMusic);
+        AI.OnNewGame(1, nPly);
+        chessManManager.ChessmanInit();
+        LocalGameStatusText.text = "开局！";
+        RemoteGameStatusText.text = "开局！";
+        localPlayerType = ChessPlayerType.Red;
+        LocalGameStatusText.text = "您是红方棋手……";
+        if (PlayerPrefs.HasKey("PlayerName"))
+        {
+            this.LocalPlayerNameText.text =  PlayerPrefs.GetString("PlayerName") + ":红方";
+        }
+        RemotePlayerNameText.text = "AI:黑方";
+        UpdatePlayerScoreTexts();
+        this.StartTurn();
+    }
+
+    /// <summary>
+    /// 发送消息给对方
+    /// </summary>
+    /// <param name="massage"></param>
 	public void SendMassage(string massage){
 		this.turnManager.SendMove(massage, false);
 		PlayMusic(selectClap);
@@ -727,13 +799,14 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     public void OnSelectChessman(int selectId,float x,float z)
     {
 		if (this.turnManager.isTurnStarted) {
-		
-	        if (_selectedId == -1)
+            if (_selectedId == GlobalConst.NOCHESS)
 	        {
-	            TrySelectChessman(selectId);
+                //Debug.Log(selectId + "  OnSelectChessman->TrySelect");
+                TrySelectChessman(selectId);
 	        }
 	        else
 	        {
+                //Debug.Log(selectId+ "  OnSelectChessman->trymove");
 	            TryMoveChessman(selectId, x, z);
 	        }
 		}
@@ -771,28 +844,17 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     /// <param name="killId">击杀的棋子</param>
     /// <param name="targetPosition">目标位置</param>
     /// <returns></returns>
-	bool CanMove(int moveId, int killId,float x,float z)
+	bool IsValidMove(int moveId, int killId,float x,float z)
     {
-        if (killId!=-1) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
+        //Debug.Log(moveId + "CanMove");
+        if (killId!= GlobalConst.NOCHESS) {    //如果是同阵营的棋子，则取消原来的选择，选择新的棋子
 			if (SameColor (moveId, killId)) {
 				OnCancelSelected (moveId);
 				TrySelectChessman (killId);
+                //Debug.Log(killId + "SameColor");
 				return false;
 			}
-			switch (ChessmanManager.chessman[moveId]._type) {
-			case ChessmanManager.Chessman.TYPE.KING:
-			case ChessmanManager.Chessman.TYPE.GUARD:
-			case ChessmanManager.Chessman.TYPE.ROOK:
-			case ChessmanManager.Chessman.TYPE.PAWN:
-				return isObstacle (killId);
-			case ChessmanManager.Chessman.TYPE.ELEPHANT:
-				return CanMoveElephant (killId,moveId,x,z);
-			case ChessmanManager.Chessman.TYPE.HORSE:
-				return CanMoveHorse (killId,moveId,x,z);
-			case ChessmanManager.Chessman.TYPE.CANNON:
-				return CanMoveCannon (killId,moveId,x,z);
-			}
-
+            return isObstacle(killId);
         }
 			
         return true;
@@ -824,104 +886,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 		return false;
 	}
 	 
-	/// <summary>
-	/// Determines whether this instance can move elephant the specified killId moveId x z. | 在障碍物中寻找符合步长条件的目标击杀
-	/// </summary>
-	/// <returns><c>true</c> if this instance can move elephant the specified killId moveId x z; otherwise, <c>false</c>.</returns>
-	/// <param name="killId">Kill identifier.</param>
-	/// <param name="moveId">Move identifier.</param>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	bool CanMoveElephant(int killId,int moveId,float x,float z){
-		if (chessManManager.DetectedObstacles.Count>0) {
-			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
-				if (chessManManager.DetectedObstacles[i].name==killId.ToString()) {
-					float _x = ChessmanManager.chessman [moveId]._x;
-					float _z = ChessmanManager.chessman [moveId]._z;
-					if (Mathf.Abs(x-_x)==6f && Mathf.Abs(z-_z)==6f) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/// <summary>
-	/// Determines whether this instance can move horse the specified killId moveId x z. | 在障碍物中寻找符合步长条件的目标击杀
-	/// </summary>
-	/// <returns><c>true</c> if this instance can move horse the specified killId moveId x z; otherwise, <c>false</c>.</returns>
-	/// <param name="killId">Kill identifier.</param>
-	/// <param name="moveId">Move identifier.</param>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	bool CanMoveHorse(int killId,int moveId,float x,float z){
-		if (chessManManager.DetectedObstacles.Count>0) {
-			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
-				if (chessManManager.DetectedObstacles[i].name==killId.ToString()) {
-					float _x = ChessmanManager.chessman [moveId]._x;
-					float _z = ChessmanManager.chessman [moveId]._z;
-					if (Mathf.Abs(x-_x)==6f || Mathf.Abs(z-_z)==6f) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	/// <summary>
-	/// Determines whether this instance can move cannon the specified killId moveId x z. | 首先判断目标是否在障碍物中，然后判断是否有炮台（即炮打翻山的隔子）
-	/// </summary>
-	/// <returns><c>true</c> if this instance can move cannon the specified killId moveId x z; otherwise, <c>false</c>.</returns>
-	/// <param name="killId">Kill identifier.</param>
-	/// <param name="moveId">Move identifier.</param>
-	/// <param name="x">The x coordinate.</param>
-	/// <param name="z">The z coordinate.</param>
-	bool CanMoveCannon(int killId,int moveId,float x,float z){
-		
-		if (chessManManager.DetectedObstacles.Count>0) {
-			int ob = 0;
-			bool isOb = false;
-			for (int i = 0; i < chessManManager.DetectedObstacles.Count; i++) {
-				float ox = chessManManager.DetectedObstacles [i].transform.localPosition.x;
-				float oz = chessManManager.DetectedObstacles [i].transform.localPosition.z;
-
-				if (ox==x && oz==z) {
-					isOb = true;
-					continue;
-				}
-				float _x = ChessmanManager.chessman [moveId]._x;
-				float _z = ChessmanManager.chessman [moveId]._z;
-				if (_x == x) {
-					if (z > _z) {
-						if (oz > _z && oz < z) {
-							ob += 1;
-						}
-					} else {
-						if (oz < _z && oz > z) {
-							ob += 1;
-						}
-					}
-				} else {
-					if (x > _x) {
-						if (ox > _x && ox < x) {
-							ob += 1;
-						}
-					} else {
-						if (ox < _x && ox > x) {
-							ob += 1;
-						}
-					}
-				}
-
-			}
-			if (isOb && ob==1) {
-				return true;
-			}
-		}
-		return false;
-	}
     #endregion
 
     #region PUN Callbacks   //重新PUN回调函数
@@ -951,9 +915,27 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
     {
         local = PhotonNetwork.player;
 		remote = PhotonNetwork.player.GetNext();
+        if (PhotonNetwork.isMasterClient && local != null)
+        {
 
+            localPlayerType = ChessPlayerType.Red;
+            LocalGameStatusText.text = "您是红方棋手……";
+            this.LocalPlayerNameText.text = local.NickName + ":红方";
+            ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
+            playerType.Add("playerType", "红方选手");
+            local.SetCustomProperties(playerType, null, false);
+        }
+        else
+        {
+            this.LocalPlayerNameText.text = local.NickName + ":黑方";
+            ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
+            playerType.Add("playerType", "黑方选手");
+            local.SetCustomProperties(playerType, null, false);
+            localPlayerType = ChessPlayerType.Black;
+            LocalGameStatusText.text = "您是黑方棋手……";
+        }
 
-		if (PhotonNetwork.room.PlayerCount == 2 && this.turnManager.Turn == 0)
+        if (PhotonNetwork.room.PlayerCount == 2 && this.turnManager.Turn == 0)
         {
              // 当房间内有两个玩家,则开始首回合
 			Play();
@@ -1041,22 +1023,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// Play this instance.初始化棋子和地图并开始回合
 	/// </summary>
 	void Play(){
-		if (PhotonNetwork.isMasterClient && local !=null) {
-
-			localPlayerType = ChessPlayerType.Red;
-			LocalGameStatusText.text = "您是红方棋手……";
-			this.LocalPlayerNameText.text = local.NickName + ":红方";
-			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable ();
-			playerType.Add ("playerType", "红方选手");
-			local.SetCustomProperties (playerType, null, false);
-		} else {
-			this.LocalPlayerNameText.text = local.NickName+":黑方";
-			ExitGames.Client.Photon.Hashtable playerType = new ExitGames.Client.Photon.Hashtable();
-			playerType.Add("playerType", "黑方选手");
-			local.SetCustomProperties(playerType, null, false);
-			localPlayerType = ChessPlayerType.Black;
-			LocalGameStatusText.text = "您是黑方棋手……";
-		}
+        nFlag = 2;
 		PlayMusic (welcomMusic);
 		chessManManager.ChessmanInit ();
 		LocalGameStatusText.text = "开局！";
@@ -1106,29 +1073,35 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	void TrySelectChessman(int selectId)
 	{
-		if (selectId==-1)
+		if (selectId== GlobalConst.NOCHESS)
 		{
 			return;
 		}
 
-		if (localPlayerType == ChessPlayerType.Guest) return;   //游客只能观看
+        if (localPlayerType == ChessPlayerType.Guest)
+        {
+            Debug.Log(localPlayerType + "游客只能观看");
+            return;   //游客只能观看
+        }
 
-		if (selectId>=16)    //黑子无法被红方或红色回合内选定
-		{
-			if (localPlayerType==ChessPlayerType.Red || _isRedTurn)
-			{
-				return;
-			}
-		}
-		else    //红子同样无法被其他阵营选定
-		{
-			if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
-			{
-				return;
-			}
-		}
+        if (selectId >= 16)    //黑子无法被红方或红色回合内选定
+        {
+            if (localPlayerType == ChessPlayerType.Red || _isRedTurn)
+            {
+                Debug.Log(selectId + "黑子无法被红方或红色回合内选定");
+                return;
+            }
+        }
+        else    //红子同样无法被其他阵营选定
+        {
+            if (localPlayerType == ChessPlayerType.Black || !_isRedTurn)
+            {
+                Debug.Log(selectId + "红子同样无法被其他阵营选定");
+                return;
+            }
+        }
 
-		if (!CanSelect(selectId)) return;
+        if (!CanSelect(selectId)) return;
 		this.turnManager.SendMove ("+ConfirmedSelect "+selectId.ToString(),false);
 		ConfirmedSelect (selectId);
 	}
@@ -1146,7 +1119,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="id"></param>  
 	void KillChessman(int id)
 	{
-		if (id == -1) return;
+		if (id == GlobalConst.NOCHESS) return;
 		if (_isRedTurn && localPlayerType==ChessPlayerType.Black) {	//红方回合被击杀的必然是黑方减分
 			OnPureDead();
 		}
@@ -1163,7 +1136,7 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="id"></param>  
 	void ReliveChess(int id)
 	{
-		if (id == -1) return;
+		if (id == GlobalConst.NOCHESS) return;
 
 		//因GameObject.Find();函数不能找到active==false的物体，故先找到其父物体，再找到其子物体才可以找到active==false的物体  
 		ChessmanManager.chessman[id]._dead = false;
@@ -1214,7 +1187,6 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	}
 
-
 	/// <summary>  
 	/// 隐藏路径  
 	/// </summary>  
@@ -1228,16 +1200,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	}
 
-
-
 	/// <summary>  
 	/// 移动棋子到目标位置  
 	/// </summary>  
 	/// <param name="targetPosition">目标位置</param>  
-	void MoveChessman(int moveId,float x,float z)
+	void MoveChessman(int moveId,float x,float z,int killId)
 	{
-		Transform chessman = chessManManager.transform.FindChild(moveId.ToString());
-		chessman.GetComponent<ChessmanController>().SetTarget(x,z);
+		ChessmanManager.chessman[moveId].go.GetComponent<ChessmanController>().SetTarget(x,z,killId);
 		_isRedTurn = !_isRedTurn;
 	}
 
@@ -1247,15 +1216,15 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	/// <param name="_step"></param>  
 	void Back(step _step)
 	{
-		if (_step.killId != -1) {
+		if (_step.killId != GlobalConst.NOCHESS) {
 			ReliveChess (_step.killId);
 		}
-		MoveChessman(_step.moveId, _step.xFrom, _step.zFrom);
+		MoveChessman(_step.moveId, _step.xFrom, _step.zFrom, GlobalConst.NOCHESS);
 
 		HidePath();
-		if (_selectedId != -1)
+		if (_selectedId != GlobalConst.NOCHESS)
 		{      
-			_selectedId = -1;
+			_selectedId = GlobalConst.NOCHESS;
 		}
 	}
 
@@ -1290,13 +1259,13 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 
 	bool IsDead(int id)
 	{
-		if (id == -1) return true;
+		if (id == GlobalConst.NOCHESS) return true;
 		return ChessmanManager.chessman[id]._dead;
 	}
 
 	bool SameColor(int id1, int id2)
 	{
-		if (id1 == -1 || id2 == -1) return false;
+		if (id1 == GlobalConst.NOCHESS || id2 == GlobalConst.NOCHESS) return false;
 
 		return IsRed(id1) == IsRed(id2);
 	}
@@ -1312,17 +1281,25 @@ public class NetworkTurn : PunBehaviour, IPunTurnManagerCallbacks {
 	}
 
 	void Restart(){
+        if (nFlag==0)   //人机模式
+        {
+            OfflineModeAct(3);
+            return;
+        }
 		if (PhotonNetwork.isMasterClient && PhotonNetwork.room.PlayerCount == 2 ) {
 			this.turnManager.RestartTurn ();
 		}
-		chessManManager.ReinitChessman ();
+        this.turnManager.isTurnStarted = true;
+        _isRedTurn = true;
+        chessManManager.ChessmanInit();
 	}
 
 	void CancelSelected(int cancelId){
 		if (_selectedId==cancelId)
 		{
-			_selectedId = -1;
-		}
+			_selectedId = GlobalConst.NOCHESS;
+            OnConfirmedSelect(GlobalConst.NOCHESS);
+        }
 	}
 
 	#endregion
